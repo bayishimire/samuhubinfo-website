@@ -1,0 +1,21 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Certificate{% endblock %}
+
+{% block content %}
+<div style="padding:20px; text-align:center;">
+    <h1 style="color:#ed05e2;">Certificate - {{ certificate.enrollment.course.title }}</h1>
+    {% if certificate.is_issued %}
+        <p>Congratulations {{ certificate.enrollment.student.username }}! Your certificate has been issued.</p>
+        {% if certificate.certificate_file %}
+            <a href="{{ certificate.certificate_file.url }}" download style="
+                text-decoration:none; background-color:#ff14b1; color:#fff; padding:10px 20px; border-radius:6px;">
+                Download Certificate
+            </a>
+        {% endif %}
+    {% else %}
+        <p>Your certificate is not issued yet. Complete all exams to receive it.</p>
+    {% endif %}
+</div>
+{% endblock %}

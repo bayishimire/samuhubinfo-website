@@ -1,0 +1,520 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to SAMHUB</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+body { line-height: 1.6; background-color: #ffff; color: #333; }
+header { background-color: #4CAF50; color: white; padding: 1rem 2rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative; }
+header h1 { font-size: 2rem; margin-bottom: 0.3rem; }
+header p { font-size: 1rem; }
+.animate-letter { animation: rainbow 2s linear infinite; }
+@keyframes rainbow { 0% { color: #ff0000; } 20% { color: #ff9900; } 40% { color: #ffff00; } 60% { color: #00ff00; } 80% { color: #0099ff; } 100% { color: rgb(206, 22, 206); } }
+
+nav { background-color: #fff; display: flex; justify-content: center; padding: 1rem 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-wrap: wrap; }
+nav a { text-decoration: none; color: #4CAF50; margin: 0 1rem; font-weight: 500; transition: color 0.3s; }
+nav a:hover { color: #2e7d32; }
+
+.hero { position: relative; text-align: center; padding: 4rem 2rem; background: url('https://images.unsplash.com/photo-1581091215365-7b4d1eeb03c8?fit=crop&w=1350&q=80') no-repeat center center/cover; color: white; min-height: 400px; display: flex; flex-direction: column; justify-content: center; gap: 2rem; }
+.hero h2 { font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.6); z-index: 3; }
+.hero p { font-size: 1.2rem; margin-bottom: 2rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.6); z-index: 3; }
+
+/* Ticker styles */
+.ticker-wrapper { position: absolute; bottom: 20px; left: 0; width: 100%; overflow: hidden; z-index: 2; }
+.ticker { display: flex; gap: 20px; flex-wrap: nowrap; }
+
+/* Flip card for ticker */
+.ticker-card {
+    perspective: 1000px; /* Enable 3D space */
+    min-width: 370px;
+    max-width: 450px;
+    height: 320px;
+}
+.ticker-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    border-radius: 12px;
+}
+
+.ticker-card:hover .ticker-card-inner {
+    transform: rotateY(180deg);
+}
+
+.ticker-card-front, .ticker-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ticker-card-front {
+    background: #ff17fb;
+    color: white;
+}
+
+.ticker-card-back {
+    background: #750d65;
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.ticker-card-back p {
+    margin-bottom: 10px;
+}
+
+.ticker-card-back .btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: white;
+    color: #7a017a;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.ticker-card-back .btn:hover {
+    background-color: #ffffffcc;
+    color: #0ada98;
+}
+
+/* Features section */
+.features { display: flex; justify-content: space-around; flex-wrap: wrap; padding: 3rem 2rem; background-color: #ffffffb9; }
+.feature { flex: 1 1 250px; margin: 1rem; background-color: #f9f9f9; padding: 2rem; border-radius: 8px; text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
+.feature:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.feature h3 { margin-bottom: 1rem; color: #4CAF50; }
+.feature p { color: #555; }
+
+/* Footer */
+footer { background-color: #333; color: #da0ac8; text-align: center; padding: 3rem 1rem; }
+footer p { margin-bottom: 1rem; }
+footer a { color: #4CAF50; text-decoration: none; font-size: 1.2rem; }
+footer .social-icons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
+footer .social-icons a { display: flex; flex-direction: column; align-items: center; color: #4CAF50; text-decoration: none; transition: color 0.3s; font-size: 1rem; }
+footer .social-icons a i { font-size: 2rem; margin-bottom: 0.3rem; }
+footer .social-icons a:hover { color: #ffffff; }
+
+/* Contact tooltip */
+.contact-link { position: relative; color: #4CAF50; text-decoration: none; font-weight: bold; cursor: pointer; }
+.contact-info { display: none; position: absolute; top: 30px; left: 0; background: white; color: #333; padding: 15px; border: 1px solid #da0ac8; border-radius: 8px; width: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 100; font-size: 14px; }
+.contact-link:hover .contact-info { display: block; }
+.contact-item { margin-bottom: 8px; }
+.contact-item i { color: #da0ac8; margin-right: 8px; }
+
+@media(max-width:768px){
+    .features { flex-direction: column; align-items: center; }
+    nav { flex-direction: column; }
+    footer .social-icons { gap: 1rem; }
+    .ticker-card { min-width: 280px; height: 220px; }
+}
+
+/* NAV TOOLTIP DROPDOWN */
+.nav-tooltip {
+    position: relative;
+}
+
+.nav-tooltip-info {
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    background: white;
+    color: #333;
+    padding: 12px;
+    border-radius: 8px;
+    width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    font-size: 14px;
+    z-index: 1000;
+}
+
+.nav-tooltip-info div {
+    margin-bottom: 8px;
+}
+
+.nav-tooltip-info i {
+    margin-right: 6px;
+    color: #4CAF50;
+}
+
+.nav-tooltip:hover .nav-tooltip-info {
+    display: block;
+.dropdown-menu a{
+    display:block;
+    padding:10px 15px;
+    color:#4CAF50;
+}
+
+.dropdown-menu a:hover{
+    background:#f1f1f1;
+}
+
+.nav-item:hover .dropdown-menu{
+    display:block;
+}
+}
+
+</style>
+</head>
+<body>
+<header>
+    <h1><span class="animate-letter">S</span>AM<span class="animate-letter">H</span>UB</h1>
+    <p>Your hub for learning, projects, scholarships, jobs, and updates</p>
+
+    {% if user.is_authenticated %}
+    <div class="user-profile" style="position:absolute; top:20px; right:20px; display:flex; align-items:center; gap:10px;">
+        <img src="{{ user.image.url }}" alt="{{ user.username }}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
+        <span style="color:white; font-weight:bold;">{{ user.username }}</span>
+        <a href="{% url 'logout' %}" style="color:white; text-decoration:underline; margin-left:10px;">Logout</a>
+    </div>
+    {% else %}
+    <div class="user-profile" style="position:absolute; top:20px; right:20px;">
+        <a href="{% url 'Login' %}" style="color:white; margin-right:10px;">Login</a>
+    </div>
+    {% endif %}
+</header>
+
+<nav>
+    <!-- HOME -->
+    <a href="#"><i class="fas fa-home"></i> Home</a>
+
+    <!-- ABOUT -->
+    <a href="{% url 'about' %}" class="nav-tooltip">
+        <i class="fas fa-info-circle"></i> About
+        <div class="nav-tooltip-info">
+            <div><a href="#"<i class="fas fa-info-circle"></i> About SAMHUB platform</a></div>
+            <div><i class="fas fa-users"></i> Our Community</div>
+            <div><i class="fas fa-bullseye"></i> Our Mission & Vision</div>
+        </div>
+    </a>
+
+    {% if user.is_authenticated %}
+
+    <!-- PROJECTS -->
+    <a href="#" class="nav-tooltip">
+        <i class="fas fa-project-diagram"></i> Projects
+        <div class="nav-tooltip-info">
+            <div><i class="fas fa-folder-open"></i> View Projects</div>
+            <div><i class="fas fa-plus"></i> Add New Project</div>
+            <div><i class="fas fa-handshake"></i> Collaboration</div>
+        </div>
+    </a>
+
+    <!-- SCHOLARSHIPS -->
+    <a href="{% url 'scholarship_list' %}" class="nav-tooltip">
+        <i class="fas fa-graduation-cap"></i> Scholarships
+        <div class="nav-tooltip-info">
+            <div>🎓 Fully Funded</div>
+            <div>🌍 International</div>
+            <div>📅 2026 Open</div>
+        </div>
+    </a>
+
+    <!-- JOBS -->
+    <a href="{% url 'job_list' %}" class="nav-tooltip">
+        <i class="fas fa-briefcase"></i> Jobs
+        <div class="nav-tooltip-info">
+            <div>💼 IT Jobs</div>
+            <div>📍 Kigali & Remote</div>
+            <div>📝 Apply Online</div>
+        </div>
+    </a>
+
+    <!-- UPDATES -->
+    <a href="#" class="nav-tooltip">
+        <i class="fas fa-bolt"></i> Updates
+        <div class="nav-tooltip-info">
+            <div>📢 New Courses</div>
+            <div>🎯 Workshops</div>
+            <div>🚀 Tech News</div>
+        </div>
+    </a>
+
+    {% else %}
+
+    <!-- LOCKED LINKS -->
+    <a href="{% url 'Login' %}"><i class="fas fa-project-diagram"></i> Projects</a>
+    <a href="{% url 'Login' %}"><i class="fas fa-graduation-cap"></i> Scholarships</a>
+    <a href="{% url 'Login' %}"><i class="fas fa-briefcase"></i> Jobs</a>
+    <a href="{% url 'Login' %}"><i class="fas fa-bolt"></i> Updates</a>
+
+    {% endif %}
+
+    <!-- CONTACT -->
+    <a href="#" class="contact-link">
+        <i class="fas fa-phone"></i> Contact
+        <div class="contact-info">
+            <div class="contact-item"><i class="fas fa-phone"></i> +250 788 123 456</div>
+            <div class="contact-item"><i class="fas fa-envelope"></i> info@example.com</div>
+            <div class="contact-item"><i class="fas fa-location-dot"></i> Kigali, Rwanda</div>
+            <div class="contact-item"><i class="fas fa-mailbox"></i> P.O. Box 12345</div>
+        </div>
+    </a>
+
+    <!-- ADMIN / REGISTER / LOGIN -->
+    <a href="{% url 'dashboard_admin' %}">Admin Dashboard</a>
+    <a href="{% url 'register' %}">Register</a>
+    <a href="{% url 'Login' %}">Login</a>
+</nav>
+
+<!-- ================= JS for Tooltips (optional if needed) ================= -->
+<script>
+    // Optional: simple JS to keep tooltip visible on hover
+    document.querySelectorAll('.nav-tooltip').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.querySelector('.nav-tooltip-info').style.display = 'block';
+        });
+        item.addEventListener('mouseleave', () => {
+            item.querySelector('.nav-tooltip-info').style.display = 'none';
+        });
+    });
+
+    document.querySelectorAll('.contact-link').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.querySelector('.contact-info').style.display = 'block';
+        });
+        item.addEventListener('mouseleave', () => {
+            item.querySelector('.contact-info').style.display = 'none';
+        });
+    });
+</script>
+
+
+<section class="hero">
+    <h2>Explore. Learn. Build.</h2>
+    <p>Join SAMHUB and take your skills to the next level with projects, tutorials, and community support.</p>
+
+    <div class="ticker-wrapper">
+        <div class="ticker" id="ticker">
+
+            <!-- SCHOLARSHIP CARD -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>🎓 Scholarship 2026</h3>
+                        <p>Apply for fully funded scholarships now!</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>🎓 Scholarship 2026</h3>
+                        <p>Deadline: March 31, 2026</p>
+                        <p>Location: Worldwide</p>
+                        <p>Get fully funded scholarships including tuition, travel, and living costs. Perfect for ambitious students seeking international education opportunities.</p>
+                     {% if user.is_authenticated %}
+    <a href="{% url 'scholarship_list' %}" class="btn">Apply Now</a>
+    <a href="{% url 'scholarship_list' %}" class="btn">View Details</a>
+{% else %}
+    <a href="{% url 'Login' %}?next={% url 'scholarship_list' %}" class="btn">Apply Now</a>
+    <a href="{% url 'Login' %}?next={% url 'scholarship_list' %}" class="btn">View Details</a>
+{% endif %}
+       
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOB CARD -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>💼 Job: Frontend Dev</h3>
+                        <p>Join as a frontend developer at ABC Corp.</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>💼 Job: Frontend Dev</h3>
+                        <p>Experience: 2+ years</p>
+                        <p>Location: Kigali, Rwanda</p>
+                        <p>We are hiring a talented Frontend Developer to work with our design and development teams. Must know HTML, CSS, JS, React.</p>
+                        <a href="https://web.telegram.org" target="_blank" class="btn">Apply Now</a>
+                        <a href="#" class="btn">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PYTHON TUTORIAL CARD -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>📢 Python Tutorial</h3>
+                        <p>New Python OOP tutorial uploaded!</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>📢 Python developer</h3>
+                        <p>Level: Intermediate</p>
+                        <p>Duration: 2 hours</p>
+                        <p>Learn Object-Oriented Programming in Python with examples and exercises. Boost your coding skills effectively.</p>
+                        <a href="#" class="btn">apply</a>
+                        <a href="#" class="btn">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERNSHIP CARD -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>🎓 Internship</h3>
+                        <p>Summer internship opportunities available!</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>🎓 Internship</h3>
+                        <p>Duration: 3 months</p>
+                        <p>Location: Kigali, Rwanda</p>
+                        <p>Gain real-world experience and mentorship from industry professionals. Open for students and fresh graduates.</p>
+                        <a href="#" class="btn">Apply Now</a>
+                        <a href="#" class="btn">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+   
+
+    <!-- Interactive Learning -->
+    <div class="feature">
+        <h3><i class="fas fa-book-open" style="margin-right: 5px;"></i>Interactive Learning</h3>
+        <p>Hands-on tutorials and coding exercises to sharpen your skills.</p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'course_list' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-play" style="margin-right: 5px;"></i> Go Learn
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to Learn
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Projects & Collaboration -->
+    <div class="feature">
+        <h3><i class="fas fa-project-diagram" style="margin-right: 5px;"></i>Projects & Collaboration</h3>
+        <p>Work on real projects and collaborate with other developers.</p>
+
+        {% if user.is_authenticated %}
+            <a href="#" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-play" style="margin-right: 5px;"></i> Go (P&C) project and Collaboration
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to collaborate
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Supportive Community -->
+    <div class="feature">
+        <h3><i class="fas fa-users" style="margin-right: 5px;"></i>Supportive Community</h3>
+        <p>Get help, share ideas, and connect with like-minded learners.</p>
+
+        {% if user.is_authenticated %}
+            <a href="#" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-users" style="margin-right: 5px;"></i> Go Supportive Here
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to community
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Scholarships -->
+    <div class="feature">
+        <h3><i class="fas fa-graduation-cap" style="margin-right: 5px;"></i>Scholarships</h3>
+        <p>Find and apply to the latest scholarships for students worldwide.</p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'scholarship_list' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-play" style="margin-right: 5px;"></i> Go New_scholas
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to find
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Jobs -->
+    <div class="feature">
+        <h3><i class="fas fa-briefcase" style="margin-right: 5px;"></i>Jobs</h3>
+        <p>Check out recent job openings and career opportunities.</p>
+
+        {% if user.is_authenticated %}
+            <a href="#" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-briefcase" style="margin-right: 5px;"></i> Go To Job Available
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to More
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Updates -->
+    <div class="feature">
+        <h3><i class="fas fa-bolt" style="margin-right: 5px;"></i>Updates</h3>
+        <p>Stay informed about the latest courses, workshops, and events.</p>
+
+        {% if user.is_authenticated %}
+            <a href="#" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-bolt" style="margin-right: 5px;"></i> Go New Update
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-sign-in-alt" style="margin-right: 5px;"></i> Login to Here
+            </a>
+        {% endif %}
+    </div>
+
+</section>
+
+
+<footer>
+    <p>&copy; 2026 SAMHUB. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    <div class="social-icons">
+        <a href="#"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+        <a href="mailto:info@samhub.com"><i class="fas fa-envelope"></i>Email</a>
+        <a href="#"><i class="fab fa-twitter"></i>Twitter</a>
+        <a href="#"><i class="fab fa-instagram"></i>Instagram</a>
+        <a href="https://web.telegram.org"><i class="fab fa-telegram"></i>Telegram</a>
+        <a href="#"><i class="fab fa-youtube"></i>YouTube</a>
+    </div>
+</footer>
+
+<script>
+// JS for continuous seamless ticker scroll
+const ticker = document.getElementById('ticker');
+
+// Duplicate all cards so scroll loops without gap
+ticker.innerHTML += ticker.innerHTML;
+
+let scrollPos = 0;
+function animateTicker() {
+    scrollPos += 1; // speed in px/frame
+    if(scrollPos >= ticker.scrollWidth / 2) scrollPos = 0; // reset after half
+    ticker.style.transform = `translateX(${-scrollPos}px)`;
+    requestAnimationFrame(animateTicker);
+}
+animateTicker();
+</script>
+</body>
+</html>

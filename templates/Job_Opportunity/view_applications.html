@@ -1,0 +1,28 @@
+<h1>Applications for {{ job.title }}</h1>
+
+{% if applications %}
+    <table border="1" cellpadding="10" cellspacing="0">
+        <tr>
+            <th>Applicant Name</th>
+            <th>Email</th>
+            <th>Resume</th>
+            <th>Cover Letter</th>
+            <th>Submitted At</th>
+            <th>Status</th>
+        </tr>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.full_name }}</td>
+            <td>{{ app.email }}</td>
+            <td>
+                <a href="{{ app.resume.url }}" target="_blank">Download</a>
+            </td>
+            <td>{{ app.cover_letter }}</td>
+            <td>{{ app.submitted_at }}</td>
+            <td>{{ app.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No applications yet.</p>
+{% endif %}

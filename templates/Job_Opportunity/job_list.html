@@ -1,0 +1,194 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    body{
+    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;}
+
+/* Section Header */
+.section-header {
+    text-align: center;
+    color: #00ffd0;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Container & Layout */
+.job-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    max-width: 1300px;
+    margin: 0 auto 50px auto;
+}
+
+/* Flip Card Container */
+.flip-card {
+    background-color: transparent;
+    width: 440px;
+    height: 420px;
+    perspective: 1000px;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back of the Card */
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+}
+
+/* Front */
+.flip-card-front {
+    background: rgba(16, 219, 196, 0.85);
+}
+
+/* Back */
+.flip-card-back {
+    background: rgba(255, 0, 212, 0.85);
+    transform: rotateY(180deg);
+    overflow: auto;
+}
+
+/* Job Image */
+.job-card-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #fff;
+    margin: 15px 0;
+}
+
+/* Job Title */
+.job-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Experience */
+.experience {
+    font-size: 15px;
+    font-weight: bold;
+    color: #ffff00;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+.job-btn {
+    padding: 10px 20px;
+    background: rgb(24, 237, 162);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s;
+    margin: 5px 0;
+    display: inline-block;
+}
+
+.job-btn:hover {
+    background: #e600c7;
+}
+
+/* Back card icons */
+.flip-card-back p {
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.flip-card-back i {
+    margin-right: 8px;
+    color: #ffff00;
+}
+</style>
+
+<!-- Section Header -->
+<div class="section-header">
+    <i class="fas fa-briefcase"></i>
+    <span>Job Available</span>
+</div>
+
+<div class="job-section">
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <!-- Front of Card -->
+                    <div class="flip-card-front">
+                        <div class="job-title">{{ job.title }} at {{ job.company }}</div>
+                        {% if job.image %}
+                            <img class="job-card-img" src="{{ job.image.url }}" alt="{{ job.title }}">
+                        {% else %}
+                            <img class="job-card-img" src="{% static 'images/default_job.png' %}" alt="No Image">
+                        {% endif %}
+                        <span class="experience">
+                            {% if job.experience_required == "YES" %}
+                                <i class="fas fa-user-tie"></i> Experience Required
+                            {% else %}
+                                <i class="fas fa-user-check"></i> No Experience
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Back of Card -->
+                    <div class="flip-card-back">
+                        <h3>{{ job.title }} at {{ job.company }}</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ job.location }}</p>
+                        <p><i class="fas fa-align-left"></i> <strong>Description:</strong> {{ job.description }}</p>
+                        <p><i class="fas fa-tasks"></i> <strong>Requirements:</strong> {{ job.requirements }}</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Deadline:</strong> {{ job.deadline }}</p>
+
+                        <a href="{% url 'job_detail' job.id %}" class="job-btn"><i class="fas fa-eye"></i> View Details</a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'apply_job' job.id %}" class="job-btn"><i class="fas fa-paper-plane"></i> Apply Now</a>
+                        {% else %}
+                            <a href="{% url 'Login' %}" class="job-btn"><i class="fas fa-sign-in-alt"></i> Login to Apply</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-jobs"><i class="fas fa-briefcase"></i> No jobs available.</p>
+    {% endif %}
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

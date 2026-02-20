@@ -1,0 +1,216 @@
+{% extends 'Login_System/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+body {
+    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.form-wrapper {
+    {% comment %} background: rgba(46, 150, 195, 0.9); {% endcomment %}
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(218, 10, 200, 0.3);
+}
+
+h1, h2 {
+    color: #da0ac8;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-section {
+    flex: 1 1 30%;
+    min-width: 280px;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.form-section h2 {
+    text-align: left;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #da0ac8;
+    padding-bottom: 5px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    display: block;
+    margin: 30px auto 0 auto;
+    padding: 12px 25px;
+    background: #da0ac8;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #b100a0;
+}
+
+.form-section i {
+    color: #da0ac8;
+    margin-right: 6px;
+}
+
+@media (max-width: 1000px) {
+    form {
+        flex-direction: column;
+    }
+}
+</style>
+
+<div class="form-wrapper">
+    <h1>Apply for <b>{{ scholarship.title }}</b></h1>
+
+    {% if messages %}
+        <ul style="color:red;">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Personal Information -->
+        <div class="form-section">
+            <h2><i class="fas fa-user"></i> Personal Information</h2>
+
+            <label for="first_name"><i class="fas fa-id-badge"></i> First Name</label>
+            <input type="text" name="first_name" id="first_name" required>
+            
+
+            <label for="middle_name"><i class="fas fa-id-card"></i> Middle Name</label>
+            <input type="text" name="middle_name" id="middle_name">
+
+            <label for="last_name"><i class="fas fa-id-badge"></i> Last Name</label>
+            <input type="text" name="last_name" id="last_name" required>
+             <label for="ID"><i class="fas fa-id-badge"></i> ID</label>
+            <input type="text" name="ID" id="ID" required>
+
+            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="phone"><i class="fas fa-phone"></i> Phone</label>
+            <input type="text" name="phone" id="phone" required>
+
+            <label for="country"><i class="fas fa-globe"></i> Country</label>
+            <input type="text" name="country" id="country" required>
+
+            <label for="village"><i class="fas fa-home"></i> Village</label>
+            <input type="text" name="village" id="village">
+
+            <label for="cell"><i class="fas fa-mobile-alt"></i> Cell</label>
+            <input type="text" name="cell" id="cell">
+
+            <label for="nationality"><i class="fas fa-flag"></i> Nationality</label>
+            <input type="text" name="nationality" id="nationality" required>
+            
+        </div>
+
+        <!-- Education & Documents -->
+        <div class="form-section">
+            <h2><i class="fas fa-graduation-cap"></i> Education & Documents</h2>
+
+            <label for="highest_qualification"><i class="fas fa-school"></i> Highest Qualification</label>
+            <textarea name="highest_qualification" id="highest_qualification" rows="2"></textarea>
+
+            <label for="education_background"><i class="fas fa-book"></i> Education Background</label>
+            <textarea name="education_background" id="education_background" rows="4"></textarea>
+
+            <label for="CV_file_upload"><i class="fas fa-file"></i> Upload CV</label>
+            <input type="file" name="CV_file_upload" id="CV_file_upload">
+
+            <label for="application_Lettle"><i class="fas fa-file-alt"></i> Application Letter</label>
+            <input type="file" name="application_Lettle" id="application_Lettle">
+
+            <label for="photo"><i class="fas fa-camera"></i> Photo</label>
+            <input type="file" name="photo" id="photo" required>
+            
+            <label for="other_documents"><i class="fas fa-file-contract"></i> Other Documents</label>
+            <input type="file" name="other_documents" id="other_documents">
+
+            <label for="passport"><i class="fas fa-passport"></i> Passport</label>
+            <input type="file" name="passport" id="passport">
+            <label for="marital_status"><i class="fas fa-heart"></i> Marital Status</label>
+              <select name="marital_status" id="marital_status" required>
+                <option value="SINGLE">Single</option>
+                <option value="MARRIED">Married</option>
+                <option value="OTHER">Other</option>
+             </select>
+
+            
+
+           
+        </div>
+
+        <!-- Guardian Information -->
+        <div class="form-section">
+            <h2><i class="fas fa-user-shield"></i> Guardian</h2>
+
+            <label for="guardian_name"><i class="fas fa-user"></i> Guardian Name</label>
+            <input type="text" name="guardian_name" id="guardian_name" required>
+
+            <label for="guardian_address"><i class="fas fa-map-marker-alt"></i> Guardian Address</label>
+            <input type="text" name="guardian_address" id="guardian_address" required>
+
+            <label for="guardian_location"><i class="fas fa-city"></i> Guardian Location</label>
+            <input type="text" name="guardian_location" id="guardian_location" required>
+
+            <label for="guardian_phone"><i class="fas fa-phone-alt"></i> Guardian Phone</label>
+            <input type="text" name="guardian_phone" id="guardian_phone" required>
+
+            <label for="guardian_email"><i class="fas fa-envelope"></i> Guardian Email</label>
+            <input type="email" name="guardian_email" id="guardian_email" required>
+
+            <label for="guardian_id_no"><i class="fas fa-id-card"></i> ID No</label>
+            <input type="text" name="guardian_id_no" id="guardian_id_no"><br><br>
+             <h4><p> <i class="fas fa-file"></i><u>Other Documents Required to Appplicant</u></p></h4>
+             <label for="visa"><i class="fas fa-briefcase"></i> Visa</label>
+            <input type="file" name="visa" id="visa">
+
+            <label for="bank_statement"><i class="fas fa-university"></i> Bank Statement</label>
+            <input type="file" name="bank_statement" id="bank_statement">
+
+
+        </div>
+
+        <button type="submit"><i class="fas fa-paper-plane"></i> Submit Application</button>
+    </form>
+</div>
+
+{% endblock %}

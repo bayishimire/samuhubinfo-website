@@ -1,0 +1,155 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- Font Awesome CDN for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    body {
+        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+    }
+
+    .job-info {
+        background: hsla(175, 94%, 51%, 0.60);
+        padding: 60px 220px;
+        border-radius: 35px;
+        max-width: 900px;
+        margin: 100px auto;
+        box-shadow: 0 4px 15px rgba(241, 19, 237, 0.3);
+    }
+
+    h1 {
+        color: #ff00d4;
+        text-align: center;
+        text-shadow: 1px 1px 3px #000;
+        margin-bottom: 30px;
+    }
+
+    .job-details p {
+        margin: 15px 0;
+        line-height: 1.6;
+        font-size: 1.1rem;
+    }
+
+    .job-details i {
+        margin-right: 8px;
+        color: #ff99e6;
+    }
+
+    .documents {
+        margin-top: 25px;
+    }
+
+    .documents strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #ff99e6;
+    }
+
+    .documents a {
+        display: block;
+        color: #ff00d4;
+        text-decoration: none;
+        margin-bottom: 5px;
+        padding-left: 5px;
+    }
+
+    .documents a:hover {
+        text-decoration: underline;
+    }
+
+    .apply-btn {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 12px 25px;
+        background-color: #ff00d4;
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+        text-align: center;
+    }
+
+    .apply-btn:hover {
+        background-color: #e600c7;
+    }
+
+    .login-message {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .login-message a {
+        color: #ff00d4;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="job-info">
+    <h1> <i class="fas fa-eye"></i> {{ job.title }} at {{ job.company }}</h1>
+
+    <div class="job-details">
+        <p><i class="fas fa-briefcase"></i>
+            <strong>Experience:</strong>
+            {% if job.experience_required == "YES" %}
+                Experience Required
+            {% else %}
+                No Experience Required
+            {% endif %}
+        </p>
+
+        <p><i class="fas fa-map-marker-alt"></i>
+            <strong>Location:</strong> {{ job.location }}
+        </p>
+
+        <p><i class="fas fa-info-circle"></i>
+            <strong>Description:</strong> {{ job.description }}
+        </p>
+
+        <p><i class="fas fa-list"></i>
+            <strong>Requirements:</strong> {{ job.requirements }}
+        </p>
+    </div>
+
+    {% if job.support_document or job.documents.all %}
+        <div class="documents">
+            <strong>Support Documents:</strong>
+
+            {% if job.support_document %}
+                {% if user.is_authenticated %}
+                    <a href="{% url 'download_support' job.id %}">
+                        <i class="fas fa-file-download"></i> {{ job.support_document.name|slice:"10:" }}
+                    </a>
+                {% else %}
+                    <p class="login-message">Please <a href="{% url 'login' %}">login</a> to download support document.</p>
+                {% endif %}
+            {% endif %}
+
+            {% for doc in job.documents.all %}
+                {% if user.is_authenticated %}
+                    <a href="{{ doc.file.url }}"><i class="fas fa-file-download"></i> {{ doc.file.name|slice:"10:" }}</a>
+                {% else %}
+                    <p class="login-message">Please <a href="{% url 'login' %}">login</a> to download support documents.</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'apply_job' job.id %}" class="apply-btn"><i class="fas fa-paper-plane"></i> Apply Now</a>
+    {% else %}
+        <p class="login-message">Please <a href="{% url 'login' %}">login</a> to apply.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "Login_System/base.html" %}
+{% block title %}About Us | SAMHUB{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<style>
+body {
+
+
+    
+    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.about-container {
+    max-width: 1200px;
+    margin: 90px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+/* Feature Card */
+.feature {
+    background: rgba(255,255,255,0.95);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transition: 0.3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-8px);
+}
+
+.feature h3 {
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    color: #444;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #1a73e8;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #0d47a1;
+}
+
+</style>
+
+<div class="about-container">
+
+    <!-- ABOUT -->
+    <div class="feature">
+        <h3><i class="fas fa-info-circle"></i> About SAMHUB</h3>
+        <p>
+            SAMHUB is a digital platform providing scholarships, IT support,
+            and career opportunities to students and professionals.
+        </p>
+    </div>
+    <!-- join what up group -->
+    <div class="feature">
+        <h3><i class="fas fa-headset"></i> Support & Offers</h3>
+        <p>Email: support@samhub.com</p>
+        <p>Phone: +250 788 000 000</p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'chat_room' %}" class="btn">
+                <i class="fas fa-envelope"></i> Join Whatsup
+            </a>
+        {% else %}
+            <a href="{% url 'chat_room' %}" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Join Whatsup
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- VISION -->
+    <div class="feature">
+        <h3><i class="fas fa-eye"></i> Our Vision</h3>
+        <p>
+            To become Africa’s leading educational and opportunity platform.
+        </p>
+    </div>
+
+    <!-- MISSION -->
+    <div class="feature">
+        <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+        <p>
+            Empower youth through technology, innovation, and reliable
+            digital services.
+        </p>
+    </div>
+
+    <!-- FUTURE -->
+    <div class="feature">
+        <h3><i class="fas fa-rocket"></i> Future Direction</h3>
+        <p>
+            Expanding into AI-based systems, student tracking platforms,
+            and global partnerships.
+        </p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'scholarship_list' %}" class="btn">
+                <i class="fas fa-graduation-cap"></i> Explore Scholarships
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Login to Explore
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- ADVERTISEMENT -->
+    <div class="feature">
+        <h3><i class="fas fa-bullhorn"></i> Promotions</h3>
+        <p>🎓 New 2026 Scholarships Now Open!</p>
+        <p>💻 Free IT Consultation for Students.</p>
+    </div>
+
+    <!-- GOVERNMENT POLICY -->
+    <div class="feature">
+        <h3><i class="fas fa-landmark"></i> Government Policy</h3>
+        <p>
+            We follow ICT regulations and national data protection laws
+            to ensure safe and legal digital services.
+        </p>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="feature">
+        <h3><i class="fas fa-user-shield"></i> Privacy Policy</h3>
+        <p>
+            Your data is securely stored and never shared without consent.
+            We ensure maximum confidentiality.
+        </p>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="feature">
+        <h3><i class="fas fa-headset"></i> Support & Offers</h3>
+        <p>Email: support@samhub.com</p>
+        <p>Phone: +250 788 000 000</p>
+
+        {% if user.is_authenticated %}
+            <a href="#" class="btn">
+                <i class="fas fa-envelope"></i> Contact Support
+            </a>
+        {% else %}
+            <a href="{% url 'Login' %}" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Login for Support
+            </a>
+        {% endif %}
+    </div>
+    
+    
+
+</div>
+
+{% endblock %}

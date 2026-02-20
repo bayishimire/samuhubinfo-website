@@ -1,0 +1,112 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #ff00d4;
+        text-shadow: 1px 1px 2px #000;
+        margin-bottom: 20px;
+    }
+
+    a.add-job {
+        display: inline-block;
+        margin: 15px auto;
+        background: #ff00d4;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a.add-job:hover {
+        background: #e600c7;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(0,0,0,0.5);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ff00d4;
+    }
+
+    th {
+        background: rgba(255,0,212,0.2);
+        color: #ff00d4;
+    }
+
+    tr:hover {
+        background: rgba(255,0,212,0.2);
+    }
+
+    a.view-applications {
+        color: #ff00d4;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a.view-applications:hover {
+        text-decoration: underline;
+    }
+
+    p.no-jobs {
+        text-align: center;
+        margin-top: 50px;
+        font-size: 18px;
+        color: #fff;
+    }
+</style>
+
+<h1>Admin Dashboard</h1>
+<a href="{% url 'add_job' %}" class="add-job">Add New Job</a>
+
+{% if jobs %}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Experience</th>
+            <th>Applicants</th>
+            <th>Actions</th>
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.title }}</td>
+            <td>{{ job.company }}</td>
+            <td>
+                {% if job.experience_required == "YES" %}
+                    Required
+                {% else %}
+                    Not Required
+                {% endif %}
+            </td>
+            <td>{{ job.applications.count }}</td>
+            <td>
+                <a href="{% url 'view_applications' job.id %}" class="view-applications">View Applications</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p class="no-jobs">No jobs posted yet.</p>
+{% endif %}
+
+{% endblock %}

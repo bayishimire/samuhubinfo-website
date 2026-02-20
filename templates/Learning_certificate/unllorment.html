@@ -1,0 +1,70 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Courses Preview{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="padding: 20px; font-family: 'Roboto', sans-serif; text-align:center;">
+
+    <h1 style="color:#ed05e2; margin-bottom: 20px;">
+        <i class="fas fa-eye-slash"></i> Courses Preview
+    </h1>
+    <p style="margin-bottom: 25px; color:#555;">
+        You are not enrolled yet. Browse courses below and enroll to access full content.
+    </p>
+
+    {% if courses %}
+        <div class="courses-grid" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+            {% for course in courses %}
+                <div class="course-card" style="
+                    flex: 1 1 300px; 
+                    border:1px solid #e0e0e0; 
+                    border-radius:12px; 
+                    padding:20px; 
+                    max-width:350px; 
+                    box-shadow:0 4px 8px rgba(0,0,0,0.05); 
+                    background-color:#fff;
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    
+                    <h3 style="margin-bottom:10px; color:#007bff;">
+                        <i class="fas fa-book-open"></i> {{ course.title }}
+                    </h3>
+                    <p style="margin-bottom:10px; color:#333;">{{ course.description|default:"No description available" }}</p>
+                    <p style="margin-bottom:10px;"><strong>Price:</strong> ${{ course.price }}</p>
+
+                    <div class="course-actions" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                        <a href="#" style="
+                            text-decoration:none; 
+                            background-color:#ff14b1; 
+                            color:#fff; 
+                            padding:8px 15px; 
+                            border-radius:6px;
+                            pointer-events:none; 
+                            opacity:0.7;
+                        ">
+                            View Details 🔒
+                        </a>
+
+                        <a href="{% url 'enroll_course' course.id %}" style="
+                            text-decoration:none; 
+                            background-color:#ff14b1; 
+                            color:#fff; 
+                            padding:8px 15px; 
+                            border-radius:6px;">
+                            Enroll Now
+                        </a>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No courses available at the moment.</p>
+    {% endif %}
+    <i class="fas fa-book-open"></i>
+    <a  href={% url 'course_list' %}>view here course but not enllorment to study it </a>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}

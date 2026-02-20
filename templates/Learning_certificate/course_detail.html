@@ -1,0 +1,31 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+<div style="padding:20px; text-align:center;">
+    <h1 style="color:#ed05e2;">{{ course.title }}</h1>
+    <p>{{ course.description|default:"No description available" }}</p>
+    <p><strong>Price:</strong> ${{ course.price }}</p>
+
+    <h2 style="color:#ed05e2; margin-top:20px;">Exams</h2>
+    {% if exams %}
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+            {% for exam in exams %}
+                <div style="border:1px solid #e0e0e0; padding:15px; border-radius:10px; max-width:250px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
+                    <h3>{{ exam.title }}</h3>
+                    <p>Total Marks: {{ exam.total_marks }}</p>
+                    <p>Passing Marks: {{ exam.passing_marks }}</p>
+                    <a href="{% url 'take_exam' exam.id %}" style="
+                        text-decoration:none; background-color:#ff14b1; color:#fff; padding:8px 15px; border-radius:6px;">
+                        Take Exam
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No exams available for this course yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

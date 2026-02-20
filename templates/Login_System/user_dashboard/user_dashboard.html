@@ -1,0 +1,122 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="padding: 20px; font-family: 'Roboto', sans-serif;">
+
+    <!-- Welcome Section -->
+    <h1 style="color: #ed05e2; text-align: center; margin-bottom: 20px;">
+        <i class="fas fa-user-circle"></i> Welcome, {{ request.user.username }}
+    </h1>
+
+    <!-- Courses Section -->
+    <section class="courses-section" style="margin-top: 30px;">
+        <h2 style="color: #ed05e2; text-align: center; margin-bottom: 25px;">
+            <i class="fas fa-book"></i> Your Courses & Progress
+        </h2>
+
+        {% if courses_info %}
+            <div class="courses-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                {% for info in courses_info %}
+                    <div class="course-card" style="
+                        flex: 1 1 300px; 
+                        border: 1px solid #e0e0e0; 
+                        border-radius: 12px; 
+                        padding: 20px; 
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+                        transition: transform 0.2s;
+                        background-color: #fff;
+                        max-width: 350px;
+                    " 
+                    onmouseover="this.style.transform='translateY(-5px)'" 
+                    onmouseout="this.style.transform='translateY(0)'">
+
+                        <!-- Course Title -->
+                        <h3 style="margin-bottom: 10px; color: #007bff;">
+                            <i class="fas fa-graduation-cap"></i> {{ info.course.title }}
+                        </h3>
+
+                        <!-- Description -->
+                        <p style="margin-bottom: 10px; color: #333;">
+                            {{ info.course.description|default:"No description available" }}
+                        </p>
+
+                        <!-- Progress -->
+                        <p style="margin-bottom: 10px;">
+                            <i class="fas fa-tasks"></i> <strong>Progress:</strong> {{ info.progress }}
+                        </p>
+
+                        <!-- Certificate -->
+                        <p style="margin-bottom: 15px;">
+                            <i class="fas fa-certificate"></i> <strong>Certificate:</strong>
+                            {% if info.certificate_status %}
+                                Issued ✅
+                            {% else %}
+                                Not issued 
+                            {% endif %}
+                        </p>
+
+                        <!-- Actions -->
+                        <div class="course-actions" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <a href="{% url 'course_detail' info.course.id %}" style="
+                                text-decoration: none; 
+                                background-color: #ff14b1; 
+                                color: #fff; 
+                                padding: 8px 15px; 
+                                border-radius: 6px; 
+                                font-weight: 500;
+                                transition: background 0.2s;
+                                display: flex; align-items: center; gap: 5px;
+                            " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
+                                <i class="fas fa-eye"></i> View Course
+                            </a>
+
+                            <a href="{% url 'exam_results' info.course.id %}" style="
+                                text-decoration: none; 
+                                background-color: #ff14b1; 
+                                color: #fff; 
+                                padding: 8px 15px; 
+                                border-radius: 6px; 
+                                font-weight: 500;
+                                transition: background 0.2s;
+                                display: flex; align-items: center; gap: 5px;
+                            " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
+                                <i class="fas fa-chart-line"></i> Results
+                            </a>
+
+                            {% if not info.certificate_status %}
+                                <a href="{% url 'certificate_view' info.course.id %}" style="
+                                    text-decoration: none; 
+                                    background-color: #ff14b1; 
+                                    color: #fff; 
+                                    padding: 8px 15px; 
+                                    border-radius: 6px; 
+                                    font-weight: 500;
+                                    transition: background 0.2s;
+                                    display: flex; align-items: center; gap: 5px;
+                                " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
+                                    <i class="fas fa-certificate"></i> Check Certificate
+                                </a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="margin-top: 20px; color: #555; text-align: center;">
+                You are not enrolled in any courses yet. 
+                <a href="{% url 'course_list' %}" style="color: #ed05e2; text-decoration: underline;">
+                    <i class="fas fa-search"></i> Browse courses
+                </a>
+            </p>
+        {% endif %}
+    </section>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Exam Results{% endblock %}
+
+{% block content %}
+<div style="padding:20px; text-align:center;">
+    <h1 style="color:#ed05e2;">Exam Results - {{ course.title }}</h1>
+
+    {% if results %}
+        <table style="margin:0 auto; border-collapse:collapse; width:80%;">
+            <tr style="background:#ff14b1; color:#fff;">
+                <th style="padding:10px;">Exam</th>
+                <th>Marks Obtained</th>
+                <th>Status</th>
+            </tr>
+            {% for result in results %}
+            <tr style="border-bottom:1px solid #ccc;">
+                <td style="padding:10px;">{{ result.exam.title }}</td>
+                <td>{{ result.marks_obtained }}</td>
+                <td>{% if result.passed %}Passed ✅{% else %}Failed ❌{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No exam results available.</p>
+    {% endif %}
+</div>
+{% endblock %}

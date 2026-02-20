@@ -1,0 +1,29 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}All Courses{% endblock %}
+
+{% block content %}
+<div style="padding:20px; text-align:center;">
+    <h1 style="color:#ed05e2;">Available Courses</h1>
+    {% if courses %}
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+            {% for course in courses %}
+                <div style="
+                    border:1px solid #e0e0e0; border-radius:12px; padding:20px; max-width:300px; 
+                    box-shadow:0 4px 8px rgba(0,0,0,0.05);">
+                    <h3 style="color:#007bff;">{{ course.title }}</h3>
+                    <p>{{ course.description|default:"No description available" }}</p>
+                    <p><strong>Price:</strong> ${{ course.price }}</p>
+                    <a href="{% url 'enroll_course' course.id %}" style="
+                        text-decoration:none; background-color:#ff14b1; color:#fff; padding:8px 15px; border-radius:6px;">
+                        Enroll
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No courses available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,451 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}SAMHUB{% endblock %}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:'Roboto', sans-serif;
+}
+
+/* BODY */
+body{
+    margin:0;
+    min-height:100vh;
+    background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+                url("{% static 'images/5.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* HEADER */
+header{
+    position: relative;
+    padding: 1rem 2rem;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+header h1{
+    margin:0;
+}
+
+/* USER PROFILE */
+.user-profile{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-profile img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.user-profile a{
+    color:white;
+    text-decoration:underline;
+}
+
+/* NAVIGATION */
+nav{
+    background-color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:0.5rem 0;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    gap:25px;
+    position: relative;
+}
+
+nav a{
+    text-decoration:none;
+    color:#4CAF50;
+    font-weight:500;
+    position: relative;
+    padding: 8px 5px;
+}
+
+nav a:hover{
+    color:#2e7d32;
+}
+
+/* DROPDOWN FIX */
+.nav-item{
+    position: relative;
+    padding-bottom: 5px; /* hover bridge */
+}
+
+.dropdown-menu{
+    display: none;
+    position: absolute;
+    top: calc(100% - 4px); /* FIXED */
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    z-index: 999;
+}
+
+.dropdown-menu a{
+    display:block;
+    padding:10px 15px;
+    color:#4CAF50;
+}
+
+.dropdown-menu a:hover{
+    background:#f1f1f1;
+}
+
+.nav-item:hover .dropdown-menu{
+    display:block;
+}
+
+/* CONTACT TOOLTIP FIX */
+.contact-link{
+    position: relative;
+    cursor:pointer;
+}
+
+.contact-info{
+    display:none;
+    position:absolute;
+    top: calc(100% - 5px); /* FIXED */
+    left:0;
+    background:white;
+    color:#333;
+    padding:15px;
+    border-radius:8px;
+    width:220px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    z-index:999;
+}
+
+.contact-link:hover .contact-info{
+    display:block;
+}
+
+.contact-item{
+    margin-bottom:8px;
+}
+
+.contact-item i{
+    margin-right:8px;
+    color:#4CAF50;
+}
+
+/* PAGE WRAPPER */
+.page-wrapper{
+    min-height: calc(100vh - 160px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:2rem;
+}
+
+/* FOOTER */
+footer{
+    background-color:#222;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+footer .social-icons{
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+footer .social-icons a{
+    color:#ff00d4;
+    text-decoration:none;
+}</head>
+/* Make parent relative so absolute child is positioned relative to it */
+.nav-tooltip, .contact-link {
+    position: relative; 
+    cursor: pointer;
+}
+
+/* Tooltip / dropdown style */
+.nav-tooltip-info, .contact-info {
+    display: none; /* hide by default */
+    position: absolute;
+    top: calc(100% - 5px); /* just below parent link, adjust if needed */
+    left: 0; /* align left edge */
+    background: white;
+    color: #333;
+    border: 1px solid #da0ac8;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 1000;
+    min-width: 220px; /* width of dropdown */
+}
+
+/* Show on hover */
+.nav-tooltip:hover .nav-tooltip-info,
+.contact-link:hover .contact-info {
+    display: block;
+}
+
+
+.popup-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border: 2px solid #ff00d4;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: none; /* hidden by default */
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.popup-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.popup-content h4 {
+    margin: 0 0 10px 0;
+    color: #ff00d4;
+}
+
+.popup-content p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.popup-buttons a {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+}
+
+.btn-join { background: #25D366; } /* WhatsApp green */
+.btn-join:hover { background: #1ebe5d; }
+
+.btn-ai { background: #4CAF50; } /* AI button green */
+.btn-ai:hover { background: #388e3c; }
+
+.popup-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+}
+
+.popup-close:hover { color: #ff00d4; }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const popup = document.getElementById('popup-notification');
+    const closeBtn = document.getElementById('popup-close');
+
+    if (popup) {
+        // Show popup immediately when page loads (after login)
+        popup.style.display = 'block';
+
+        // Close popup when clicking 'X'
+        closeBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+    }
+});
+
+</script>
+
+.contact-link i.fa-envelope,
+.contact-item i.fa-envelope {
+    color: #00cc66; /* green */
+}
+/* Target the main Contact icon AND text */
+.contact-link {
+    color: #4CAF50;; /* green for both icon and text */
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.contact-link > i.fa-envelope {
+    margin-right: 5px; /* spacing from text */
+}
+
+</style>
+
+{% block extra_css %}{% endblock %}
+</head>
+
+</head>
+
+<body>
+
+<header>
+    <h1>SAMHUB</h1>
+
+    {% if user.is_authenticated %}
+    <div class="user-profile">
+        <img src="{{ user.image.url }}" alt="{{ user.username }}">
+        <span>{{ user.username }}</span>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    {% else %}
+    <div class="user-profile">
+        <a href="{% url 'Login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+    </div>
+    {% endif %}
+</header>
+{% if user.is_authenticated %}
+<!-- Notification Popup -->
+<div id="popup-notification" class="popup-notification">
+    <div class="popup-content">
+        <h4>Join our WhatsApp Group!</h4>
+        <p>Stay updated with latest projects and announcements.</p>
+        <div class="popup-buttons">
+            <a href="#" target="_blank" class="btn-join">
+                <i class="fab fa-whatsapp"></i> Join WhatsApp
+            </a>
+            <a href="#" class="btn-ai">
+                <i class="fas fa-robot"></i> Try AI
+            </a>
+        </div>
+        <span id="popup-close" class="popup-close">&times;</span>
+    </div>
+</div>
+{% endif %}
+
+
+<nav>
+
+    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+    <a href="{% url 'about' %}"><i class="fas fa-info-circle"></i> About</a>
+
+    <!-- Projects -->
+    <div class="nav-item">
+        <a><i class="fas fa-project-diagram"></i> Projects <i class="fas fa-caret-down"></i></a>
+        <div class="dropdown-menu">
+            {% if user.is_authenticated %}
+                <a href="#"><i class="fas fa-folder-open"></i> View Projects</a>
+                <a href="#"><i class="fas fa-plus"></i> Add Project</a>
+            {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login First</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Scholarships -->
+    <div class="nav-item">
+        <a><i class="fas fa-graduation-cap"></i> Scholarships <i class="fas fa-caret-down"></i></a>
+        <div class="dropdown-menu">
+            {% if user.is_authenticated %}
+                <a href="{% url 'scholarship_list' %}"><i class="fas fa-list"></i> View Scholarships</a>
+            {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login to Access</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Jobs -->
+    <div class="nav-item">
+        <a><i class="fas fa-briefcase"></i> Jobs <i class="fas fa-caret-down"></i></a>
+        <div class="dropdown-menu">
+            {% if user.is_authenticated %}
+                <a href="{% url 'job_list' %}"><i class="fas fa-briefcase"></i> View Jobs</a>
+            {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login to Access</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="#"><i class="fas fa-bolt"></i> Updates</a>
+
+    <!-- Contact -->
+    <!-- Contact Dropdown -->
+<div class="contact-link">
+    <i class="fas fa-envelope"></i> Contact
+
+    <div class="contact-info">
+        <div class="contact-item">
+            {% if user.is_authenticated %}
+            <a href="{% url 'chat_room' %}" class="btn">
+                <i class="fas fa-envelope"></i> Join Whatsup
+            </a>
+            {% else %}
+            <a href="{% url 'chat_room' %}" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Join Whatsup
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="contact-item">
+            <i class="fas fa-phone"></i> +250 788 123 456
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-phone"></i> +250 788 123 456
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-envelope"></i> info@example.com
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-location-dot"></i> Kigali, Rwanda
+        </div>
+        <div class="contact-item">
+            <i class="fas fa-location-dot"></i> Nationality: Rwanda
+        </div>
+    </div>
+</div>
+
+    </a>
+
+</nav>
+
+<div class="page-wrapper">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    <p>&copy; 2026 SAMHUB. All rights reserved.</p>
+    <div class="social-icons">
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-telegram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% extends "Login_System/base.html" %}
+
+{% block content %}
+{% load static %}
+<title>Apply for {{ job.title }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    body{
+    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;}
+
+
+    body { font-family: 'Roboto', sans-serif; background-color: #f5f5f5; margin:0; padding:0; }
+    .container { max-width: 600px; margin:50px auto; background:white; padding:30px; border-radius:12px; box-shadow:0 6px 15px rgba(0,0,0,0.1); }
+    h2 { text-align:center; color:#4CAF50; margin-bottom:20px; }
+    .job-info { text-align:center; margin-bottom:30px; }
+    .job-info h3 { margin-bottom:10px; }
+    .job-info p { color:#555; }
+    form { display:flex; flex-direction:column; gap:15px; }
+    label { font-weight:600; color:#333; }
+    input[type="text"], input[type="email"], textarea, input[type="file"] {
+        width:100%; padding:12px 15px; border:1px solid #ccc; border-radius:8px; font-size:1rem;
+    }
+    textarea { resize:vertical; min-height:100px; }
+    .btn-submit { display:flex; align-items:center; justify-content:center; gap:8px; background-color:#4CAF50; color:white; padding:12px; border:none; border-radius:8px; font-size:1rem; cursor:pointer; transition: background 0.3s; }
+    .btn-submit:hover { background-color:#388E3C; }
+    .error { color:red; font-weight:bold; margin-bottom:15px; text-align:center; }
+    .back-link { display:block; text-align:center; margin-top:20px; color:#4CAF50; text-decoration:none; font-weight:500; }
+    .back-link:hover { text-decoration:underline; }
+    .icon-label i { margin-right:8px; color:#4CAF50; }
+</style>
+
+<div class="container">
+    <h2>Apply for Job</h2>
+
+    <div class="job-info">
+        <h3>{{ job.title }}</h3>
+        <p><i class="fas fa-briefcase"></i> Experience: {{ job.experience_required }}</p>
+        {% if job.image %}
+            <img src="{{ job.image.url }}" alt="{{ job.title }}" style="max-width:100%; border-radius:8px; margin-top:10px;">
+        {% endif %}
+    </div>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label class="icon-label" for="full_name"><i class="fas fa-user"></i> Full Name</label>
+        <input type="text" id="full_name" name="full_name" placeholder="Your full name" required>
+
+        <label class="icon-label" for="email"><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email address" required>
+
+        {% if job.require_cover_letter %}
+            <label class="icon-label" for="cover_letter"><i class="fas fa-file-alt"></i> Cover Letter <span style="color:red;">*</span></label>
+            <textarea id="cover_letter" name="cover_letter" placeholder="Write your cover letter" required></textarea>
+        {% else %}
+            <label class="icon-label" for="cover_letter"><i class="fas fa-file-alt"></i> Cover Letter (Optional)</label>
+            <textarea id="cover_letter" name="cover_letter" placeholder="Write your cover letter (optional)"></textarea>
+        {% endif %}
+
+        {% if job.require_resume %}
+            <label class="icon-label" for="resume"><i class="fas fa-file-upload"></i> Resume <span style="color:red;">*</span></label>
+            <input type="file" id="resume" name="resume" required>
+        {% else %}
+            <label class="icon-label" for="resume"><i class="fas fa-file-upload"></i> Resume (Optional)</label>
+            <input type="file" id="resume" name="resume">
+        {% endif %}
+
+        <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Submit Application</button>
+    </form>
+
+    <a href="{% url 'job_list' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Jobs</a>
+</div>
+{% endblock %}

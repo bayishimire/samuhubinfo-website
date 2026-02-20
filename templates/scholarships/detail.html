@@ -1,0 +1,179 @@
+{% extends 'Login_System/base.html' %}
+{% load static %}
+{% load tz %}
+{% block content %}
+
+<style>
+    body {
+        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+    }
+
+    .detail-wrapper {
+        background: rgba(247, 11, 247, 0.75);
+        min-height: 100vh;
+        padding: 10px;
+    }
+
+    .detail-card {
+        background: white;
+        max-width: 900px;
+        margin: auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(245, 13, 241, 0.3);
+    }
+
+    .scholarship-image img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: 40px;
+    }
+
+    .card-content h2 {
+        text-align: center;
+        color: #da0ac8;
+        margin-bottom: 10px;
+    }
+
+    .status-badge {
+        text-align: center;
+        font-weight: bold;
+        padding: 6px 14px;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 10px auto 25px;
+        color: white;
+        background: #da0ac8;
+    }
+
+    .info-section {
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .info-section i {
+        color: #da0ac8;
+        margin-right: 8px;
+    }
+
+    hr {
+        border: 1px solid #da0ac8;
+        margin: 25px 0;
+    }
+
+    .section-title {
+        color: #da0ac8;
+        margin-bottom: 10px;
+    }
+
+    .btn-custom {
+        display: inline-block;
+        padding: 10px 18px;
+        margin-right: 10px;
+        background: #da0ac8;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="detail-wrapper">
+
+    <div class="detail-card">
+
+        {% if scholarship.image %}
+        <div class="scholarship-image">
+            <img src="{{ scholarship.image.url }}" alt="{{ scholarship.title }}">
+        </div>
+        {% endif %}
+
+        <div class="card-content">
+
+            <h2>
+                <i class="fas fa-graduation-cap"></i>
+                {{ scholarship.title }}
+            </h2>
+
+            <div style="text-align:center;">
+                {% now "Y-m-d" as today %}
+                {% if scholarship.is_extended %}
+                    <span class="status-badge">
+                        <i class="fas fa-clock"></i> EXTENDED
+                    </span>
+                {% elif scholarship.deadline|date:"Y-m-d" >= today %}
+                    <span class="status-badge">
+                        <i class="fas fa-unlock"></i> OPEN
+                    </span>
+                {% else %}
+                    <span class="status-badge">
+                        <i class="fas fa-lock"></i> CLOSED
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="info-section">
+                <i class="fas fa-university"></i>
+                <strong>University:</strong> {{ scholarship.university }}
+            </div>
+
+            <div class="info-section">
+                <i class="fas fa-globe"></i>
+                <strong>Country:</strong> {{ scholarship.country }}
+            </div>
+
+            <div class="info-section">
+                <i class="fas fa-layer-group"></i>
+                <strong>Degree:</strong> {{ scholarship.degree_level }}
+            </div>
+
+            <div class="info-section">
+                <i class="fas fa-calendar-alt"></i>
+                <strong>Deadline:</strong> {{ scholarship.deadline }}
+            </div>
+
+            <hr>
+
+            <h3 class="section-title">
+                <i class="fas fa-align-left"></i> Description
+            </h3>
+            <p>{{ scholarship.description }}</p>
+
+            <h3 class="section-title">
+                <i class="fas fa-check-circle"></i> Eligibility
+            </h3>
+            <p>{{ scholarship.eligibility }}</p>
+
+            <!-- APPLY BUTTON 1: Always open -->
+            <div class="btn-group">
+                <a href="{% url 'apply_scholarship_manual' scholarship.pk %}" target="_blank" class="btn-custom">
+                    <i class="fas fa-paper-plane"></i> I SUPPORT TO Apply FILL FORM
+                </a>
+            </div>
+            <br>
+
+            <!-- APPLY BUTTON 2: Optional restriction -->
+            <div class="btn-group">
+                {% if user.is_authenticated and scholarship.is_open %}
+                    <a href="{{ scholarship.application_link }}" target="_blank" class="btn-custom">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                {% else %}
+                    <a href="javascript:void(0);" class="btn-custom" onclick="alert('Contact the TU support to enable application.');">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

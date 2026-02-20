@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SAMHUB AI</title>
+    <style>
+        body { font-family: Arial; }
+        .chat-box { width: 60%; margin: auto; }
+        .user { color: blue; }
+        .assistant { color: green; }
+    </style>
+</head>
+<body>
+
+<div class="chat-box">
+    <h2>SAMHUB AI Chat</h2>
+
+    <div id="messages">
+        {% for message in messages %}
+            <p class="{{ message.role }}">
+                <strong>{{ message.role|title }}:</strong>
+                {{ message.content }}
+            </p>
+        {% endfor %}
+    </div>
+
+    <input type="text" id="message" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+function sendMessage() {
+    let message = document.getElementById("message").value;
+
+    fetch("{% url 'send_ai_message' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("messages").innerHTML +=
+            "<p class='user'><strong>You:</strong> " + message + "</p>";
+
+        document.getElementById("messages").innerHTML +=
+            "<p class='assistant'><strong>AI:</strong> " + data.reply + "</p>";
+
+        document.getElementById("message").value = "";
+    });
+}
+</script>
+
+</body>
+</html>

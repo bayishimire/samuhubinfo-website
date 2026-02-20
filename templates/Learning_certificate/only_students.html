@@ -1,0 +1,52 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Access Restricted{% endblock %}
+
+{% block content %}
+<div style="
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('{% static "images/5.png" %}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+">
+
+    <div style="
+        {% comment %} background: rgba(44, 55, 65, 0.9); {% endcomment %}
+         background: rgba(51, 59, 66, 0.9);
+        padding: 200px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 2000px;
+        {% comment %} box-shadow: 0 6px 15px rgba(0,0,0,0.2); {% endcomment %}
+         box-shadow: 0 6px 15px rgba(237, 235, 235, 0.99);
+    ">
+        <h2 style="color: #07a482; margin-bottom: 15px;">
+            🚫 Access Denied require to be enllorment to course and admin approve
+        </h2><br>
+
+        <p style="color: #ef0fba ;font-size: 18px; margin-bottom: 25px;">
+            
+           <i class="fa fa-lock"></i> Sorry, only students are allowed to enroll in courses.
+        </p><br><br>
+
+
+        <a href="{% url 'home' %}"
+           style="
+               text-decoration: none;
+               background: #cc00ff;
+               color: white;
+               padding: 12px 24px;
+               border-radius: 6px;
+               font-weight: 500;
+           ">
+            Go Back to Dashboard
+        </a>
+    </div>
+
+</div>
+{% endblock %}

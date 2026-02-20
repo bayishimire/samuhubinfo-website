@@ -1,0 +1,22 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Take Exam{% endblock %}
+
+{% block content %}
+<div style="padding:20px; text-align:center;">
+    <h1 style="color:#ed05e2;">{{ exam.title }}</h1>
+    <p>Total Marks: {{ exam.total_marks }} | Passing: {{ exam.passing_marks }}</p>
+
+    <form method="post" style="margin-top:20px;">
+        {% csrf_token %}
+        <label>Enter Marks Obtained:</label>
+        <input type="number" name="marks" min="0" max="{{ exam.total_marks }}" required style="padding:8px; margin:10px 0;">
+        <br>
+        <button type="submit" style="
+            background-color:#ff14b1; color:#fff; padding:8px 15px; border:none; border-radius:6px;">
+            Submit Exam
+        </button>
+    </form>
+</div>
+{% endblock %}
