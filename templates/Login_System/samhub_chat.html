@@ -4,288 +4,255 @@
 {% block title %}SAMHUB Chat{% endblock %}
 
 {% block content %}
+
 <style>
-body {
+
+body{
+    background:#e5ddd5;
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-}
-#chat-container {
-    max-width: 9000px;
-    margin: 20px auto;
-    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    border-radius: 10px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    padding: 100px;
-}
-#send-box {
-    margin-bottom: 15px;
-    position: relative;
-}
-#send-box textarea {
-    width: 40%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #e5aad4;
-}
-#send-box input[type=file] {
-    margin-top: 5px;
-}
-#send-box button {
-    margin-top: 5px;
-    background: #da0ac8;
-    color: white;
-    padding: 0px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-/* Emoji Panel */
-#emoji-panel {
-    display: none;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    margin-top: 5px;
-    max-height: 150px;
-    overflow-y: auto;
-    background: #fff;
-    position: absolute;
-    width: 100%;
-    z-index: 10;
-}
-#emoji-panel button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+/* Chat main container */
+#chat-container{
+    max-width:900px;
+    margin:auto;
+    background:rgba(18, 17, 17, 0.6);
+    backdrop-filter: blur(10px);
+    padding:20px;
+    border-radius:15px;
+    min-height:100vh;
 }
 
-/* Message Bubbles */
-.message {
-    display: flex;
-    margin-bottom: 10px;
-    align-items: flex-end;
-}
-.message.user { justify-content: flex-end; }
-.message-content {
-    max-width: 65%;
-    padding: 10px;
-    border-radius: 15px;
-    background: #f0f0f0;
-    position: relative;
-}
-.message.user .message-content { background: #da0ac8; color: white; border-bottom-right-radius: 0; }
-.message.other .message-content { background: #e6e6e6; border-bottom-left-radius: 0; }
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.message.user .profile-pic { order: 2; margin-left: 10px; }
-.message.other .profile-pic { margin-right: 10px; }
-
-.message-content small {
-    font-size: 10px;
-    color: gray;
-    position: absolute;
-    bottom: -15px;
-    right: 10px;
+/* Send box */
+#send-box textarea{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    resize:none;
 }
 
-.message-images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 5px;
-}
-.message-images img {
-    max-width: 120px;
-    border-radius: 8px;
-    cursor: pointer;
+#send-box button{
+    background:#da0ac8;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-top:5px;
 }
 
-/* Replies */
-.replies {
-    margin-left: 50px;
-    margin-top: 5px;
-}
-.reply {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 5px;
-}
-.reply .message-content {
-    max-width: 80%;
-    padding: 5px 10px;
-    border-radius: 10px;
-    background: #e6f0ff;
-}
-.reply .profile-pic { width: 30px; height: 30px; margin-right: 5px; }
-
-/* Reply box */
-.reply-box {
-    display: flex;
-    margin-top: 5px;
-}
-.reply-box input {
-    flex: 1;
-    padding: 5px 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-.reply-box button {
-    background: #da0ac8;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    margin-left: 5px;
-    border-radius: 5px;
-    cursor: pointer;
+/* Emoji panel */
+#emoji-panel{
+    display:none;
+    position:absolute;
+    background:white;
+    border:1px solid #ddd;
+    padding:8px;
+    border-radius:8px;
+    max-height:150px;
+    overflow-y:auto;
 }
 
-/* Quoted message inside reply */
-.reply-quote {
-    background:#dcdcdc;
-    border-left:3px solid #da0ac8;
-    padding:3px 5px;
-    margin-bottom:3px;
-    border-radius:4px;
-    font-size:12px;
+#emoji-panel button{
+    border:none;
+    background:none;
+    font-size:18px;
+    cursor:pointer;
 }
+
+/* Messages */
+.message{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.message.user{
+    justify-content:flex-end;
+}
+
+.message-content{
+    max-width:65%;
+    padding:12px;
+    border-radius:15px;
+    background:#f1f1f1;
+    position:relative;
+}
+
+.message.user .message-content{
+    background:#da0ac8;
+    color:white;
+    border-bottom-right-radius:0;
+}
+
+.message.other .message-content{
+    background:#eee;
+    border-bottom-left-radius:0;
+}
+
+/* Profile image */
+.profile-pic{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* Image preview */
+#preview-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:8px;
+}
+
+#preview-container img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
 </style>
 
 <div id="chat-container">
-    <h2 style="text-align:center; color:#da0ac8;">💬<u><b> SAMHUB Chat Room</b></u></h2>
 
-    <div id="send-box">
-        <textarea id="message-input" rows="3" placeholder="Write your message..."></textarea>
-        <input type="file" id="message-images" multiple>
-        <button type="button" onclick="toggleEmojiPanel()"> 😃</button>
-        <button onclick="sendMessage()">Send</button>
+<h2 style="text-align:center;color:#da0ac8;">
+💬 SAMHUB Chat Room
+</h2>
 
-        <!-- Emoji Picker -->
-        <div id="emoji-panel">
-            <div style="display:flex; flex-wrap:wrap; gap:5px;">
-                <button type="button" onclick="insertEmoji('😃')">😃</button>
-                <button type="button" onclick="insertEmoji('😂')">😂</button>
-                <button type="button" onclick="insertEmoji('😍')">😍</button>
-                <button type="button" onclick="insertEmoji('😢')">😢</button>
-                <button type="button" onclick="insertEmoji('👍')">👍</button>
-                <button type="button" onclick="insertEmoji('🙏')">🙏</button>
-                <button type="button" onclick="insertEmoji('🎉')">🎉</button>
-                <button type="button" onclick="insertEmoji('💡')">💡</button>
-                <button type="button" onclick="insertEmoji('🔥')">🔥</button>
-                <button type="button" onclick="insertEmoji('🌟')">🌟</button>
-            </div>
-        </div>
-    </div>
+<!-- SEND BOX -->
+<div id="send-box" style="position:relative;">
 
-    <div id="chat-box">
-        {% for msg in messages %}
-        <div class="message {% if msg.user == request.user %}user{% else %}other{% endif %}" id="msg-{{ msg.id }}">
-            <img src="{{ msg.user.profile_pic.url|default:'/static/images/default_profile.png' }}" class="profile-pic">
-            <div class="message-content">
-                <strong>{{ msg.user.username }}</strong>
-                <p>{{ msg.content }}</p>
+<textarea id="message-input" rows="3" placeholder="Write message..."></textarea>
 
-                {% if msg.image %}
-<div class="message-images">
-    <img src="{{ msg.image.url }}" onclick="window.open(this.src)">
+<input type="file" id="message-images" multiple>
+
+<button onclick="toggleEmojiPanel()">😃 Emoji</button>
+<button onclick="sendMessage()">Send</button>
+
+<!-- Emoji panel -->
+<div id="emoji-panel">
+<button onclick="insertEmoji('😃')">😃</button>
+<button onclick="insertEmoji('😂')">😂</button>
+<button onclick="insertEmoji('😍')">😍</button>
+<button onclick="insertEmoji('🔥')">🔥</button>
+<button onclick="insertEmoji('🎉')">🎉</button>
 </div>
+
+</div>
+
+<!-- Image preview before upload -->
+<div id="preview-container"></div>
+
+<!-- CHAT BOX -->
+<div id="chat-box">
+
+{% for msg in messages %}
+
+<div class="message {% if msg.user == request.user %}user{% else %}other{% endif %}">
+
+<img src="{{ msg.user.profile_pic.url|default:'/static/images/default_profile.png' }}"
+class="profile-pic">
+
+<div class="message-content">
+
+<strong>{{ msg.user.username }}</strong>
+
+<p>{{ msg.content }}</p>
+
+{% if msg.image %}
+<img src="{{ msg.image.url }}" style="max-width:120px;border-radius:8px;margin-top:5px;"
+onclick="window.open(this.src)">
 {% endif %}
 
+<small style="font-size:10px;color:gray;">
+{{ msg.created_at|date:"H:i" }}
+</small>
 
-                <small>{{ msg.created_at|date:"H:i" }}</small>
+</div>
+</div>
 
-                <!-- Reply Box -->
-                <div class="reply-box" id="reply-box-{{ msg.id }}">
-                    <input type="text" id="reply-input-{{ msg.id }}" placeholder="Write a reply...">
-                    <button onclick="sendReply({{ msg.id }})">Reply</button>
-                </div>
+{% endfor %}
 
-                <!-- Replies -->
-                <div class="replies">
-                    {% for reply in msg.comments.all %}
-
-                    <div class="reply">
-                        <img src="{{ reply.user.profile_pic.url|default:'/static/images/default_profile.png' }}" class="profile-pic">
-                        <div class="message-content">
-                            <strong>{{ reply.user.username }}</strong>
-                            
-                            {% if reply.reply_to %}
-                            <!-- Quoted original message -->
-                            <div class="reply-quote">
-                                <strong>{{ reply.reply_to.user.username }}:</strong> {{ reply.reply_to.content }}
-                            </div>
-                            {% endif %}
-
-                            <p>{{ reply.content }}</p>
-                            <small>{{ reply.created_at|date:"H:i" }}</small>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+</div>
 </div>
 
 <script>
-// CSRF
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        document.cookie.split(';').forEach(cookie => {
-            cookie = cookie.trim();
-            if (cookie.startsWith(name + '=')) cookieValue = decodeURIComponent(cookie.split('=')[1]);
-        });
-    }
-    return cookieValue;
-}
-const csrftoken = getCookie('csrftoken');
 
-// Emoji
-function toggleEmojiPanel() {
-    const panel = document.getElementById('emoji-panel');
-    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+/* CSRF */
+function getCookie(name){
+let cookie=null;
+
+if(document.cookie && document.cookie !== ''){
+document.cookie.split(';').forEach(c=>{
+c=c.trim();
+if(c.startsWith(name+'=')){
+cookie=decodeURIComponent(c.split('=')[1]);
 }
-function insertEmoji(emoji) {
-    const textarea = document.getElementById('message-input');
-    textarea.value += emoji;
-    textarea.focus();
+});
 }
 
-// Send message
-function sendMessage() {
-    const content = document.getElementById('message-input').value;
-    const images = document.getElementById('message-images').files;
-    const formData = new FormData();
-    formData.append('content', content);
-    for (let i = 0; i < images.length; i++) formData.append('images', images[i]);
-
-    fetch("{% url 'send_message' %}", {
-        method: "POST",
-        headers: {"X-CSRFToken": csrftoken},
-        body: formData
-    }).then(r => r.json()).then(data => location.reload());
+return cookie;
 }
 
-// Send reply
-function sendReply(msgId) {
-    const content = document.getElementById('reply-input-' + msgId).value;
-    fetch("{% url 'send_comment' %}", {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded", "X-CSRFToken": csrftoken},
-        body: `message_id=${msgId}&content=${encodeURIComponent(content)}&reply_to=${msgId}`
-    }).then(r => r.json()).then(data => location.reload());
+const csrftoken=getCookie('csrftoken');
+
+/* Emoji */
+function toggleEmojiPanel(){
+let panel=document.getElementById("emoji-panel");
+panel.style.display = panel.style.display==="block" ? "none":"block";
 }
+
+function insertEmoji(e){
+document.getElementById("message-input").value+=e;
+}
+
+/* Image preview */
+document.getElementById("message-images").addEventListener("change",function(){
+
+let preview=document.getElementById("preview-container");
+preview.innerHTML="";
+
+Array.from(this.files).forEach(file=>{
+let reader=new FileReader();
+
+reader.onload=function(ev){
+let img=document.createElement("img");
+img.src=ev.target.result;
+preview.appendChild(img);
+};
+
+reader.readAsDataURL(file);
+});
+
+});
+
+/* Send message */
+function sendMessage(){
+
+let content=document.getElementById("message-input").value;
+let images=document.getElementById("message-images").files;
+
+let formData=new FormData();
+formData.append("content",content);
+
+for(let i=0;i<images.length;i++){
+formData.append("images",images[i]);
+}
+
+fetch("{% url 'send_message' %}",{
+method:"POST",
+headers:{"X-CSRFToken":csrftoken},
+body:formData
+})
+.then(r=>r.json())
+.then(()=>location.reload());
+
+}
+
 </script>
+
 {% endblock %}
