@@ -1,258 +1,302 @@
 {% extends 'Login_System/base.html' %}
 {% load static %}
 
-{% block title %}SAMHUB Chat{% endblock %}
+{% block title %}SAMHUB Community Chat{% endblock %}
+
+{% block extra_css %}
+<style>
+    #chat-wrapper {
+        max-width: 900px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        border: 1px solid var(--border);
+    }
+
+    #chat-header {
+        background: var(--primary);
+        color: white;
+        padding: 1.25rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #chat-box {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        background: #F3F4F6;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Message Bubbles */
+    .message {
+        display: flex;
+        gap: 1rem;
+        max-width: 80%;
+    }
+
+    .message.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .message img.profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .message-content {
+        background: white;
+        padding: 1rem;
+        border-radius: 1.25rem;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+    }
+
+    .message.user .message-content {
+        background: var(--primary);
+        color: white;
+        border-bottom-right-radius: 0.25rem;
+    }
+
+    .message.other .message-content {
+        background: white;
+        border-bottom-left-radius: 0.25rem;
+    }
+
+    /* Input Area */
+    #input-area {
+        padding: 1.5rem 2rem;
+        background: white;
+        border-top: 1px solid var(--border);
+    }
+
+    #message-input {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        resize: none;
+        outline: none;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+    }
+
+    #message-input:focus {
+        border-color: var(--primary);
+    }
+
+    .chat-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    #preview-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    #preview-container img {
+        width: 60px;
+        height: 60px;
+        border-radius: 0.5rem;
+        object-fit: cover;
+    }
+
+    .emoji-panel {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid var(--border);
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .emoji-panel button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+    }
+
+    .emoji-panel button:hover {
+        background: var(--primary-light);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<div id="chat-wrapper">
+    <div id="chat-header">
+        <h3 style="font-family: 'Outfit';"><i class="fas fa-comments"></i> Community Hub</h3>
+        <span style="font-size: 0.85rem; opacity: 0.8;">{{ messages|length }} participants</span>
+    </div>
 
-<style>
+    <div id="chat-box">
+        {% for msg in messages %}
+        <div class="message {% if msg.user == request.user %}user{% else %}other{% endif %}">
+            <img src="{{ msg.user.image.url|default:'static/images/default.png' }}" class="profile-pic">
+            <div class="message-content">
+                <div style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.25rem; opacity: 0.9;">
+                    {{ msg.user.username }}
+                </div>
+                <p>{{ msg.content }}</p>
+                {% if msg.images.all %}
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                    {% for img in msg.images.all %}
+                    <img src="{{ img.image.url }}" style="max-width: 200px; border-radius: 0.5rem; cursor: pointer;"
+                        onclick="window.open(this.src)">
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div style="font-size: 0.65rem; margin-top: 0.5rem; opacity: 0.7; text-align: right;">
+                    {{ msg.created_at|date:"H:i" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-body{
-    background:#e5ddd5;
-    font-family: Arial, sans-serif;
-}
+    <div id="input-area">
+        <div style="position: relative;">
+            <div class="emoji-panel" id="emoji-panel">
+                <button onclick="insertEmoji('😃')">😃</button>
+                <button onclick="insertEmoji('😂')">😂</button>
+                <button onclick="insertEmoji('😍')">😍</button>
+                <button onclick="insertEmoji('🔥')">🔥</button>
+                <button onclick="insertEmoji('🎉')">🎉</button>
+                <button onclick="insertEmoji('👍')">👍</button>
+                <button onclick="insertEmoji('🙌')">🙌</button>
+                <button onclick="insertEmoji('🚀')">🚀</button>
+                <button onclick="insertEmoji('💡')">💡</button>
+                <button onclick="insertEmoji('✅')">✅</button>
+            </div>
+            <textarea id="message-input" rows="2" placeholder="Type your message here..."></textarea>
+        </div>
 
-/* Chat main container */
-#chat-container{
-    max-width:900px;
-    margin:auto;
-    background:rgba(18, 17, 17, 0.6);
-    backdrop-filter: blur(10px);
-    padding:20px;
-    border-radius:15px;
-    min-height:100vh;
-}
+        <div id="preview-container"></div>
 
-/* Send box */
-#send-box textarea{
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #ddd;
-    resize:none;
-}
+        <div class="chat-actions">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <label for="message-images" style="cursor: pointer; color: var(--text-muted); font-size: 1.25rem;">
+                    <i class="fas fa-image"></i>
+                </label>
+                <input type="file" id="message-images" multiple style="display: none;">
 
-#send-box button{
-    background:#da0ac8;
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    margin-top:5px;
-}
+                <button onclick="toggleEmojiPanel()"
+                    style="background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer;">
+                    <i class="far fa-smile"></i>
+                </button>
+            </div>
 
-/* Emoji panel */
-#emoji-panel{
-    display:none;
-    position:absolute;
-    background:white;
-    border:1px solid #ddd;
-    padding:8px;
-    border-radius:8px;
-    max-height:150px;
-    overflow-y:auto;
-}
-
-#emoji-panel button{
-    border:none;
-    background:none;
-    font-size:18px;
-    cursor:pointer;
-}
-
-/* Messages */
-.message{
-    display:flex;
-    gap:10px;
-    margin-bottom:15px;
-}
-
-.message.user{
-    justify-content:flex-end;
-}
-
-.message-content{
-    max-width:65%;
-    padding:12px;
-    border-radius:15px;
-    background:#f1f1f1;
-    position:relative;
-}
-
-.message.user .message-content{
-    background:#da0ac8;
-    color:white;
-    border-bottom-right-radius:0;
-}
-
-.message.other .message-content{
-    background:#eee;
-    border-bottom-left-radius:0;
-}
-
-/* Profile image */
-.profile-pic{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-/* Image preview */
-#preview-container{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:8px;
-}
-
-#preview-container img{
-    width:80px;
-    height:80px;
-    object-fit:cover;
-    border-radius:8px;
-    border:1px solid #ddd;
-}
-
-</style>
-
-<div id="chat-container">
-
-<h2 style="text-align:center;color:#da0ac8;">
-💬 SAMHUB Chat Room
-</h2>
-
-<!-- SEND BOX -->
-<div id="send-box" style="position:relative;">
-
-<textarea id="message-input" rows="3" placeholder="Write message..."></textarea>
-
-<input type="file" id="message-images" multiple>
-
-<button onclick="toggleEmojiPanel()">😃 Emoji</button>
-<button onclick="sendMessage()">Send</button>
-
-<!-- Emoji panel -->
-<div id="emoji-panel">
-<button onclick="insertEmoji('😃')">😃</button>
-<button onclick="insertEmoji('😂')">😂</button>
-<button onclick="insertEmoji('😍')">😍</button>
-<button onclick="insertEmoji('🔥')">🔥</button>
-<button onclick="insertEmoji('🎉')">🎉</button>
-</div>
-
-</div>
-
-<!-- Image preview before upload -->
-<div id="preview-container"></div>
-
-<!-- CHAT BOX -->
-<div id="chat-box">
-
-{% for msg in messages %}
-
-<div class="message {% if msg.user == request.user %}user{% else %}other{% endif %}">
-
-<img src="{{ msg.user.profile_pic.url|default:'/static/images/default_profile.png' }}"
-class="profile-pic">
-
-<div class="message-content">
-
-<strong>{{ msg.user.username }}</strong>
-
-<p>{{ msg.content }}</p>
-
-{% if msg.image %}
-<img src="{{ msg.image.url }}" style="max-width:120px;border-radius:8px;margin-top:5px;"
-onclick="window.open(this.src)">
-{% endif %}
-
-<small style="font-size:10px;color:gray;">
-{{ msg.created_at|date:"H:i" }}
-</small>
-
-</div>
-</div>
-
-{% endfor %}
-
-</div>
+            <button onclick="sendMessage()" class="btn btn-primary">
+                Send Message <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
 </div>
 
 <script>
+    /* CSRF Setup */
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
 
-/* CSRF */
-function getCookie(name){
-let cookie=null;
+    /* Emoji Logic */
+    function toggleEmojiPanel() {
+        const panel = document.getElementById('emoji-panel');
+        panel.style.display = panel.style.display === 'grid' ? 'none' : 'grid';
+    }
 
-if(document.cookie && document.cookie !== ''){
-document.cookie.split(';').forEach(c=>{
-c=c.trim();
-if(c.startsWith(name+'=')){
-cookie=decodeURIComponent(c.split('=')[1]);
-}
-});
-}
+    function insertEmoji(emoji) {
+        const input = document.getElementById('message-input');
+        input.value += emoji;
+        input.focus();
+    }
 
-return cookie;
-}
+    /* Image Previews */
+    document.getElementById('message-images').addEventListener('change', function () {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
 
-const csrftoken=getCookie('csrftoken');
+    /* Send Message Logic */
+    function sendMessage() {
+        const content = document.getElementById('message-input').value;
+        const images = document.getElementById('message-images').files;
 
-/* Emoji */
-function toggleEmojiPanel(){
-let panel=document.getElementById("emoji-panel");
-panel.style.display = panel.style.display==="block" ? "none":"block";
-}
+        if (!content.trim() && images.length === 0) return;
 
-function insertEmoji(e){
-document.getElementById("message-input").value+=e;
-}
+        const formData = new FormData();
+        formData.append('content', content);
+        for (let i = 0; i < images.length; i++) {
+            formData.append('images', images[i]);
+        }
 
-/* Image preview */
-document.getElementById("message-images").addEventListener("change",function(){
+        fetch("{% url 'send_message' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error sending message');
+                }
+            });
+    }
 
-let preview=document.getElementById("preview-container");
-preview.innerHTML="";
-
-Array.from(this.files).forEach(file=>{
-let reader=new FileReader();
-
-reader.onload=function(ev){
-let img=document.createElement("img");
-img.src=ev.target.result;
-preview.appendChild(img);
-};
-
-reader.readAsDataURL(file);
-});
-
-});
-
-/* Send message */
-function sendMessage(){
-
-let content=document.getElementById("message-input").value;
-let images=document.getElementById("message-images").files;
-
-let formData=new FormData();
-formData.append("content",content);
-
-for(let i=0;i<images.length;i++){
-formData.append("images",images[i]);
-}
-
-fetch("{% url 'send_message' %}",{
-method:"POST",
-headers:{"X-CSRFToken":csrftoken},
-body:formData
-})
-.then(r=>r.json())
-.then(()=>location.reload());
-
-}
-
+    // Auto-scroll to bottom on load
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
 </script>
-
 {% endblock %}

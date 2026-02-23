@@ -1,53 +1,102 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block title %}Welcome to SAMHUB{% endblock %}
+{% block title %}Explore SAMHUB - Learning & Careers{% endblock %}
 
 {% block extra_css %}
 <style>
-    .hero-section {
+    /* Hero Section */
+    .hero {
         position: relative;
-        padding: 6rem 1rem;
-        background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent),
-            radial-gradient(circle at bottom left, rgba(244, 63, 94, 0.05), transparent);
         text-align: center;
+        padding: 5rem 2rem;
+        background: radial-gradient(circle at top right, rgba(76, 175, 80, 0.1), transparent),
+            linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)),
+            url('https://images.unsplash.com/photo-1581091215365-7b4d1eeb03c8?fit=crop&w=1500&q=80') no-repeat center center/cover;
+        color: white;
         border-radius: var(--radius-lg);
+        margin-bottom: 3rem;
         overflow: hidden;
-        margin-bottom: 4rem;
     }
 
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        max-width: 800px;
-        margin: 0 auto;
-        animation: fadeIn 0.8s ease-out;
+    .hero h2 {
+        font-size: 3rem;
+        font-family: 'Outfit', sans-serif;
+        margin-bottom: 1rem;
+        animation: fadeInDown 0.8s ease-out;
     }
 
-    .hero-badge {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: rgba(99, 102, 241, 0.1);
-        color: var(--primary);
-        border-radius: 2rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-    }
-
-    .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-        background: linear-gradient(135deg, var(--text-main) 30%, var(--primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
+    .hero p {
         font-size: 1.25rem;
-        color: var(--text-muted);
-        margin-bottom: 2.5rem;
+        max-width: 700px;
+        margin: 0 auto 2.5rem;
+        opacity: 0.9;
+    }
+
+    /* Scrolling Ticker for Opportunities */
+    .ticker-wrapper {
+        margin-top: 2rem;
+        width: 100%;
+        overflow: hidden;
+        padding: 1rem 0;
+    }
+
+    .ticker {
+        display: flex;
+        gap: 2rem;
+        will-change: transform;
+    }
+
+    /* Advanced Flip Card */
+    .ticker-card {
+        perspective: 1000px;
+        min-width: 380px;
+        height: 280px;
+    }
+
+    .ticker-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+        cursor: pointer;
+    }
+
+    .ticker-card:hover .ticker-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .ticker-card-front,
+    .ticker-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+    }
+
+    .ticker-card-front {
+        background: white;
+        color: var(--text-main);
+        border: 1px solid var(--border);
+    }
+
+    .ticker-card-front h3 {
+        color: var(--primary);
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .ticker-card-back {
+        background: var(--primary);
+        color: white;
+        transform: rotateY(180deg);
     }
 
     /* Features Grid */
@@ -64,232 +113,151 @@
     }
 
     .feature-icon {
-        width: 3rem;
-        height: 3rem;
-        background: var(--primary);
-        color: white;
-        border-radius: 0.75rem;
+        width: 3.5rem;
+        height: 3.5rem;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
     }
 
-    /* Interactive Stats/Cards */
-    .stats-section {
-        background: var(--text-main);
-        color: white;
-        padding: 4rem 2rem;
-        border-radius: var(--radius-lg);
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 3rem;
-        text-align: center;
-        margin-bottom: 6rem;
-    }
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
 
-    .stat-item h3 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        color: var(--accent);
-    }
-
-    .stat-item p {
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 500;
-    }
-
-    /* Ticker Section - Reimagined */
-    .ticker-container {
-        margin-bottom: 6rem;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 2rem;
-    }
-
-    .ticker-scroll {
-        display: flex;
-        gap: 2rem;
-        overflow-x: auto;
-        padding: 1rem 0 2rem;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .ticker-scroll::-webkit-scrollbar {
-        display: none;
-    }
-
-    .scroll-card {
-        min-width: 350px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        transition: all 0.3s;
-    }
-
-    .scroll-card:hover {
-        border-color: var(--primary);
-        transform: translateY(-5px);
-    }
-
-    .tag {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        margin-bottom: 1rem;
-        display: inline-block;
-    }
-
-    .tag-scholarship {
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--accent);
-    }
-
-    .tag-job {
-        background: rgba(99, 102, 241, 0.1);
-        color: var(--primary);
-    }
-
-    .tag-update {
-        background: rgba(244, 63, 94, 0.1);
-        color: var(--secondary);
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="hero-section">
-    <div class="hero-content">
-        <span class="hero-badge">🚀 Empowering Rwandan Talent</span>
-        <h1 class="hero-title">Step Into the Future of Learning & Career</h1>
-        <p class="hero-subtitle">Access global scholarships, local job opportunities, and collaborative projects all in
-            one place. Your journey to excellence starts here.</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-            {% if not user.is_authenticated %}
-            <a href="{% url 'register' %}" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1rem;">Join for
-                Free</a>
-            <a href="{% url 'about' %}" class="btn btn-ghost" style="padding: 1rem 2rem; font-size: 1rem;">Learn
-                More</a>
-            {% else %}
-            <a href="{% url 'scholarship_list' %}" class="btn btn-primary"
-                style="padding: 1rem 2rem; font-size: 1rem;">Browse Scholarships</a>
-            <a href="{% url 'job_list' %}" class="btn btn-ghost" style="padding: 1rem 2rem; font-size: 1rem;">Explore
-                Jobs</a>
-            {% endif %}
+<section class="hero shadow-lg">
+    <h2>Explore. Learn. Build.</h2>
+    <p>Join Rwanda's fastest-growing digital hub. Connect with international scholarships, local tech jobs, and
+        collaborative projects.</p>
+
+    <div style="display: flex; gap: 1rem; justify-content: center; z-index: 10;">
+        <a href="{% url 'scholarship_list' %}" class="btn btn-primary"
+            style="background: white; color: var(--primary);">
+            <i class="fas fa-graduation-cap"></i> Scholarships
+        </a>
+        <a href="{% url 'job_list' %}" class="btn btn-ghost"
+            style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">
+            <i class="fas fa-briefcase"></i> View Jobs
+        </a>
+    </div>
+
+    <!-- Seamles Ticker -->
+    <div class="ticker-wrapper">
+        <div class="ticker" id="ticker">
+            <!-- Card 1 -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>🎓 Global Scholarships</h3>
+                        <p style="color: var(--text-muted);">Discover fully funded opportunities for 2026/2027 academic
+                            year.</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>Study Abroad</h3>
+                        <p style="margin-bottom: 1.5rem;">Access tuition-free master's and PhD programs in Europe, USA,
+                            and Asia.</p>
+                        <a href="{% url 'scholarship_list' %}" class="btn btn-primary"
+                            style="background: white; color: var(--primary); align-self: flex-start;">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>💼 Tech Careers</h3>
+                        <p style="color: var(--text-muted);">Find senior and junior developer roles in Kigali and
+                            Remote.</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>Hiring Now</h3>
+                        <p style="margin-bottom: 1.5rem;">Join top engineering teams. Roles in AI, Web, and Mobile dev
+                            available.</p>
+                        <a href="{% url 'job_list' %}" class="btn btn-primary"
+                            style="background: white; color: var(--primary); align-self: flex-start;">View Jobs</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="ticker-card">
+                <div class="ticker-card-inner">
+                    <div class="ticker-card-front">
+                        <h3>🚀 Python Mastery</h3>
+                        <p style="color: var(--text-muted);">New advanced Python OOP and AI tracks just released.</p>
+                    </div>
+                    <div class="ticker-card-back">
+                        <h3>Learn Coding</h3>
+                        <p style="margin-bottom: 1.5rem;">Interactive workshops and certificates to boost your
+                            professional portfolio.</p>
+                        <a href="#" class="btn btn-primary"
+                            style="background: white; color: var(--primary); align-self: flex-start;">Start Learning</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<div class="section-header">
-    <div>
-        <h2 style="font-size: 2rem;">Trending Now</h2>
-        <p style="color: var(--text-muted);">Stay ahead with the latest opportunities</p>
-    </div>
-    <a href="#" class="btn btn-ghost">View All <i class="fas fa-arrow-right"></i></a>
+<div style="text-align: center; margin-bottom: 3rem;">
+    <h2 style="font-size: 2.25rem; font-family: 'Outfit';">Our Core Ecosystem</h2>
+    <p style="color: var(--text-muted);">Everything you need to succeed in the Rwandan tech landscape</p>
 </div>
 
-<div class="ticker-scroll">
-    <!-- Scholarship -->
-    <div class="scroll-card card">
-        <span class="tag tag-scholarship">Scholarship</span>
-        <h3>Erasmus Mundus 2026</h3>
-        <p style="margin: 1rem 0; color: var(--text-muted);">Fully funded postgraduate opportunities for Rwandan
-            students to study in Europe.</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
-            <span style="font-weight: 600; font-size: 0.85rem;"><i class="fas fa-calendar"></i> Deadline: March
-                30</span>
-            <a href="{% url 'scholarship_list' %}" class="btn btn-primary btn-sm">Apply</a>
-        </div>
-    </div>
-
-    <!-- Job -->
-    <div class="scroll-card card">
-        <span class="tag tag-job">Job Opportunity</span>
-        <h3>Senior Fullstack Dev</h3>
-        <p style="margin: 1rem 0; color: var(--text-muted);">Kigali-based tech startup looking for experienced
-            developers to lead the engineering team.</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
-            <span style="font-weight: 600; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> Kigali /
-                Remote</span>
-            <a href="{% url 'job_list' %}" class="btn btn-primary btn-sm">More Details</a>
-        </div>
-    </div>
-
-    <!-- Project -->
-    <div class="scroll-card card">
-        <span class="tag tag-update">Update</span>
-        <h3>Python for AI Workshop</h3>
-        <p style="margin: 1rem 0; color: var(--text-muted);">Join our weekly deep-dive into AI development with Python.
-            Hands-on coding sessions.</p>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
-            <span style="font-weight: 600; font-size: 0.85rem;"><i class="fas fa-users"></i> 150+ Joined</span>
-            <a href="#" class="btn btn-primary btn-sm">Join</a>
-        </div>
-    </div>
-</div>
-
-<div class="features-grid">
+<section class="features-grid">
     <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
-        <h3>Curated Scholarships</h3>
-        <p style="color: var(--text-muted);">We handpick the best global and local scholarship opportunities tailored
-            for Rwandan students.</p>
+        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Interactive Learning</h3>
+        <p style="color: var(--text-muted);">Hands-on tutorials and coding exercises tailored for the modern developer.
+        </p>
+        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Get Started</a>
     </div>
-    <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-briefcase"></i></div>
-        <h3>Career Growth</h3>
-        <p style="color: var(--text-muted);">Direct connection to high-growth startups and established companies looking
-            for your skills.</p>
-    </div>
-    <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-code"></i></div>
-        <h3>Collaborative Projects</h3>
-        <p style="color: var(--text-muted);">Build your portfolio by working on real-world projects with other community
-            members.</p>
-    </div>
-</div>
 
-<div class="stats-section">
-    <div class="stat-item">
-        <h3>5k+</h3>
-        <p>Active Students</p>
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <h3>Collaboration</h3>
+        <p style="color: var(--text-muted);">Work on real-world projects with peers and mentors to gain practical
+            experience.</p>
+        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Project</a>
     </div>
-    <div class="stat-item">
-        <h3>200+</h3>
-        <p>Scholarships Listed</p>
-    </div>
-    <div class="stat-item">
-        <h3>150+</h3>
-        <p>Partner Companies</p>
-    </div>
-    <div class="stat-item">
-        <h3>1.2k</h3>
-        <p>Jobs Secured</p>
-    </div>
-</div>
 
-<section
-    style="text-align: center; padding: 6rem 1rem; background: var(--surface); border-radius: var(--radius-lg); margin-bottom: 6rem;">
-    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Ready to start your journey?</h2>
-    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2.5rem;">Join thousands of Rwandan students and
-        professionals who are already building their future on SAMHUB.</p>
-    {% if not user.is_authenticated %}
-    <a href="{% url 'register' %}" class="btn btn-primary"
-        style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 2rem;">Create Your Account</a>
-    {% else %}
-    <a href="{% url 'dashboard_admin' %}" class="btn btn-primary"
-        style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 2rem;">Go to Dashboard</a>
-    {% endif %}
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Community</h3>
+        <p style="color: var(--text-muted);">Connect with a supportive community of learners and professionals in
+            Kigali.</p>
+        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
+    </div>
 </section>
 
+<script>
+    const ticker = document.getElementById('ticker');
+    // Duplicate cards for seamless loop
+    ticker.innerHTML += ticker.innerHTML;
+
+    let scrollPos = 0;
+    function animateTicker() {
+        scrollPos += 0.8; // Smooth slow scroll
+        if (scrollPos >= ticker.scrollWidth / 2) scrollPos = 0;
+        ticker.style.transform = `translateX(${-scrollPos}px)`;
+        requestAnimationFrame(animateTicker);
+    }
+    animateTicker();
+</script>
 {% endblock %}

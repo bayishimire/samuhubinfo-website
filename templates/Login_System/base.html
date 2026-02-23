@@ -1,194 +1,161 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SAMHUB{% endblock %}</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    
-    <style>
-        /* Dropdown logic for the modernized nav */
-        .nav-item-dropdown {
-            position: relative;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            min-width: 200px;
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            z-index: 100;
-        }
-        .nav-item-dropdown:hover .dropdown-content {
-            display: block;
-        }
-        .dropdown-content a {
-            display: flex;
-            padding: 0.75rem 1rem;
-            color: var(--text-main);
-            font-size: 0.9rem;
-        }
-        .dropdown-content a:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-        }
-        
-        /* Popup show animation */
-        .popup-notification {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            transform: translateY(200%);
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 10000;
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            max-width: 320px;
-        }
-        .popup-notification.show {
-            transform: translateY(0);
-        }
-        .popup-close {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-    </style>
-    
+
+    <!-- Advanced CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
-<header>
-    <a href="{% url 'home' %}" class="logo">SAMHUB</a>
+    <header>
+        <h1>SAMHUB</h1>
 
-    <div class="user-actions">
-        {% if user.is_authenticated %}
-        <div class="user-profile">
-            <img src="{{ user.image.url }}" alt="{{ user.username }}">
-            <span>{{ user.username }}</span>
-            <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
-        </div>
-        {% else %}
-        <div class="user-profile">
-            <a href="{% url 'Login' %}" class="btn btn-ghost">Login</a>
-            <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
-        </div>
-        {% endif %}
-    </div>
-</header>
-
-<nav>
-    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-        <i class="fas fa-home"></i> Home
-    </a>
-    <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
-        <i class="fas fa-info-circle"></i> About
-    </a>
-
-    <!-- Dropdown: Projects -->
-    <div class="nav-item-dropdown">
-        <a href="#" class="nav-link"><i class="fas fa-project-diagram"></i> Projects <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-        <div class="dropdown-content glass">
+        <div class="user-actions">
             {% if user.is_authenticated %}
-                <a href="#"><i class="fas fa-folder-open"></i> View Projects</a>
-                <a href="#"><i class="fas fa-plus"></i> Add Project</a>
+            <div class="user-profile">
+                <img src="{{ user.image.url }}" alt="{{ user.username }}">
+                <span style="font-weight: 600;">{{ user.username }}</span>
+                <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
             {% else %}
-                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login First</a>
+            <div class="user-profile">
+                <a href="{% url 'Login' %}">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary"
+                    style="color: white; padding: 0.5rem 1.25rem;">Register</a>
+            </div>
             {% endif %}
         </div>
-    </div>
+    </header>
 
-    <!-- Scholarships -->
-    <a href="{% if user.is_authenticated %}{% url 'scholarship_list' %}{% else %}{% url 'Login' %}{% endif %}">
-        <i class="fas fa-graduation-cap"></i> Scholarships
-    </a>
+    <nav>
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+            <i class="fas fa-info-circle"></i> About
+        </a>
 
-    <!-- Jobs -->
-    <a href="{% if user.is_authenticated %}{% url 'job_list' %}{% else %}{% url 'Login' %}{% endif %}">
-        <i class="fas fa-briefcase"></i> Jobs
-    </a>
-
-    <a href="#"><i class="fas fa-bolt"></i> Updates</a>
-    
-    <!-- Contact -->
-    <div class="nav-item-dropdown">
-        <a href="#" class="nav-link"><i class="fas fa-envelope"></i> Contact <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-        <div class="dropdown-content glass">
-            <a href="{% url 'chat_room' %}"><i class="fab fa-whatsapp"></i> Join WhatsApp</a>
-            <a href="tel:+250788123456"><i class="fas fa-phone"></i> +250 788 123 456</a>
-            <a href="mailto:info@example.com"><i class="fas fa-envelope"></i> info@example.com</a>
+        <!-- Projects Dropdown -->
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-project-diagram"></i> Projects <i class="fas fa-caret-down"></i></a>
+            <div class="dropdown-menu">
+                {% if user.is_authenticated %}
+                <a href="#"><i class="fas fa-folder-open"></i> View Projects</a>
+                <a href="#"><i class="fas fa-plus"></i> Add Project</a>
+                {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login First</a>
+                {% endif %}
+            </div>
         </div>
-    </div>
-</nav>
 
-{% if user.is_authenticated %}
-<div id="popup-notification" class="popup-notification glass">
-    <div class="popup-content">
-        <h4 style="margin-bottom: 0.5rem; color: var(--primary);">Stay Connected!</h4>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Join our community for the latest updates and collaboration.</p>
-        <div class="popup-buttons" style="display: flex; gap: 0.5rem;">
-            <a href="#" target="_blank" class="btn btn-primary" style="flex: 1;">
+        <!-- Scholarships Dropdown -->
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-graduation-cap"></i> Scholarships <i class="fas fa-caret-down"></i></a>
+            <div class="dropdown-menu">
+                {% if user.is_authenticated %}
+                <a href="{% url 'scholarship_list' %}"><i class="fas fa-list"></i> View Scholarships</a>
+                {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login to Access</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Jobs Dropdown -->
+        <div class="nav-item">
+            <a href="#"><i class="fas fa-briefcase"></i> Jobs <i class="fas fa-caret-down"></i></a>
+            <div class="dropdown-menu">
+                {% if user.is_authenticated %}
+                <a href="{% url 'job_list' %}"><i class="fas fa-briefcase"></i> View Jobs</a>
+                {% else %}
+                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login to Access</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="#"><i class="fas fa-bolt"></i> Updates</a>
+
+        <!-- Contact Dropdown -->
+        <div class="nav-item contact-link">
+            <a href="#"><i class="fas fa-envelope"></i> Contact <i class="fas fa-caret-down"></i></a>
+            <div class="contact-info">
+                <a href="{% url 'chat_room' %}"><i class="fab fa-whatsapp"></i> Join WhatsApp</a>
+                <a href="tel:+250788123456"><i class="fas fa-phone"></i> +250 788 123 456</a>
+                <a href="mailto:info@example.com"><i class="fas fa-envelope"></i> info@example.com</a>
+                <a href="#"><i class="fas fa-location-dot"></i> Kigali, Rwanda</a>
+            </div>
+        </div>
+    </nav>
+
+    {% if user.is_authenticated %}
+    <!-- Notification Popup -->
+    <div id="popup-notification" class="popup-notification">
+        <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">Join our Community!</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Stay updated with the latest
+            projects and global announcements.</p>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="#" target="_blank" class="btn btn-primary"
+                style="flex: 1; background: var(--accent); border-radius: 0.5rem;">
                 <i class="fab fa-whatsapp"></i> WhatsApp
             </a>
-            <a href="#" class="btn btn-ghost" style="flex: 1;">
-                <i class="fas fa-robot"></i> AI Chat
+            <a href="#" class="btn btn-ghost" style="flex: 1; border-radius: 0.5rem;">
+                <i class="fas fa-robot"></i> Try AI
             </a>
         </div>
         <span id="popup-close" class="popup-close"><i class="fas fa-times"></i></span>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+    <main class="page-wrapper">
+        {% block content %}{% endblock %}
+    </main>
 
-<footer style="background: var(--surface); border-top: 1px solid var(--border); padding: 3rem 2rem; margin-top: auto;">
-    <div style="max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
-        <p style="color: var(--text-muted);">&copy; 2026 SAMHUB. All rights reserved.</p>
-        <div class="social-icons" style="display: flex; gap: 1.5rem;">
-            <a href="#" style="color: var(--text-muted); font-size: 1.25rem; transition: color 0.2s;"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" style="color: var(--text-muted); font-size: 1.25rem; transition: color 0.2s;"><i class="fab fa-twitter"></i></a>
-            <a href="#" style="color: var(--text-muted); font-size: 1.25rem; transition: color 0.2s;"><i class="fab fa-instagram"></i></a>
-            <a href="#" style="color: var(--text-muted); font-size: 1.25rem; transition: color 0.2s;"><i class="fab fa-telegram"></i></a>
+    <footer>
+        <p>&copy; 2026 SAMHUB. All rights reserved.</p>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-telegram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
         </div>
-    </div>
-</footer>
+    </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const popup = document.getElementById('popup-notification');
-    const closeBtn = document.getElementById('popup-close');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const popup = document.getElementById('popup-notification');
+            const closeBtn = document.getElementById('popup-close');
 
-    if (popup) {
-        setTimeout(() => {
-            popup.classList.add('show');
-        }, 1000);
+            if (popup) {
+                // Show popup after a short delay
+                setTimeout(() => {
+                    popup.style.display = 'block';
+                }, 1500);
 
-        closeBtn.addEventListener('click', () => {
-            popup.classList.remove('show');
+                closeBtn.addEventListener('click', () => {
+                    popup.style.display = 'none';
+                });
+            }
         });
-    }
-});
-</script>
+    </script>
 
 </body>
+
 </html>
