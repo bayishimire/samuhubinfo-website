@@ -21,6 +21,7 @@ class User(AbstractUser):
     user_type = models.CharField(max_length=50, choices=User_type, default='User')
     is_approved = models.BooleanField(default=False)
     is_disabled = models.BooleanField(default=False)
+    first_login = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -29,3 +30,26 @@ class User(AbstractUser):
         return f"{self.username} ({self.user_type}) - {self.email}"
     
     #add here model of chat box
+
+
+class OTP(models.Model):
+    """One-time codes for verifying email/first-login.
+
+    Stores a short numeric code and a UUID token that can be used as a link.
+    """
+    import uuid
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otps')
+    code = models.CharField(max_length=10)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used = models.BooleanField(default=False)
+    purpose = models.CharField(max_length=30, default='verification')
+
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() >= self.expires_at
+
+    def mark_used(self):
+        self.used = True
+        self.save()

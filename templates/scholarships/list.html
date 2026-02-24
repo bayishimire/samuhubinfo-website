@@ -2,208 +2,269 @@
 {% block title %}Scholarships | SAMHUB{% endblock %}
 {% load static %}
 
-{% block content %}
-
+{% block extra_css %}
 <style>
-    body {
-        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-        background-size: cover;
-        margin: 0;
-        padding: 0;
-    }
-
     .scholarship-wrapper {
-        min-height: 100vh;
-        padding: 60px 20px;
+        padding: 4rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
-    .page-title {
+    .page-header {
         text-align: center;
-        color: #da0ac8;
-        font-size: 34px;
-        font-weight: bold;
-        margin-bottom: 50px;
+        margin-bottom: 4rem;
+        animation: fadeIn 0.8s ease-out;
     }
 
-    .scholarship-container {
+    .page-header h2 {
+        font-family: 'Outfit';
+        font-size: 3rem;
+        color: var(--text-main);
+        margin-bottom: 1rem;
+    }
+
+    .scholarship-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: auto;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 2.5rem;
     }
 
-    .card {
-        background: #ffffff;
-        border-radius: 12px;
+    .scholarship-card {
+        background: white;
+        border-radius: var(--radius-lg);
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        display: flex;
+        flex-direction: column;
         position: relative;
     }
 
-    .card:hover {
-        transform: translateY(-6px);
+    .scholarship-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
     }
 
-    .card img {
+    .card-image-wrapper {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-image-wrapper img {
         width: 100%;
-        height: 200px;
+        height: 100%;
         object-fit: cover;
+        transition: transform 0.5s;
     }
 
-    .card-content {
-        padding: 20px;
+    .scholarship-card:hover .card-image-wrapper img {
+        transform: scale(1.05);
     }
 
-    .card-content h3 {
-        color: #da0ac8;
-        margin-bottom: 15px;
-        font-size: 20px;
+    .status-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        z-index: 10;
+        box-shadow: var(--shadow-sm);
     }
 
-    .section {
-        margin-bottom: 12px;
-        font-size: 14px;
-        color: #333;
+    .status-open {
+        background: var(--primary);
+        color: white;
     }
 
-    .section i {
-        color: #da0ac8;
-        margin-right: 6px;
+    .status-closed {
+        background: #64748b;
+        color: white;
     }
 
-    .section strong {
-        color: #da0ac8;
+    .status-upcoming {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .status-extended {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .card-body {
+        padding: 2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body h3 {
+        font-family: 'Outfit';
+        font-size: 1.5rem;
+        color: var(--text-main);
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .info-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .info-item i {
+        color: var(--primary);
+        font-size: 1rem;
+        width: 20px;
+    }
+
+    .card-footer {
+        padding: 0 2rem 2rem;
     }
 
     .btn-details {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 8px 16px;
-        background: #da0ac8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 1rem;
+        background: var(--primary);
         color: white;
         text-decoration: none;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: 0.3s;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
     }
 
     .btn-details:hover {
-        opacity: 0.85;
+        background: var(--primary-hover);
+        transform: translateY(-2px);
     }
 
     .btn-disabled {
-        background: #cccccc;
+        background: #f1f5f9;
+        color: #94a3b8;
         cursor: not-allowed;
-        pointer-events: none;
     }
 
-    /* Status badge */
-    .status-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-weight: bold;
-        color: white;
-        font-size: 12px;
-    }
-
-    .OPEN { background: #f401d7; }       /* green */
-    .CLOSED { background: #d435dc; }     /* red */
-    .UPCOMING { background: #ad84e1; color: #000; } /* yellow */
-    .EXTENDED { background: #6f42c1; }   /* purple */
-    .ENDED { background: #ff00b3; }      /* gray */
-
-    .no-data {
+    .no-results {
         text-align: center;
-        color: #da0ac8;
-        font-size: 18px;
+        padding: 8rem 2rem;
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
+{% endblock %}
 
+{% block content %}
 <div class="scholarship-wrapper">
-
-    <h2 class="page-title">
-        <i class="fas fa-graduation-cap"></i> Available Scholarships
-    </h2>
+    <div class="page-header">
+        <h2>Available Scholarships</h2>
+        <p style="color: var(--text-muted); font-size: 1.25rem;">Discover opportunities to fund your educational
+            journey.</p>
+    </div>
 
     {% if scholarships %}
-        <div class="scholarship-container">
-            {% for scholarship in scholarships %}
-                <div class="card">
+    <div class="scholarship-grid">
+        {% for scholarship in scholarships %}
+        <div class="scholarship-card">
+            <div class="card-image-wrapper">
+                {% if scholarship.image %}
+                <img src="{{ scholarship.image.url }}" alt="{{ scholarship.title }}">
+                {% else %}
+                <div
+                    style="width: 100%; height: 100%; background: #f8fafc; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-graduation-cap" style="font-size: 4rem; color: #cbd5e1;"></i>
+                </div>
+                {% endif %}
+                <span class="status-badge status-{{ scholarship.status|lower }}">
+                    {{ scholarship.get_status_display }}
+                </span>
+            </div>
 
-                    {% if scholarship.image %}
-                        <img src="{{ scholarship.image.url }}" alt="{{ scholarship.title }}">
-                    {% endif %}
+            <div class="card-body">
+                <h3>{{ scholarship.title }}</h3>
 
-                    <!-- Status badge -->
-                    <span class="status-badge {{ scholarship.status }}">
-                        {{ scholarship.get_status_display }}
-                    </span>
-
-                    <div class="card-content">
-
-                        <h3>
-                            <i class="fas fa-award"></i>
-                            {{ scholarship.title }}
-                        </h3>
-
-                        <div class="section">
-                            <i class="fas fa-university"></i>
-                            <strong>University:</strong> {{ scholarship.university }}
-                        </div>
-
-                        <div class="section">
-                            <i class="fas fa-globe"></i>
-                            <strong>Country:</strong> {{ scholarship.country }}
-                        </div>
-
-                        <div class="section">
-                            <i class="fas fa-layer-group"></i>
-                            <strong>Degree:</strong> {{ scholarship.degree_level }}
-                        </div>
-
-                        <div class="section">
-                            <i class="fas fa-calendar-alt"></i>
-                            <strong>Deadline:</strong> {{ scholarship.deadline }}
-                        </div>
-
-                        <div class="section">
-                            <i class="fas fa-align-left"></i>
-                            <strong>Description:</strong>
-                            {{ scholarship.description|truncatewords:15 }}
-                        </div>
-
-                        <div class="section">
-                            <i class="fas fa-check-circle"></i>
-                            <strong>Eligibility:</strong>
-                            {{ scholarship.eligibility|truncatewords:15 }}
-                        </div>
-
-                        {% if scholarship.status == 'OPEN' or scholarship.status == 'EXTENDED' %}
-                            <a href="{% url 'scholarship_detail' scholarship.pk %}" class="btn-details">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                        {% else %}
-                            <a class="btn-details btn-disabled">
-                                <i class="fas fa-clock"></i> Please wait
-                            </a>
-                        {% endif %}
-
+                <div class="info-list">
+                    <div class="info-item">
+                        <i class="fas fa-university"></i>
+                        <span>{{ scholarship.university }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-globe"></i>
+                        <span>{{ scholarship.country }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span>{{ scholarship.degree_level }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span style="font-weight: 700; color: #ef4444;">{{ scholarship.deadline|date:"M d, Y" }}</span>
                     </div>
                 </div>
-            {% endfor %}
+
+                <p style="font-size: 0.95rem; color: #475569; line-height: 1.6; margin-bottom: 0;">
+                    {{ scholarship.description|truncatewords:20 }}
+                </p>
+            </div>
+
+            <div class="card-footer">
+                {% if scholarship.status == 'OPEN' or scholarship.status == 'EXTENDED' %}
+                <a href="{% url 'scholarship_detail' scholarship.pk %}" class="btn-details">
+                    <i class="fas fa-eye"></i> View Scholarship
+                </a>
+                {% else %}
+                <div class="btn-details btn-disabled">
+                    <i class="fas fa-lock"></i> Applications Closed
+                </div>
+                {% endif %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <p class="no-data">
-            <i class="fas fa-info-circle"></i>
-            No scholarships available at the moment.
-        </p>
+    <div class="no-results">
+        <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem; display: block;"></i>
+        <h3>No scholarships available right now</h3>
+        <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto;">Check back later for new opportunities or
+            browse our learning courses.</p>
+    </div>
     {% endif %}
-
 </div>
-
 {% endblock %}

@@ -1,21 +1,27 @@
 :root {
-    --primary: #4CAF50;
-    --primary-hover: #388E3C;
-    --primary-light: #E8F5E9;
-    --secondary: #FF00D4;
-    /* Keeping the user's pink/magenta for accents */
-    --accent: #25D366;
-    /* WhatsApp Green */
-    --background: #F9FBFA;
+    --primary: #10B981;
+    /* Vibrant Emerald Green */
+    --primary-hover: #059669;
+    --primary-light: #ecfdf5;
+    --secondary: #EC4899;
+    /* Vibrant Pink accent */
+    --accent: #10B981;
+    /* Success Green */
+    --background: #FFFFFF;
+    /* Pure White */
     --surface: #FFFFFF;
-    --text-main: #1F2937;
-    --text-muted: #6B7280;
-    --border: #E5E7EB;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --radius-md: 0.75rem;
     --radius-lg: 1.25rem;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 * {
@@ -26,7 +32,8 @@
 }
 
 body {
-    background-color: var(--background);
+    background-color: #FFFFFF;
+    background: #FFFFFF;
     color: var(--text-main);
     line-height: 1.6;
     min-height: 100vh;
@@ -35,13 +42,13 @@ body {
 /* Headers & Navigation */
 header {
     background: var(--primary);
-    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    /* Indigo UX Color */
     color: white;
     padding: 1.25rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     position: relative;
     z-index: 1000;
 }
@@ -220,34 +227,120 @@ nav a.active {
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary);
 }
 
-/* Footer */
-footer {
-    background: #111827;
+/* --- Minimal Icon-Driven Footer Redesign --- */
+.minimal-footer {
+    background: #0f172a;
     color: white;
-    padding: 3rem 1rem;
+    padding: 3rem 1.5rem 1rem;
     text-align: center;
+    margin-top: 3rem;
 }
 
-footer .social-icons {
+.footer-core {
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    /* Reduced space between sections */
 }
 
-footer .social-icons a {
-    color: rgba(255, 255, 255, 0.6);
+.footer-logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    background: linear-gradient(to right, #10B981, #059669);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.footer-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.footer-store-badges {
+    display: flex;
+    gap: 2rem;
+}
+
+.store-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.store-item i {
     font-size: 1.5rem;
-    transition: color 0.2s;
+    color: #f8fafc;
 }
 
-footer .social-icons a:hover {
-    color: var(--secondary);
+.store-item span {
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.store-item:hover {
+    transform: translateY(-5px);
+}
+
+.store-item:hover i {
+    color: var(--primary);
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.social-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-item i {
+    font-size: 1.25rem;
+    color: #94a3b8;
+}
+
+.social-item span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.social-item:hover i {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.footer-bottom-text {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #64748b;
+    font-size: 0.85rem;
 }
 
 /* Popup Notification */
@@ -284,4 +377,36 @@ footer .social-icons a:hover {
     right: 1rem;
     cursor: pointer;
     color: var(--text-muted);
+}
+
+/* Scroll Top Button */
+.scroll-top {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+    z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.scroll-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-top:hover {
+    background: var(--primary-hover);
+    transform: translateY(-8px) scale(1.1);
 }

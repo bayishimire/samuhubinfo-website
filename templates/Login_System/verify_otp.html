@@ -1,0 +1,584 @@
+{% extends "Login_System/base.html" %}
+{% block title %}Verify Account | SAMHUB{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ── Layout ── */
+    .auth-split {
+        display: flex;
+        min-height: 75vh;
+        max-width: 900px;
+        margin: 3rem auto;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow:
+            0 50px 100px -20px rgba(147, 51, 234, 0.25),
+            0 30px 60px -30px rgba(34, 197, 94, 0.2);
+        animation: cardRise 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes cardRise {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* ── Left Brand Panel ── */
+    .auth-brand {
+        flex: 0 0 40%;
+        background: linear-gradient(160deg, #0ea5e9 0%, #9333ea 55%, #22c55e 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+    }
+
+    .auth-brand::before {
+        content: '';
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 50%;
+        top: -60px;
+        left: -60px;
+    }
+
+    .auth-brand::after {
+        content: '';
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        bottom: -30px;
+        right: -30px;
+    }
+
+    .brand-icon {
+        width: 110px;
+        height: 110px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.2rem;
+        margin-bottom: 2rem;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        position: relative;
+    }
+
+    /* Animated pulse ring */
+    .brand-icon::after {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        border-radius: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        animation: pulseRing 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseRing {
+
+        0%,
+        100% {
+            opacity: 0.4;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0;
+            transform: scale(1.15);
+        }
+    }
+
+    .brand-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.75rem;
+    }
+
+    .brand-sub {
+        font-size: 1rem;
+        opacity: 0.85;
+        max-width: 260px;
+        line-height: 1.65;
+    }
+
+    /* Email illustration */
+    .email-illustration {
+        margin-top: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.92rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .email-illustration i {
+        font-size: 1.5rem;
+        color: #fbbf24;
+    }
+
+    /* Steps */
+    .auth-steps {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 2.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .step-pill {
+        padding: 0.45rem 1rem;
+        border-radius: 50px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s;
+    }
+
+    .step-pill.done {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .step-pill.active {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #fff;
+        color: #fff;
+    }
+
+    /* ── Right Form Panel ── */
+    .auth-form-panel {
+        flex: 1;
+        background: #fff;
+        padding: 4rem 3.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Form header */
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .form-header h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.03em;
+    }
+
+    .form-header p {
+        color: #64748b;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        line-height: 1.6;
+    }
+
+    /* Shield icon at top */
+    .verify-shield {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%);
+        border-radius: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: #fff;
+        box-shadow: 0 12px 25px -5px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Messages */
+    .message {
+        padding: 1rem 1.25rem;
+        border-radius: 14px;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        font-size: 0.92rem;
+        text-align: center;
+    }
+
+    .message.error,
+    .message.danger {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .message.success {
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #bbf7d0;
+    }
+
+    .message.info {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+    }
+
+    /* OTP Digit Input */
+    .otp-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin: 2rem 0 2.5rem;
+    }
+
+    .otp-digit {
+        width: 56px;
+        height: 64px;
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #0f172a;
+        border: 2.5px solid #e2e8f0;
+        border-radius: 16px;
+        background: #f8fafc;
+        outline: none;
+        transition: all 0.3s;
+        caret-color: #9333ea;
+    }
+
+    .otp-digit:focus {
+        border-color: #9333ea;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .otp-digit.filled {
+        border-color: #22c55e;
+        background: #f0fdf4;
+    }
+
+    /* Hidden real input */
+    .otp-hidden {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* Submit */
+    .btn-verify {
+        width: 100%;
+        padding: 1.1rem;
+        font-size: 1.1rem;
+        font-weight: 800;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, #22c55e, #0ea5e9);
+        color: #fff;
+        box-shadow: 0 10px 30px -8px rgba(34, 197, 94, 0.4);
+        transition: all 0.35s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .btn-verify:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px -10px rgba(34, 197, 94, 0.5);
+    }
+
+    .btn-verify:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Resend section */
+    .resend-section {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .resend-section p {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-bottom: 0.5rem;
+    }
+
+    .resend-btn {
+        background: none;
+        border: none;
+        color: #9333ea;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .resend-btn:hover {
+        background: #fdf4ff;
+    }
+
+    .resend-btn:disabled {
+        color: #94a3b8;
+        cursor: not-allowed;
+    }
+
+    .resend-btn:disabled:hover {
+        background: none;
+    }
+
+    /* Timer */
+    .timer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        background: #f1f5f9;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-top: 0.75rem;
+    }
+
+    .timer-badge i {
+        color: #f59e0b;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+        .auth-split {
+            flex-direction: column;
+            margin: 1.5rem;
+            min-height: auto;
+        }
+
+        .auth-brand {
+            flex: none;
+            padding: 2rem;
+        }
+
+        .auth-form-panel {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+        }
+
+        .brand-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            border-radius: 26px;
+        }
+
+        .email-illustration {
+            display: none;
+        }
+
+        .otp-digit {
+            width: 46px;
+            height: 54px;
+            font-size: 1.3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-split">
+    <!-- Left Brand Panel -->
+    <div class="auth-brand">
+        <div class="brand-icon">
+            <i class="fas fa-envelope-circle-check"></i>
+        </div>
+        <div class="brand-title">Check Your Email</div>
+        <p class="brand-sub">We've sent a 6-digit verification code to your registered email address.</p>
+
+        <div class="email-illustration">
+            <i class="fas fa-paper-plane"></i>
+            <span>Code sent successfully</span>
+        </div>
+
+        <div class="auth-steps">
+            <span class="step-pill done">1 · Register</span>
+            <span class="step-pill active">2 · Verify OTP</span>
+            <span class="step-pill">3 · Login</span>
+        </div>
+    </div>
+
+    <!-- Right Form Panel -->
+    <div class="auth-form-panel">
+        <div class="form-header">
+            <div class="verify-shield">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>Enter Verification Code</h2>
+            <p>Type the 6-digit code sent to your email.<br>The code will expire in <strong>10 minutes</strong>.</p>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" id="otpForm">
+            {% csrf_token %}
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="code" id="otpHidden" value="">
+
+            <!-- Pretty OTP digit boxes -->
+            <div class="otp-container" id="otpContainer">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="0"
+                    autocomplete="one-time-code">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="1">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="2">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="3">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="4">
+                <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="5">
+            </div>
+
+            <button type="submit" class="btn-verify" id="verifyBtn" disabled>
+                <i class="fas fa-check-circle"></i> Verify Account
+            </button>
+        </form>
+
+        <div class="resend-section">
+            <p>Didn't receive the code?</p>
+            {% if user_id %}
+            <button class="resend-btn" id="resendBtn" type="button">
+                <i class="fas fa-redo"></i> Resend Code
+            </button>
+            <div class="timer-badge" id="timerBadge" style="display:none;">
+                <i class="fas fa-clock"></i>
+                <span id="timerText">60s</span>
+            </div>
+            {% else %}
+            <span style="color:#94a3b8; font-size:0.9rem;">Resend not available — <a href="{% url 'register' %}"
+                    style="color:#9333ea; font-weight:700; text-decoration:none;">register again</a></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const digits = document.querySelectorAll('.otp-digit');
+        const hidden = document.getElementById('otpHidden');
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        function collectCode() {
+            let code = '';
+            digits.forEach(d => { code += d.value; });
+            hidden.value = code;
+            verifyBtn.disabled = code.length < 6;
+        }
+
+        digits.forEach((input, idx) => {
+            input.addEventListener('input', function (e) {
+                const val = this.value.replace(/[^0-9]/g, '');
+                this.value = val;
+
+                if (val) {
+                    this.classList.add('filled');
+                    if (idx < digits.length - 1) {
+                        digits[idx + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+                collectCode();
+            });
+
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && !this.value && idx > 0) {
+                    digits[idx - 1].focus();
+                    digits[idx - 1].value = '';
+                    digits[idx - 1].classList.remove('filled');
+                    collectCode();
+                }
+            });
+
+            // Handle paste
+            input.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                for (let i = 0; i < Math.min(paste.length, 6); i++) {
+                    digits[i].value = paste[i];
+                    digits[i].classList.add('filled');
+                }
+                const focusIdx = Math.min(paste.length, 5);
+                digits[focusIdx].focus();
+                collectCode();
+            });
+        });
+
+        // Focus first digit
+        if (digits[0]) digits[0].focus();
+
+        // Resend OTP logic
+        var resendBtn = document.getElementById('resendBtn');
+        var timerBadge = document.getElementById('timerBadge');
+        var timerText = document.getElementById('timerText');
+
+        if (resendBtn) {
+            resendBtn.addEventListener('click', function () {
+                resendBtn.disabled = true;
+                resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                fetch('{% if user_id %}{% url "resend_otp" user_id %}{% endif %}')
+                    .then(function () {
+                        resendBtn.innerHTML = '<i class="fas fa-check"></i> Code Sent';
+                        timerBadge.style.display = 'inline-flex';
+                        var secs = 60;
+                        var interval = setInterval(function () {
+                            secs--;
+                            timerText.textContent = secs + 's';
+                            if (secs <= 0) {
+                                clearInterval(interval);
+                                resendBtn.disabled = false;
+                                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
+                                timerBadge.style.display = 'none';
+                            }
+                        }, 1000);
+                    })
+                    .catch(function () {
+                        resendBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                        resendBtn.disabled = false;
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

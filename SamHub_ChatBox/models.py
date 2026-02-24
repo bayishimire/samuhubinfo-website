@@ -6,7 +6,7 @@ from django.utils import timezone
 class Message(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='messages/', blank=True, null=True)
+    # image = models.ImageField(upload_to='messages/', blank=True, null=True) # Keep for backward compatibility or remove
     created_at = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     deleted_by_user = models.BooleanField(default=False)
@@ -23,6 +23,14 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.content[:20]}"
+
+
+class MessageImage(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='messages/')
+
+    def __str__(self):
+        return f"Image for message {self.message.id}"
 
 
 # ---------------- Comment / Reply ----------------
@@ -61,3 +69,4 @@ class AIMessage(models.Model):
 
     def __str__(self):
         return f"{self.role}: {self.content[:20]}"
+

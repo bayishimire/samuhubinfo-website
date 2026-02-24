@@ -1,3 +1,4 @@
+ 
 from django.urls import path
 from . import views
 
@@ -16,5 +17,6 @@ urlpatterns = [
     
     
     #chatbot
-    
+    path('ai/', views.ai_chat_room, name='ai_chat_room'),
+    path('ai/send/', views.send_ai_message, name='send_ai_message'),
 ]

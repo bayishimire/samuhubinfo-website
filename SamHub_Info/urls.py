@@ -31,6 +31,7 @@ urlpatterns = [
      path('scholarship/', include('scholarships.urls')),
      path('', include('Job_Opportunity.urls')),
      path('',include('SamHub_ChatBox.urls')),
+     path('accounts/', include('allauth.urls')),
     
     
 ]

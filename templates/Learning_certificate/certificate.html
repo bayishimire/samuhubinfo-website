@@ -1,21 +1,181 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block title %}Certificate{% endblock %}
+{% block title %}Certificate | SAMHUB{% endblock %}
+
+{% block extra_css %}
+<style>
+    .certificate-container {
+        padding: 4rem 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .certificate-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f1f5f9;
+        padding: 5rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .certificate-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+    }
+
+    .badge-visual {
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, #fef3c7 0%, #fbbf24 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 3rem;
+        box-shadow: 0 15px 30px -5px rgba(251, 191, 36, 0.4);
+        position: relative;
+    }
+
+    .badge-visual i {
+        font-size: 4.5rem;
+        color: #92400e;
+    }
+
+    .badge-star {
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        background: #10B981;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid white;
+        font-size: 1.2rem;
+    }
+
+    .cert-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3.5rem;
+        color: var(--text-main);
+        letter-spacing: -0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .cert-course {
+        font-size: 2rem;
+        color: var(--primary);
+        font-weight: 700;
+        margin-bottom: 3rem;
+    }
+
+    .cert-body {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        line-height: 1.8;
+        max-width: 700px;
+        margin: 0 auto 4rem;
+    }
+
+    .cert-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 3rem;
+    }
+
+    .signature-box {
+        text-align: left;
+    }
+
+    .signature-line {
+        width: 250px;
+        height: 2px;
+        background: #cbd5e1;
+        margin-bottom: 0.5rem;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div style="padding:20px; text-align:center;">
-    <h1 style="color:#ed05e2;">Certificate - {{ certificate.enrollment.course.title }}</h1>
+<div class="certificate-container">
     {% if certificate.is_issued %}
-        <p>Congratulations {{ certificate.enrollment.student.username }}! Your certificate has been issued.</p>
-        {% if certificate.certificate_file %}
-            <a href="{{ certificate.certificate_file.url }}" download style="
-                text-decoration:none; background-color:#ff14b1; color:#fff; padding:10px 20px; border-radius:6px;">
-                Download Certificate
+    <div class="certificate-card">
+        <div class="badge-visual">
+            <i class="fas fa-certificate"></i>
+            <div class="badge-star"><i class="fas fa-star"></i></div>
+        </div>
+
+        <h1 class="cert-title">Certificate of Completion</h1>
+        <p style="text-transform: uppercase; letter-spacing: 0.3em; color: var(--text-muted); margin-bottom: 2rem;">This
+            is to certify that</p>
+
+        <h2 style="font-size: 4rem; font-family: 'Outfit'; margin-bottom: 1.5rem;">{{
+            certificate.enrollment.student.username }}</h2>
+
+        <p class="cert-body">
+            has successfully completed all requirements and passed all examinations for the course
+        </p>
+
+        <h3 class="cert-course">{{ certificate.enrollment.course.title }}</h3>
+
+        <div class="cert-footer">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p style="font-weight: 700;">Head Admin, SAMHUB</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Issued on: {{ certificate.issued_at|date:"F d,
+                    Y" }}</p>
+            </div>
+
+            {% if certificate.certificate_file %}
+            <a href="{{ certificate.certificate_file.url }}" download class="btn btn-primary"
+                style="padding: 1rem 2rem;">
+                <i class="fas fa-download"></i> Download Official PDF
             </a>
-        {% endif %}
+            {% else %}
+            <div style="text-align: right;">
+                <span style="color: var(--accent); font-weight: 700;"><i class="fas fa-check-circle"></i> Digital Badge
+                    Verified</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
     {% else %}
-        <p>Your certificate is not issued yet. Complete all exams to receive it.</p>
+    <div style="padding: 6rem; background: #f8fafc; border-radius: var(--radius-lg); border: 2px dashed #cbd5e1;">
+        <i class="fas fa-lock" style="font-size: 4rem; color: #94a3b8; margin-bottom: 2rem;"></i>
+        <h2 style="font-family: 'Outfit'; font-size: 2.5rem; color: #64748b;">Certificate Not Yet Issued</h2>
+        <p style="font-size: 1.2rem; color: #94a3b8; max-width: 500px; margin: 1rem auto 3rem;">
+            You must pass all required exams for this course to receive your official certificate and digital badge.
+        </p>
+        <a href="{% url 'course_detail' certificate.enrollment.course.id %}" class="btn btn-primary">Return to
+            Course</a>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

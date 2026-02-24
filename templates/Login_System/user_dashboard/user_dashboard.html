@@ -3,120 +3,323 @@
 
 {% block title %}Dashboard{% endblock %}
 
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        padding: 4rem 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .welcome-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .welcome-card h1 {
+        font-family: 'Outfit';
+        font-size: 2.5rem;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .section-title {
+        font-family: 'Outfit';
+        font-size: 1.75rem;
+        color: var(--text-main);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    /* Courses Grid */
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        border: 1px solid var(--border);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
+
+    .course-card h3 {
+        color: var(--primary);
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .progress-info {
+        background: #f8fafc;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-dash {
+        flex: 1;
+        padding: 0.75rem;
+        border-radius: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.85rem;
+        text-align: center;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-dash {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary-dash:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-accent-dash {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn-accent-dash:hover {
+        background: #e2e8f0;
+    }
+
+    /* Applications Table */
+    .table-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .apps-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .apps-table th {
+        background: #f8fafc;
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        color: #475569;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .apps-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: var(--text-main);
+    }
+
+    .status-badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #fffbeb;
+        color: #92400e;
+    }
+
+    .status-accepted {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .no-data {
+        padding: 4rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+    .cert-issued {
+        font-weight: 700;
+        color: #10B981;
+    }
+
+    .cert-pending {
+        font-weight: 700;
+        color: #94a3b8;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="dashboard-container" style="padding: 20px; font-family: 'Roboto', sans-serif;">
+<div class="dashboard-container">
+    <!-- Welcome Header -->
+    <div class="welcome-card">
+        <h1><i class="fas fa-user-circle"></i> Welcome Back, {{ request.user.username }}</h1>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Track your learning progress and career applications in
+            one place.</p>
+    </div>
 
-    <!-- Welcome Section -->
-    <h1 style="color: #ed05e2; text-align: center; margin-bottom: 20px;">
-        <i class="fas fa-user-circle"></i> Welcome, {{ request.user.username }}
-    </h1>
+    <!-- Career Applications Section -->
+    <div class="section-title">
+        <i class="fas fa-paper-plane"></i> Your Career Applications
+    </div>
 
-    <!-- Courses Section -->
-    <section class="courses-section" style="margin-top: 30px;">
-        <h2 style="color: #ed05e2; text-align: center; margin-bottom: 25px;">
-            <i class="fas fa-book"></i> Your Courses & Progress
-        </h2>
-
-        {% if courses_info %}
-            <div class="courses-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-                {% for info in courses_info %}
-                    <div class="course-card" style="
-                        flex: 1 1 300px; 
-                        border: 1px solid #e0e0e0; 
-                        border-radius: 12px; 
-                        padding: 20px; 
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
-                        transition: transform 0.2s;
-                        background-color: #fff;
-                        max-width: 350px;
-                    " 
-                    onmouseover="this.style.transform='translateY(-5px)'" 
-                    onmouseout="this.style.transform='translateY(0)'">
-
-                        <!-- Course Title -->
-                        <h3 style="margin-bottom: 10px; color: #007bff;">
-                            <i class="fas fa-graduation-cap"></i> {{ info.course.title }}
-                        </h3>
-
-                        <!-- Description -->
-                        <p style="margin-bottom: 10px; color: #333;">
-                            {{ info.course.description|default:"No description available" }}
-                        </p>
-
-                        <!-- Progress -->
-                        <p style="margin-bottom: 10px;">
-                            <i class="fas fa-tasks"></i> <strong>Progress:</strong> {{ info.progress }}
-                        </p>
-
-                        <!-- Certificate -->
-                        <p style="margin-bottom: 15px;">
-                            <i class="fas fa-certificate"></i> <strong>Certificate:</strong>
-                            {% if info.certificate_status %}
-                                Issued ✅
-                            {% else %}
-                                Not issued 
-                            {% endif %}
-                        </p>
-
-                        <!-- Actions -->
-                        <div class="course-actions" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                            <a href="{% url 'course_detail' info.course.id %}" style="
-                                text-decoration: none; 
-                                background-color: #ff14b1; 
-                                color: #fff; 
-                                padding: 8px 15px; 
-                                border-radius: 6px; 
-                                font-weight: 500;
-                                transition: background 0.2s;
-                                display: flex; align-items: center; gap: 5px;
-                            " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
-                                <i class="fas fa-eye"></i> View Course
+    <div class="table-card" style="margin-bottom: 4rem;">
+        {% if job_applications %}
+        <div style="overflow-x: auto;">
+            <table class="apps-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Company</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in job_applications %}
+                    <tr>
+                        <td><strong>{{ app.job.title }}</strong></td>
+                        <td>{{ app.job.company }}</td>
+                        <td style="color: #64748b; font-size: 0.9rem;">{{ app.submitted_at|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="status-badge status-{{ app.status|lower }}">
+                                {{ app.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'job_detail' app.job.id %}"
+                                style="color: var(--primary); font-weight: 700; text-decoration: none; font-size: 0.9rem;">
+                                View Job <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i>
                             </a>
-
-                            <a href="{% url 'exam_results' info.course.id %}" style="
-                                text-decoration: none; 
-                                background-color: #ff14b1; 
-                                color: #fff; 
-                                padding: 8px 15px; 
-                                border-radius: 6px; 
-                                font-weight: 500;
-                                transition: background 0.2s;
-                                display: flex; align-items: center; gap: 5px;
-                            " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
-                                <i class="fas fa-chart-line"></i> Results
-                            </a>
-
-                            {% if not info.certificate_status %}
-                                <a href="{% url 'certificate_view' info.course.id %}" style="
-                                    text-decoration: none; 
-                                    background-color: #ff14b1; 
-                                    color: #fff; 
-                                    padding: 8px 15px; 
-                                    border-radius: 6px; 
-                                    font-weight: 500;
-                                    transition: background 0.2s;
-                                    display: flex; align-items: center; gap: 5px;
-                                " onmouseover="this.style.backgroundColor='#e0129e'" onmouseout="this.style.backgroundColor='#ff14b1'">
-                                    <i class="fas fa-certificate"></i> Check Certificate
-                                </a>
-                            {% endif %}
-                        </div>
-
-                    </div>
-                {% endfor %}
-            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-            <p style="margin-top: 20px; color: #555; text-align: center;">
-                You are not enrolled in any courses yet. 
-                <a href="{% url 'course_list' %}" style="color: #ed05e2; text-decoration: underline;">
-                    <i class="fas fa-search"></i> Browse courses
-                </a>
-            </p>
+        <div class="no-data">
+            <i class="fas fa-briefcase"
+                style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
+            <p>You haven't applied for any jobs yet.</p>
+            <a href="{% url 'job_list' %}" style="color: var(--primary); font-weight: 700;">Browse Available Jobs</a>
+        </div>
         {% endif %}
-    </section>
+    </div>
+
+    <!-- Learning Progress Section -->
+    <div class="section-title">
+        <i class="fas fa-graduation-cap"></i> Learning Progress
+    </div>
+
+    {% if courses_info %}
+    <div class="courses-grid">
+        {% for info in courses_info %}
+        <div class="course-card">
+            <h3>{{ info.course.title }}</h3>
+            <p style="color: #475569; font-size: 0.95rem; line-height: 1.5; height: 3rem; overflow: hidden;">
+                {{ info.course.description|default:"No description available" }}
+            </p>
+
+            <div class="progress-info">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Progress</span>
+                    <strong>{{ info.progress }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Certificate Status</span>
+                    <span class="{% if info.certificate_status %}cert-issued{% else %}cert-pending{% endif %}">
+                        {% if info.certificate_status %}Issued ✅{% else %}Pending{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="course-actions">
+                <a href="{% url 'course_detail' info.course.id %}" class="btn-dash btn-primary-dash">
+                    <i class="fas fa-play-circle"></i> Resume Learning
+                </a>
+                <a href="{% url 'exam_results' info.course.id %}" class="btn-dash btn-accent-dash">
+                    <i class="fas fa-chart-bar"></i> Results
+                </a>
+                {% if not info.certificate_status %}
+                <a href="{% url 'certificate_view' info.course.id %}" class="btn-dash btn-accent-dash"
+                    style="flex: 1 1 100%;">
+                    <i class="fas fa-award"></i> Check Certificate
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="welcome-card" style="padding: 4rem;">
+        <i class="fas fa-book-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
+        <p style="color: #64748b;">You are not enrolled in any courses yet.</p>
+        <a href="{% url 'course_list' %}" class="btn-dash btn-primary-dash"
+            style="display: inline-flex; width: auto; margin-top: 1rem; padding-left: 2rem; padding-right: 2rem;">
+            Browse Courses
+        </a>
+    </div>
+    {% endif %}
 </div>
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 {% endblock %}

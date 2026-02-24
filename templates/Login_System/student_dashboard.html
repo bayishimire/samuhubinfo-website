@@ -1,0 +1,498 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}My Dashboard | SAMHUB Learning{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-wrapper {
+        padding: 3rem 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 3rem;
+    }
+
+    /* Main Column */
+    .dashboard-main {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    /* Sidebar Column */
+    .dashboard-side {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    /* Welcome Card */
+    .welcome-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        padding: 3.5rem;
+        border-radius: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .welcome-hero::after {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(34, 197, 94, 0.1), transparent);
+        top: -100px;
+        right: -50px;
+    }
+
+    .welcome-hero h1 {
+        font-family: 'Outfit';
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-hero p {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Quick Stats row */
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border-color: var(--primary);
+    }
+
+    .stat-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 12px;
+        background: #f0fdf4;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .stat-info .val {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #0f172a;
+        display: block;
+        line-height: 1.2;
+    }
+
+    .stat-info .lab {
+        font-size: 0.8rem;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    /* Section Headers */
+    .sec-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .sec-head h2 {
+        font-family: 'Outfit';
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+    .sec-head a {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    /* Course Cards Horizontal */
+    .active-courses {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .active-course-row {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 2rem;
+        transition: all 0.3s;
+    }
+
+    .active-course-row:hover {
+        border-color: var(--primary);
+        background: #f8fafc;
+    }
+
+    .course-icon-box {
+        width: 80px;
+        height: 80px;
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+    }
+
+    .course-details h3 {
+        font-family: 'Outfit';
+        font-size: 1.25rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .course-details p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 1rem;
+    }
+
+    .progress-container {
+        width: 250px;
+    }
+
+    .prog-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        color: #475569;
+    }
+
+    .prog-bar {
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .prog-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        border-radius: 10px;
+    }
+
+    /* Results Table-like style */
+    .results-list {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        overflow: hidden;
+    }
+
+    .result-item {
+        padding: 1.25rem 2rem;
+        border-bottom: 1px solid #f8fafc;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        align-items: center;
+        font-size: 0.95rem;
+    }
+
+    .result-item:last-child {
+        border-bottom: none;
+    }
+
+    .score-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 0.8rem;
+    }
+
+    .score-pass {
+        background: #f0fdf4;
+        color: #16a34a;
+    }
+
+    .score-fail {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    /* Right Sidebar Cards */
+    .side-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 25px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .side-card h3 {
+        font-family: 'Outfit';
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .cert-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        background: #fdf4ff;
+        color: #a21caf;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .cert-item:hover {
+        transform: scale(1.02);
+        background: #fae8ff;
+    }
+
+    .pending-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #fffbeb;
+        border-radius: 15px;
+        border: 1px solid #fef3c7;
+    }
+
+    /* Explore Courses */
+    .recommend-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .recommend-item:last-child {
+        border-bottom: none;
+    }
+
+    .recommend-item h4 {
+        font-family: 'Outfit';
+        margin-bottom: 0.3rem;
+    }
+
+    .recommend-item p {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin-bottom: 0.8rem;
+    }
+
+    @media (max-width: 1100px) {
+        .dashboard-wrapper {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Hero -->
+        <div class="welcome-hero">
+            <h1>Welcome back, {{ user.username }}!</h1>
+            <p>You have {{ enrollments.count }} active courses and {{ certificates.count }} earned certificates.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+                <div class="stat-info">
+                    <span class="val">{{ enrollments.count }}</span>
+                    <span class="lab">Enrolled</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: #f5f3ff; color: #7c3aed;"><i class="fas fa-award"></i></div>
+                <div class="stat-info">
+                    <span class="val">{{ certificates.count }}</span>
+                    <span class="lab">Certificates</span>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon" style="background: #fff7ed; color: #ea580c;"><i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="val">{{ results.count }}</span>
+                    <span class="lab">Exams Taken</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Courses -->
+        <section>
+            <div class="sec-head">
+                <h2>My Active Courses</h2>
+                <a href="{% url 'course_list' %}">Explore More <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="active-courses">
+                {% for enrollment in enrollments %}
+                <div class="active-course-row">
+                    <div class="course-icon-box">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="course-details">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <span
+                                style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: #22c55e;">
+                                <i class="fas fa-check-circle"></i> Approved
+                            </span>
+                        </div>
+                        <h3>{{ enrollment.course.title }}</h3>
+                        <p>Duration: {{ enrollment.course.duration_weeks }} Weeks &bull; Enrolled: {{
+                            enrollment.enrollment_date|date:"F d, Y" }}</p>
+                    </div>
+                    <div>
+                        <a href="{% url 'course_detail' enrollment.course.id %}" class="btn btn-primary"
+                            style="padding: 0.8rem 1.5rem; border-radius: 12px; font-weight: 700;">
+                            Go to Class <i class="fas fa-arrow-right"
+                                style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div
+                    style="text-align: center; padding: 4rem; background: #f8fafc; border-radius: 25px; border: 2px dashed #e2e8f0;">
+                    <i class="fas fa-graduation-cap"
+                        style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem; display: block;"></i>
+                    <h3 style="color: #64748b;">No active enrollments</h3>
+                    <p style="color: #94a3b8; margin-bottom: 2rem;">Unlock your potential by starting a new learning
+                        journey today.</p>
+                    <a href="{% url 'course_list' %}" class="btn btn-primary">Browse Catalog</a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Recent Results -->
+        {% if results %}
+        <section>
+            <div class="sec-head">
+                <h2>Recent Exam Results</h2>
+            </div>
+            <div class="results-list">
+                <div
+                    style="background: #f1f5f9; padding: 1rem 2rem; display: grid; grid-template-columns: 1fr 1fr 1fr auto; font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">
+                    <span>Course & Exam</span>
+                    <span>Date</span>
+                    <span>Score</span>
+                    <span>Action</span>
+                </div>
+                {% for result in results %}
+                <div class="result-item">
+                    <div>
+                        <div style="font-weight: 700;">{{ result.exam.title }}</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">{{ result.exam.course.title }}</div>
+                    </div>
+                    <div style="color: #64748b;">{{ result.completed_at|date:"M d, Y" }}</div>
+                    <div>
+                        <span class="score-badge {% if result.passed %}score-pass{% else %}score-fail{% endif %}">
+                            {{ result.marks_obtained }}/{{ result.total_marks }}
+                            ({% widthratio result.marks_obtained result.total_marks 100 %}%)
+                        </span>
+                    </div>
+                    <div>
+                        <a href="{% url 'exam_result_detail' result.id %}"
+                            style="color: #2563eb; text-decoration: none; font-weight: 700; font-size: 0.9rem;">Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="dashboard-side">
+        <!-- Certificates -->
+        <div class="side-card">
+            <h3><i class="fas fa-certificate" style="color: #a21caf;"></i> My Certificates</h3>
+            {% if certificates %}
+            {% for cert in certificates %}
+            <a href="{% url 'certificate_view' cert.enrollment.course.id %}" class="cert-item">
+                <i class="fas fa-file-pdf"></i>
+                <span>{{ cert.enrollment.course.title }}</span>
+            </a>
+            {% endfor %}
+            {% else %}
+            <p style="color: #94a3b8; font-size: 0.85rem;">Pass all course exams to earn your official SAMHUB
+                certificate.</p>
+            {% endif %}
+        </div>
+
+        <!-- Pending Enrollments -->
+        {% if pending_enrollments %}
+        <div class="side-card">
+            <h3><i class="fas fa-hourglass-half" style="color: #d97706;"></i> Pending Approval</h3>
+            {% for enrollment in pending_enrollments %}
+            <div class="pending-item">
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; font-size: 0.9rem;">{{ enrollment.course.title }}</div>
+                    <div style="font-size: 0.75rem; color: #92400e;">Awaiting admin review...</div>
+                </div>
+                <i class="fas fa-clock" style="color: #f59e0b;"></i>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Recommendations -->
+        <div class="side-card">
+            <h3><i class="fas fa-rocket" style="color: #ef4444;"></i> New for You</h3>
+            {% for course in recommended_courses %}
+            <div class="recommend-item">
+                <h4>{{ course.title }}</h4>
+                <p>{{ course.duration_weeks }} Weeks &bull; {% if course.price == 0 %}Free{% else %}${{ course.price
+                    }}{% endif %}</p>
+                <a href="{% url 'course_list' %}"
+                    style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none;">View
+                    Course</a>
+            </div>
+            {% empty %}
+            <p style="color: #94a3b8; font-size: 0.85rem;">Check back later for new programs!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

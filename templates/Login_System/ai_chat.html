@@ -1,56 +1,448 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SAMHUB AI</title>
-    <style>
-        body { font-family: Arial; }
-        .chat-box { width: 60%; margin: auto; }
-        .user { color: blue; }
-        .assistant { color: green; }
-    </style>
-</head>
-<body>
+{% extends 'Login_System/base.html' %}
+{% load static %}
 
-<div class="chat-box">
-    <h2>SAMHUB AI Chat</h2>
+{% block title %}SAMHUB AI Assistant{% endblock %}
 
-    <div id="messages">
-        {% for message in messages %}
-            <p class="{{ message.role }}">
-                <strong>{{ message.role|title }}:</strong>
-                {{ message.content }}
-            </p>
-        {% endfor %}
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+<style>
+    :root {
+        --ai-primary: #6366F1;
+        --ai-accent: #8B5CF6;
+        --ai-bg: #f3f4f6;
+    }
+
+    #main-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 0;
+        height: 85vh;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Left Side: Description Panel */
+    #ai-info-panel {
+        background: linear-gradient(180deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .info-header h2 {
+        font-family: 'Outfit';
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    .info-header p {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .capability-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .cap-item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .cap-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+    }
+
+    .cap-text h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .cap-text p {
+        margin: 2px 0 0 0;
+        font-size: 0.8rem;
+        opacity: 0.7;
+        line-height: 1.4;
+    }
+
+    /* Right Side: Chat Panel */
+    #ai-chat-interface {
+        display: flex;
+        flex-direction: column;
+        background: var(--ai-bg);
+        height: 100%;
+    }
+
+    #ai-header {
+        background: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Suggestion chips */
+    .suggestions {
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        align-items:center;
+    }
+
+    .chip {
+        background: #eef2ff;
+        color: #3730a3;
+        padding:6px 10px;
+        border-radius:999px;
+        font-weight:600;
+        cursor:pointer;
+        border:1px solid rgba(99,102,241,0.12);
+        font-size:0.9rem;
+    }
+
+    .chip:hover{ background:#e0e7ff }
+
+    #ai-chat-box {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .ai-message {
+        display: flex;
+        gap: 1rem;
+        max-width: 85%;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .ai-message.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .ai-message .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.8rem;
+    }
+
+    .ai-message.user .avatar {
+        background: #d1d5db;
+        color: #374151;
+    }
+
+    .ai-message.assistant .avatar {
+        background: var(--ai-primary);
+        color: white;
+    }
+
+    .ai-message-content {
+        padding: 0.8rem 1.2rem;
+        border-radius: 14px;
+        font-size: 0.92rem;
+        line-height: 1.5;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .ai-message.user .ai-message-content {
+        background: var(--ai-primary);
+        color: white;
+    }
+
+    .ai-message.assistant .ai-message-content {
+        background: white;
+        color: #1f2937;
+        border: 1px solid #e5e7eb;
+    }
+
+    #ai-input-area {
+        padding: 1.5rem 2rem;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .input-wrapper {
+        flex: 1;
+        background: #f3f4f6;
+        border-radius: 12px;
+        padding: 0.4rem 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    #ai-message-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+
+    .ask-btn {
+        background: var(--ai-primary);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        border-radius: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ask-btn:hover {
+        background: #4f46e5;
+    }
+
+    .clear-btn {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    .clear-btn:hover {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    #typing {
+        display: none;
+        font-size: 0.8rem;
+        color: #9ca3af;
+        margin-bottom: 0.5rem;
+        padding-left: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="main-container">
+    <!-- Left panel: Description -->
+    <div id="ai-info-panel">
+        <div class="info-header">
+            <h2>SAMHUB AI</h2>
+            <p>Your intelligent companion for growth.</p>
+        </div>
+
+        <div class="capability-list">
+            <div class="cap-item">
+                <div class="cap-icon"><i class="fas fa-file-invoice"></i></div>
+                <div class="cap-text">
+                    <h5>Irembo Support</h5>
+                    <p>Get step-by-step guides for Rwanda's e-government services.</p>
+                </div>
+            </div>
+            <div class="cap-item">
+                <div class="cap-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="cap-text">
+                    <h5>Scholarships</h5>
+                    <p>Discover international and local funding opportunities.</p>
+                </div>
+            </div>
+            <div class="cap-item">
+                <div class="cap-icon"><i class="fas fa-briefcase"></i></div>
+                <div class="cap-text">
+                    <h5>Career Advice</h5>
+                    <p>Strategic tips for resumes and job applications.</p>
+                </div>
+            </div>
+            <div class="cap-item">
+                <div class="cap-icon"><i class="fas fa-bolt"></i></div>
+                <div class="cap-text">
+                    <h5>Instant Answers</h5>
+                    <p>Real-time responses to all your platform questions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: auto; font-size: 0.7rem; opacity: 0.6; text-align: center;">
+            &copy; 2026 SAMHUB Intelligence
+        </div>
     </div>
 
-    <input type="text" id="message" placeholder="Type your message">
-    <button onclick="sendMessage()">Send</button>
+    <!-- Right panel: Chat -->
+    <div id="ai-chat-interface">
+        <div id="ai-header">
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <div style="width: 10px; height: 10px; background: #10b981; border-radius: 50%;"></div>
+                <span style="font-weight: 600; font-size: 0.9rem;">Assistant is Online</span>
+            </div>
+            <button class="clear-btn" onclick="clearChat()">
+                <i class="fas fa-broom"></i> Clear History
+            </button>
+        </div>
+
+        <div id="ai-chat-box">
+            {% if not messages %}
+            <div style="text-align: center; margin: auto; color: #9ca3af;">
+                <i class="fas fa-sparkles"
+                    style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--ai-primary); opacity: 0.4;"></i>
+                <p>Start a conversation. How can I assist you today?</p>
+            </div>
+            {% endif %}
+
+            <div style="text-align:center; margin:0.5rem 0 1rem 0;">
+                <div style="font-size:0.95rem; color:#6b7280; margin-bottom:8px;">Not sure how to ask? Try a suggested question:</div>
+                <div class="suggestions">
+                    <div class="chip" onclick="useSuggestion('Find scholarships for masters in the UK')">Scholarships for Masters in UK</div>
+                    <div class="chip" onclick="useSuggestion('How to register for Irembo birth certificate')">Irembo registration steps</div>
+                    <div class="chip" onclick="useSuggestion('How to write a strong CV for IT jobs')">CV tips for IT jobs</div>
+                    <div class="chip" onclick="useSuggestion('List remote software engineering roles')">Find remote jobs</div>
+                </div>
+            </div>
+
+            {% for msg in messages %}
+            <div class="ai-message {{ msg.role }}">
+                <div class="avatar">
+                    {% if msg.role == 'user' %}
+                        <i class="fas fa-user"></i>
+                    {% else %}
+                        <i class="fas fa-robot"></i>
+                    {% endif %}
+                </div>
+                <div class="ai-message-content mark-render">{{ msg.content }}</div>
+            </div>
+            {% endfor %}
+            <div id="typing">Thinking...</div>
+        </div>
+
+        <div id="ai-input-area">
+            <div class="input-wrapper">
+                <input type="text" id="ai-message-input" placeholder="Ask your question here..."
+                    onkeypress="handleKeyPress(event)">
+            </div>
+            <button onclick="sendAI()" class="ask-btn">
+                Ask <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
 </div>
 
 <script>
-function sendMessage() {
-    let message = document.getElementById("message").value;
+    const chatBox = document.getElementById('ai-chat-box');
+    const typing = document.getElementById('typing');
 
-    fetch("{% url 'send_ai_message' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("messages").innerHTML +=
-            "<p class='user'><strong>You:</strong> " + message + "</p>";
+    marked.setOptions({ breaks: true, gfm: true });
 
-        document.getElementById("messages").innerHTML +=
-            "<p class='assistant'><strong>AI:</strong> " + data.reply + "</p>";
+    function renderMarkdown() {
+        document.querySelectorAll('.mark-render').forEach(el => {
+            if (!el.dataset.rendered) {
+                el.innerHTML = marked.parse(el.innerText);
+                el.dataset.rendered = "true";
+            }
+        });
+    }
+    renderMarkdown();
 
-        document.getElementById("message").value = "";
-    });
-}
+    function scrollToBottom() { chatBox.scrollTop = chatBox.scrollHeight; }
+    scrollToBottom();
+
+    function handleKeyPress(e) { if (e.key === 'Enter') sendAI(); }
+
+    function sendAI() {
+        const input = document.getElementById('ai-message-input');
+        const content = input.value.trim();
+        if (!content) return;
+
+        appendMessage('user', content);
+        input.value = '';
+        typing.style.display = 'block';
+        scrollToBottom();
+
+        fetch("{% url 'send_ai_message' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+            body: JSON.stringify({ message: content })
+        })
+            .then(res => res.json())
+            .then(data => {
+                typing.style.display = 'none';
+                if (data.status === 'success') {
+                    appendMessage('assistant', data.ai_message);
+                }
+            })
+            .catch(() => {
+                typing.style.display = 'none';
+                appendMessage('assistant', "Network Error.");
+            });
+    }
+
+    function useSuggestion(text){
+        const input = document.getElementById('ai-message-input');
+        input.value = text;
+        // small delay so users can see the text
+        setTimeout(()=>{ sendAI(); }, 250);
+    }
+
+    function appendMessage(role, content) {
+        const div = document.createElement('div');
+        div.className = `ai-message ${role}`;
+        const icon = role === 'user' ? 'fa-user' : 'fa-robot';
+        div.innerHTML = `
+            <div class="avatar"><i class="fas ${icon}"></i></div>
+            <div class="ai-message-content">${marked.parse(content)}</div>
+        `;
+        chatBox.insertBefore(div, typing);
+        scrollToBottom();
+    }
+
+    function clearChat() {
+        if (confirm("Reset conversation?")) {
+            location.reload();
+        }
+    }
 </script>
-
-</body>
-</html>
+{% endblock %}

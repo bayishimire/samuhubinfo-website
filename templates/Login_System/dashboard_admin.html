@@ -3,143 +3,160 @@
 
 {% block extra_css %}
 <!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-      integrity="sha512-yHfZbP8v5e4Fz9e8bV2F5yQGpCbb/vu3KFYV8o2yPSzHnhFydI0j9rBg2/6bl7hlz9l9+o14M3XjWcX/3sX9ZA==" 
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-yHfZbP8v5e4Fz9e8bV2F5yQGpCbb/vu3KFYV8o2yPSzHnhFydI0j9rBg2/6bl7hlz9l9+o14M3XjWcX/3sX9ZA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <style>
-/* Wrapper now unified */
-.dashboard-wrapper {
-    max-width: 1400px;
-    margin: 32px auto;
-    display: flex;
-    font-family: 'Roboto', sans-serif;
-    border-radius: 16px;
-    overflow: hidden; /* ensures gradient touches right panel */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-/* LEFT PANEL - Moving Purple Gradient Background */
-.dashboard-left {
-    flex: 1;
-    background: linear-gradient(-45deg, rgb(206,22,206), rgb(150,76,190), rgb(239,101,239), rgb(206,22,206));
-    background-size: 400% 400%;
-    animation: gradientBG 12s ease infinite;
-    color: white;
-    padding: 50px 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 600px;
-}
-
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.dashboard-left h1 {
-    font-size: 38px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-}
-
-/* Left panel description */
-.dashboard-left p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 40px;
-}
-
-/* Left panel stats with icons */
-.stats-left {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.stat-left {
-    background: rgba(255,255,255,0.15);
-    padding: 18px 15px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: background 0.3s, transform 0.3s;
-}
-.stat-left:hover {
-    background: rgba(255,255,255,0.25);
-    transform: translateX(5px);
-}
-
-.stat-left i {
-    font-size: 24px;
-}
-
-/* RIGHT PANEL now transparent to blend with left */
-.dashboard-right {
-    flex: 2;
-    background: rgba(255,255,255,0.95); /* slightly see-through for gradient effect */
-    padding: 100px;
-    border-left: 2px solid rgba(206,22,206,0.5); /* optional divider */
-}
-
-/* Right panel header */
-.dashboard-right h2 {
-    color: rgb(150,76,190);
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-/* Table */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-table th, table td {
-    padding: 14px 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-table th {
-    background: rgb(206,22,206);
-    color: white;
-    font-weight: 600;
-}
-table tr:hover {
-    background: #f1f1f1;
-}
-
-/* Buttons */
-button {
-    background: linear-gradient(135deg,rgb(206,22,206), rgb(239,101,239));
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: transform 0.2s, opacity 0.2s;
-}
-button:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-
-/* Responsive */
-@media(max-width: 1024px) {
+    /* Wrapper now unified */
     .dashboard-wrapper {
-        flex-direction: column;
+        max-width: 1400px;
+        margin: 32px auto;
+        display: flex;
+        font-family: 'Roboto', sans-serif;
+        border-radius: 16px;
+        overflow: hidden;
+        /* ensures gradient touches right panel */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-}
+
+    /* LEFT PANEL - Moving Purple Gradient Background */
+    .dashboard-left {
+        flex: 1;
+        background: linear-gradient(-45deg, #10B981, #059669, #34d399, #10B981);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+        color: white;
+        padding: 50px 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: 600px;
+    }
+
+    @keyframes gradientBG {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .dashboard-left h1 {
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Left panel description */
+    .dashboard-left p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 40px;
+    }
+
+    /* Left panel stats with icons */
+    .stats-left {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stat-left {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 18px 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    .stat-left:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(5px);
+    }
+
+    .stat-left i {
+        font-size: 24px;
+    }
+
+    /* RIGHT PANEL now transparent to blend with left */
+    .dashboard-right {
+        flex: 2;
+        background: rgba(255, 255, 255, 0.95);
+        /* slightly see-through for gradient effect */
+        padding: 100px;
+        border-left: 2px solid rgba(16, 185, 129, 0.5);
+        /* optional divider */
+    }
+
+    /* Right panel header */
+    .dashboard-right h2 {
+        color: #059669;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    /* Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    table th,
+    table td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background: #10B981;
+        color: white;
+        font-weight: 600;
+    }
+
+    table tr:hover {
+        background: #f1f1f1;
+    }
+
+    /* Buttons */
+    button {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media(max-width: 1024px) {
+        .dashboard-wrapper {
+            flex-direction: column;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -154,7 +171,8 @@ button:hover {
         <div class="stats-left">
             <div class="stat-left"><i class="fa-solid fa-users"></i> Total Users: {{ total_users }}</div>
             <div class="stat-left"><i class="fa-solid fa-user-shield"></i> Total Admins: {{ total_admins }}</div>
-            <div class="stat-left"><i class="fa-solid fa-hourglass-half"></i> Pending Approvals: {{ pending_admins.count }}</div>
+            <div class="stat-left"><i class="fa-solid fa-hourglass-half"></i> Pending Approvals: {{ pending_admins.count
+                }}</div>
         </div>
     </div>
 

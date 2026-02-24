@@ -90,13 +90,19 @@
             </div>
         </div>
 
-        <a href="#"><i class="fas fa-bolt"></i> Updates</a>
+        <a href="{% url 'chat_room' %}"
+            class="{% if request.resolver_match.url_name == 'chat_room' %}active{% endif %}">
+            <i class="fas fa-comments"></i> Community
+        </a>
+        <a href="{% url 'ai_chat_room' %}"
+            class="{% if request.resolver_match.url_name == 'ai_chat_room' %}active{% endif %}">
+            <i class="fas fa-robot"></i> SAM AI
+        </a>
 
         <!-- Contact Dropdown -->
         <div class="nav-item contact-link">
             <a href="#"><i class="fas fa-envelope"></i> Contact <i class="fas fa-caret-down"></i></a>
             <div class="contact-info">
-                <a href="{% url 'chat_room' %}"><i class="fab fa-whatsapp"></i> Join WhatsApp</a>
                 <a href="tel:+250788123456"><i class="fas fa-phone"></i> +250 788 123 456</a>
                 <a href="mailto:info@example.com"><i class="fas fa-envelope"></i> info@example.com</a>
                 <a href="#"><i class="fas fa-location-dot"></i> Kigali, Rwanda</a>
@@ -111,11 +117,11 @@
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Stay updated with the latest
             projects and global announcements.</p>
         <div style="display: flex; gap: 0.5rem;">
-            <a href="#" target="_blank" class="btn btn-primary"
+            <a href="{% url 'chat_room' %}" target="_blank" class="btn btn-primary"
                 style="flex: 1; background: var(--accent); border-radius: 0.5rem;">
                 <i class="fab fa-whatsapp"></i> WhatsApp
             </a>
-            <a href="#" class="btn btn-ghost" style="flex: 1; border-radius: 0.5rem;">
+            <a href="{% url 'ai_chat_room' %}" class="btn btn-ghost" style="flex: 1; border-radius: 0.5rem;">
                 <i class="fas fa-robot"></i> Try AI
             </a>
         </div>
@@ -127,24 +133,59 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2026 SAMHUB. All rights reserved.</p>
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-whatsapp"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-telegram"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
+    <footer class="minimal-footer">
+        <div class="footer-core">
+            <h2 class="footer-logo">SAMHUB</h2>
+
+            <div class="footer-label">EXPERIENCE THE APP</div>
+            <div class="footer-store-badges">
+                <a href="#" class="store-item">
+                    <i class="fab fa-google-play"></i>
+                    <span>Play Store</span>
+                </a>
+                <a href="#" class="store-item">
+                    <i class="fab fa-apple"></i>
+                    <span>App Store</span>
+                </a>
+            </div>
+
+            <div class="footer-label">CONNECT WITH US</div>
+            <div class="social-grid">
+                <a href="#" class="social-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="#" class="social-item">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                <a href="#" class="social-item">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </a>
+                <a href="#" class="social-item">
+                    <i class="fab fa-linkedin"></i>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom-text">
+            <p>&copy; 2026 SAMHUB. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- Scroll Top Button -->
+    <div id="scroll-top" class="scroll-top">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Popup logic
             const popup = document.getElementById('popup-notification');
             const closeBtn = document.getElementById('popup-close');
 
             if (popup) {
-                // Show popup after a short delay
                 setTimeout(() => {
                     popup.style.display = 'block';
                 }, 1500);
@@ -153,6 +194,24 @@
                     popup.style.display = 'none';
                 });
             }
+
+            // Scroll to Top logic
+            const scrollTopBtn = document.getElementById('scroll-top');
+
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
         });
     </script>
 

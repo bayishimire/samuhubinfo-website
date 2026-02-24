@@ -5,16 +5,15 @@
 
 <style>
     body {
-        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-        background-size: cover;
+        background: #f8fafc;
         margin: 0;
         padding: 0;
     }
 
     .detail-wrapper {
-        background: rgba(247, 11, 247, 0.75);
+        background: transparent;
         min-height: 100vh;
-        padding: 10px;
+        padding: 40px 10px;
     }
 
     .detail-card {
@@ -23,7 +22,7 @@
         margin: auto;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(245, 13, 241, 0.3);
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
     }
 
     .scholarship-image img {
@@ -38,7 +37,7 @@
 
     .card-content h2 {
         text-align: center;
-        color: #da0ac8;
+        color: var(--primary);
         margin-bottom: 10px;
     }
 
@@ -50,7 +49,7 @@
         display: inline-block;
         margin: 10px auto 25px;
         color: white;
-        background: #da0ac8;
+        background: var(--primary);
     }
 
     .info-section {
@@ -60,17 +59,17 @@
     }
 
     .info-section i {
-        color: #da0ac8;
+        color: var(--primary);
         margin-right: 8px;
     }
 
     hr {
-        border: 1px solid #da0ac8;
+        border: 1px solid var(--border);
         margin: 25px 0;
     }
 
     .section-title {
-        color: #da0ac8;
+        color: var(--primary);
         margin-bottom: 10px;
     }
 
@@ -78,7 +77,7 @@
         display: inline-block;
         padding: 10px 18px;
         margin-right: 10px;
-        background: #da0ac8;
+        background: var(--primary);
         color: white;
         text-decoration: none;
         border-radius: 6px;
@@ -105,17 +104,17 @@
             <div style="text-align:center;">
                 {% now "Y-m-d" as today %}
                 {% if scholarship.is_extended %}
-                    <span class="status-badge">
-                        <i class="fas fa-clock"></i> EXTENDED
-                    </span>
+                <span class="status-badge">
+                    <i class="fas fa-clock"></i> EXTENDED
+                </span>
                 {% elif scholarship.deadline|date:"Y-m-d" >= today %}
-                    <span class="status-badge">
-                        <i class="fas fa-unlock"></i> OPEN
-                    </span>
+                <span class="status-badge">
+                    <i class="fas fa-unlock"></i> OPEN
+                </span>
                 {% else %}
-                    <span class="status-badge">
-                        <i class="fas fa-lock"></i> CLOSED
-                    </span>
+                <span class="status-badge">
+                    <i class="fas fa-lock"></i> CLOSED
+                </span>
                 {% endif %}
             </div>
 
@@ -151,26 +150,49 @@
             </h3>
             <p>{{ scholarship.eligibility }}</p>
 
-            <!-- APPLY BUTTON 1: Always open -->
-            <div class="btn-group">
-                <a href="{% url 'apply_scholarship_manual' scholarship.pk %}" target="_blank" class="btn-custom">
-                    <i class="fas fa-paper-plane"></i> I SUPPORT TO Apply FILL FORM
+            <!-- APPLY BUTTON 1: Support Form -->
+            <div class="btn-group" style="margin-top: 2rem;">
+                <a href="{% url 'apply_scholarship_manual' scholarship.pk %}" class="btn-custom"
+                    style="width: 100%; display: flex; justify-content: center; padding: 1.25rem; background: var(--primary);">
+                    <i class="fas fa-file-contract"></i> Submit Application via SAMHUB Support
                 </a>
             </div>
-            <br>
 
-            <!-- APPLY BUTTON 2: Optional restriction -->
+            <p style="text-align: center; margin: 1.5rem 0; color: #666; font-size: 0.9rem; font-weight: bold;">
+                OR
+            </p>
+
+            <!-- APPLY BUTTON 2: Restricted Direct Apply -->
             <div class="btn-group">
-                {% if user.is_authenticated and scholarship.is_open %}
-                    <a href="{{ scholarship.application_link }}" target="_blank" class="btn-custom">
-                        <i class="fas fa-paper-plane"></i> Apply Now
-                    </a>
+                {% if scholarship.is_open %}
+                <a href="{{ scholarship.application_link }}" target="_blank" class="btn-custom"
+                    style="width: 100%; display: flex; justify-content: center; background: transparent; border: 2px solid var(--primary); color: var(--primary);">
+                    <i class="fas fa-external-link-alt"></i> Apply Directly on University Site
+                </a>
                 {% else %}
-                    <a href="javascript:void(0);" class="btn-custom" onclick="alert('Contact the TU support to enable application.');">
-                        <i class="fas fa-paper-plane"></i> Apply Now
-                    </a>
+                <button class="btn-custom" style="width: 100%; border: none; opacity: 0.7; cursor: pointer;"
+                    onclick="handleRestrictedApply()">
+                    <i class="fas fa-lock"></i> Apply Now (Restricted)
+                </button>
+                <div id="support-notice"
+                    style="display: none; margin-top: 1rem; padding: 1rem; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; font-size: 0.85rem; color: #854d0e;">
+                    <i class="fas fa-info-circle"></i> <strong>Notice:</strong> Direct application is currently
+                    restricted. Please send your documents to <strong>support@samhub.com</strong>. Our team will assist
+                    your application within 1 minute of receiving the documents.
+                </div>
                 {% endif %}
             </div>
+
+            <script>
+                function handleRestrictedApply() {
+                    const notice = document.getElementById('support-notice');
+                    notice.style.display = 'block';
+                    alert('Direct application restricted. Please wait 1 minute for a support representative or send documents to support@samhub.com');
+
+                    // The user requested a 1 minute message/support expectation
+                    console.log('User has been informed that support responds in 1 minute.');
+                }
+            </script>
 
         </div>
     </div>

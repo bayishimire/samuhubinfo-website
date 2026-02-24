@@ -1,112 +1,197 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block content %}
+{% block extra_css %}
 <style>
-    body {
-        background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-        background-size: cover;
-        font-family: Arial, sans-serif;
-        color: #fff;
-        padding: 20px;
-    }
-
-    h1 {
-        color: #ff00d4;
-        text-align: center;
-        margin-bottom: 30px;
-        text-shadow: 1px 1px 2px #000;
-    }
-
-    form {
-        background: rgba(0,0,0,0.5);
-        max-width: 700px;
+    .admin-form-container {
+        padding: 4rem 2rem;
+        max-width: 800px;
         margin: 0 auto;
-        padding: 25px;
-        border-radius: 10px;
     }
 
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
+    .form-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        padding: 4rem;
+        animation: fadeIn 0.8s ease-out;
     }
 
-    input[type="text"],
-    input[type="date"],
-    select,
-    textarea,
-    input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-radius: 5px;
-        border: none;
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    button {
-        background: #ff00d4;
-        color: #fff;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    button:hover {
-        background: #e600c7;
-    }
-
-    p.error {
-        color: #ff4d4d;
-        font-weight: bold;
+    .form-header {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 3rem;
+    }
+
+    .form-header h1 {
+        font-family: 'Outfit';
+        font-size: 2.5rem;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #f1f5f9;
+        border-radius: 10px;
+        font-size: 1rem;
+        background: #f8fafc;
+        transition: all 0.2s;
+        outline: none;
+        color: #1e293b;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    .error-msg {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: 600;
+        border: 1px solid #fee2e2;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
+{% endblock %}
 
-<h1>Add Job (Admin Only)</h1>
+{% block content %}
+<div class="admin-form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1>Post New Job</h1>
+            <p style="color: var(--text-muted);">Fill in the details for the new job listing.</p>
+        </div>
 
-{% if error %}
-<p class="error">{{ error }}</p>
-{% endif %}
+        {% if error %}
+        <div class="error-msg">
+            <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+        {% endif %}
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    
-    <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-    <label for="company">Company:</label>
-    <input type="text" id="company" name="company" required>
+            <div class="form-group">
+                <label for="title">Job Title</label>
+                <input type="text" id="title" name="title" class="form-control"
+                    placeholder="e.g. Senior Software Engineer" required>
+            </div>
 
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location">
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" class="form-control" placeholder="e.g. SAMHUB Tech"
+                    required>
+            </div>
 
-    <label for="experience_required">Experience Required:</label>
-    <select id="experience_required" name="experience_required">
-        <option value="YES">Yes</option>
-        <option value="NO" selected>No</option>
-    </select>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Kigali, Rwanda">
+            </div>
 
-    <label for="description">Description:</label>
-    <textarea id="description" name="description"></textarea>
+            <div class="form-group">
+                <label for="experience_required">Experience Level</label>
+                <select id="experience_required" name="experience_required" class="form-control">
+                    <option value="YES">Experience Required</option>
+                    <option value="NO" selected>Entry Level / No Experience</option>
+                </select>
+            </div>
 
-    <label for="requirements">Requirements:</label>
-    <textarea id="requirements" name="requirements"></textarea>
+            <div class="form-group">
+                <label for="description">Job Description</label>
+                <textarea id="description" name="description" class="form-control"
+                    placeholder="Describe the roles and responsibilities..."></textarea>
+            </div>
 
-    <label for="deadline">Deadline:</label>
-    <input type="date" id="deadline" name="deadline">
+            <div class="form-group">
+                <label for="requirements">Requirements</label>
+                <textarea id="requirements" name="requirements" class="form-control"
+                    placeholder="List required skills and qualifications..."></textarea>
+            </div>
 
-    <label for="support_document">Upload Support Document(s):</label>
-    <input type="file" id="support_document" name="support_document" accept=".pdf,.doc,.docx" multiple>
+            <div class="form-group">
+                <label for="deadline">Application Deadline</label>
+                <input type="date" id="deadline" name="deadline" class="form-control">
+            </div>
 
-    <button type="submit">Add Job</button>
-</form>
+            <div class="form-group">
+                <label for="support_document">Support Document (Optional)</label>
+                <div style="padding: 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px;">
+                    <input type="file" id="support_document" name="support_document" accept=".pdf,.doc,.docx" multiple>
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Upload PDF or Word
+                    documents.</small>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-plus-circle"></i> Create Job Listing
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'admin_job_dashboard' %}"
+                style="color: var(--text-muted); text-decoration: none; font-weight: 600;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

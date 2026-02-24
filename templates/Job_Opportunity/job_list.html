@@ -1,194 +1,227 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block content %}
+
+
+{% block extra_css %}
 <style>
-    body{
-    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-    background-size: cover;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;}
+    .jobs-container {
+        padding: 4rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-/* Section Header */
-.section-header {
-    text-align: center;
-    color: #00ffd0;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-shadow: 1px 1px 2px #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        animation: fadeInDown 0.8s ease-out;
+    }
 
-/* Container & Layout */
-.job-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    justify-content: center;
-    max-width: 1300px;
-    margin: 0 auto 50px auto;
-}
+    .section-header h1 {
+        font-family: 'Outfit';
+        font-size: 3rem;
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
 
-/* Flip Card Container */
-.flip-card {
-    background-color: transparent;
-    width: 440px;
-    height: 420px;
-    perspective: 1000px;
-}
+    .section-header h1 i {
+        color: var(--primary);
+    }
 
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-}
+    .section-header p {
+        color: var(--text-muted);
+        font-size: 1.25rem;
+    }
 
-.flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-}
+    .job-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
 
-/* Front and Back of the Card */
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    color: #fff;
-}
+    /* Professional Horizontal Job row */
+    .job-row {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        display: grid;
+        grid-template-columns: 1fr 2fr 1.5fr auto;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+    }
 
-/* Front */
-.flip-card-front {
-    background: rgba(16, 219, 196, 0.85);
-}
+    .job-row:hover {
+        transform: translateX(10px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary);
+    }
 
-/* Back */
-.flip-card-back {
-    background: rgba(255, 0, 212, 0.85);
-    transform: rotateY(180deg);
-    overflow: auto;
-}
+    .job-main-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
 
-/* Job Image */
-.job-card-img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid #fff;
-    margin: 15px 0;
-}
+    .job-company {
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
 
-/* Job Title */
-.job-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+    .job-title {
+        font-family: 'Outfit';
+        font-size: 1.25rem;
+        color: var(--text-main);
+        font-weight: 700;
+        margin: 0;
+    }
 
-/* Experience */
-.experience {
-    font-size: 15px;
-    font-weight: bold;
-    color: #ffff00;
-    margin-bottom: 10px;
-}
+    .job-meta-row {
+        display: flex;
+        gap: 1.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
 
-/* Buttons */
-.job-btn {
-    padding: 10px 20px;
-    background: rgb(24, 237, 162);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.3s;
-    margin: 5px 0;
-    display: inline-block;
-}
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-.job-btn:hover {
-    background: #e600c7;
-}
+    .job-description-text {
+        color: #475569;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 
-/* Back card icons */
-.flip-card-back p {
-    text-align: left;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
+    .row-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
 
-.flip-card-back i {
-    margin-right: 8px;
-    color: #ffff00;
-}
+    .btn-job {
+        padding: 0.6rem 1.2rem;
+        border-radius: 10px;
+        font-weight: 700;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .btn-view {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn-view:hover {
+        background: #e2e8f0;
+    }
+
+    .btn-apply {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-apply:hover {
+        background: var(--primary-hover);
+    }
+
+    .no-jobs {
+        text-align: center;
+        padding: 5rem;
+        background: #f8fafc;
+        border-radius: 20px;
+        border: 2px dashed #cbd5e1;
+        color: #64748b;
+    }
+
+    @media (max-width: 1024px) {
+        .job-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding: 2rem;
+        }
+
+        .job-row:hover {
+            transform: translateY(-5px);
+        }
+    }
 </style>
+{% endblock %}
 
-<!-- Section Header -->
-<div class="section-header">
-    <i class="fas fa-briefcase"></i>
-    <span>Job Available</span>
-</div>
+{% block content %}
+<div class="jobs-container">
+    <div class="section-header">
+        <h1><i class="fas fa-briefcase"></i> Career Opportunities</h1>
+        <p>Discover your next professional milestone at SAMHUB</p>
+    </div>
 
-<div class="job-section">
-    {% if jobs %}
+    <div class="job-list">
+        {% if jobs %}
         {% for job in jobs %}
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <!-- Front of Card -->
-                    <div class="flip-card-front">
-                        <div class="job-title">{{ job.title }} at {{ job.company }}</div>
-                        {% if job.image %}
-                            <img class="job-card-img" src="{{ job.image.url }}" alt="{{ job.title }}">
-                        {% else %}
-                            <img class="job-card-img" src="{% static 'images/default_job.png' %}" alt="No Image">
-                        {% endif %}
-                        <span class="experience">
-                            {% if job.experience_required == "YES" %}
-                                <i class="fas fa-user-tie"></i> Experience Required
-                            {% else %}
-                                <i class="fas fa-user-check"></i> No Experience
-                            {% endif %}
-                        </span>
-                    </div>
+        <div class="job-row">
+            <div class="job-main-info">
+                <div class="job-company">{{ job.company }}</div>
+                <h2 class="job-title">{{ job.title }}</h2>
+            </div>
 
-                    <!-- Back of Card -->
-                    <div class="flip-card-back">
-                        <h3>{{ job.title }} at {{ job.company }}</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ job.location }}</p>
-                        <p><i class="fas fa-align-left"></i> <strong>Description:</strong> {{ job.description }}</p>
-                        <p><i class="fas fa-tasks"></i> <strong>Requirements:</strong> {{ job.requirements }}</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Deadline:</strong> {{ job.deadline }}</p>
-
-                        <a href="{% url 'job_detail' job.id %}" class="job-btn"><i class="fas fa-eye"></i> View Details</a>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'apply_job' job.id %}" class="job-btn"><i class="fas fa-paper-plane"></i> Apply Now</a>
-                        {% else %}
-                            <a href="{% url 'Login' %}" class="job-btn"><i class="fas fa-sign-in-alt"></i> Login to Apply</a>
-                        {% endif %}
-                    </div>
+            <div class="job-meta-row">
+                <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-user-clock"></i>
+                    {% if job.experience_required == "YES" %}Exp. Required{% else %}Entry Level{% endif %}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-calendar-alt"></i> {{ job.posted_at|timesince }} ago
                 </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-jobs"><i class="fas fa-briefcase"></i> No jobs available.</p>
-    {% endif %}
-</div>
 
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+            <div class="job-description-text">
+                {{ job.description }}
+            </div>
+
+            <div class="row-actions">
+                <a href="{% url 'job_detail' job.id %}" class="btn-job btn-view">
+                    Details
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'apply_job' job.id %}" class="btn-job btn-apply">
+                    Apply Now
+                </a>
+                {% else %}
+                <a href="{% url 'Login' %}" class="btn-job btn-apply">
+                    Login to Apply
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="no-jobs">
+            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1.5rem; display: block;"></i>
+            <h3>No positions found</h3>
+            <p>Check back soon for new opportunities!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

@@ -1,28 +1,268 @@
-<h1>Applications for {{ job.title }}</h1>
+{% extends "Login_System/base.html" %}
+{% load static %}
 
-{% if applications %}
-    <table border="1" cellpadding="10" cellspacing="0">
-        <tr>
-            <th>Applicant Name</th>
-            <th>Email</th>
-            <th>Resume</th>
-            <th>Cover Letter</th>
-            <th>Submitted At</th>
-            <th>Status</th>
-        </tr>
-        {% for app in applications %}
-        <tr>
-            <td>{{ app.full_name }}</td>
-            <td>{{ app.email }}</td>
-            <td>
-                <a href="{{ app.resume.url }}" target="_blank">Download</a>
-            </td>
-            <td>{{ app.cover_letter }}</td>
-            <td>{{ app.submitted_at }}</td>
-            <td>{{ app.status }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>No applications yet.</p>
-{% endif %}
+{% block extra_css %}
+<style>
+    .admin-container {
+        padding: 4rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+    }
+
+    .page-header h1 {
+        font-family: 'Outfit';
+        font-size: 2.5rem;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.2s;
+        border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+        background: #f8fafc;
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .card {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .apps-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .apps-table th {
+        background: #f8fafc;
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        color: #475569;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .apps-table td {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .applicant-name {
+        font-weight: 800;
+        color: var(--text-main);
+        display: block;
+        font-size: 1.05rem;
+    }
+
+    .applicant-email {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-pending {
+        background: #fffbeb;
+        color: #92400e;
+    }
+
+    .status-accepted {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-action {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+    }
+
+    .btn-accept {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .btn-accept:hover {
+        background: #166534;
+        color: white;
+    }
+
+    .btn-reject {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .btn-reject:hover {
+        background: #991b1b;
+        color: white;
+    }
+
+    .resume-link {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f0fdf4;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .resume-link:hover {
+        background: #dcfce7;
+        transform: scale(1.02);
+    }
+
+    .no-data {
+        padding: 8rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="page-header">
+        <div>
+            <h1>Applications Review</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 0.5rem;">Managing candidates for <span
+                    style="color: var(--primary); font-weight: 700;">{{ job.title }}</span></p>
+        </div>
+        <a href="{% url 'admin_job_dashboard' %}" class="btn-ghost">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+        {% if applications %}
+        <div style="overflow-x: auto;">
+            <table class="apps-table">
+                <thead>
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Credentials</th>
+                        <th>Cover Letter Snippet</th>
+                        <th>Status</th>
+                        <th>Applied Date</th>
+                        <th>Review Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>
+                            <span class="applicant-name">{{ app.full_name }}</span>
+                            <span class="applicant-email">{{ app.email }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ app.resume.url }}" target="_blank" class="resume-link">
+                                <i class="fas fa-file-pdf"></i> Resume
+                            </a>
+                        </td>
+                        <td>
+                            <div style="max-width: 280px; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+                                {{ app.cover_letter|truncatechars:100 }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ app.status|lower }}">
+                                {{ app.status }}
+                            </span>
+                        </td>
+                        <td style="color: #64748b; font-size: 0.9rem;">
+                            {{ app.submitted_at|date:"M d, Y" }}
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                {% if app.status == 'PENDING' %}
+                                <a href="{% url 'accept_application' app.id %}" class="btn-action btn-accept"
+                                    title="Accept Candidate">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="{% url 'reject_application' app.id %}" class="btn-action btn-reject"
+                                    title="Reject Candidate">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                                {% else %}
+                                <div
+                                    style="display: flex; align-items: center; gap: 0.5rem; color: #94a3b8; font-size: 0.8rem; font-weight: 700;">
+                                    <i class="fas fa-check-double"></i> Processed
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fas fa-user-clock"
+                style="font-size: 4.5rem; color: #cbd5e1; margin-bottom: 2rem; display: block;"></i>
+            <h3 style="color: #475569; font-size: 1.5rem;">No applications received yet</h3>
+            <p style="color: #94a3b8; max-width: 400px; margin: 0 auto;">When candidates apply for this position, their
+                details and resumes will appear here for your review.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

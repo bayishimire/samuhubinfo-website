@@ -1,216 +1,361 @@
-{% extends 'Login_System/base.html' %}
+{% extends "Login_System/base.html" %}
 {% load static %}
-{% block content %}
 
+{% block extra_css %}
 <style>
-body {
-    background: url("{% static 'images/5.png' %}") no-repeat center center fixed;
-    background-size: cover;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-.form-wrapper {
-    {% comment %} background: rgba(46, 150, 195, 0.9); {% endcomment %}
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(218, 10, 200, 0.3);
-}
-
-h1, h2 {
-    color: #da0ac8;
-    text-align: center;
-}
-
-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.form-section {
-    flex: 1 1 30%;
-    min-width: 280px;
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.form-section h2 {
-    text-align: left;
-    font-size: 18px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #da0ac8;
-    padding-bottom: 5px;
-}
-
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-input, select, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-
-button {
-    display: block;
-    margin: 30px auto 0 auto;
-    padding: 12px 25px;
-    background: #da0ac8;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background: #b100a0;
-}
-
-.form-section i {
-    color: #da0ac8;
-    margin-right: 6px;
-}
-
-@media (max-width: 1000px) {
-    form {
-        flex-direction: column;
+    .form-wrapper {
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
     }
-}
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .page-header h1 {
+        font-family: 'Outfit';
+        font-size: 2.75rem;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .btn-ghost:hover {
+        color: var(--primary);
+    }
+
+    .application-form {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    .form-section {
+        background: white;
+        padding: 2.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .form-section h2 {
+        font-family: 'Outfit';
+        font-size: 1.5rem;
+        color: var(--text-main);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 2px solid var(--primary-light);
+        padding-bottom: 1rem;
+    }
+
+    .form-section h2 i {
+        color: var(--primary);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-group label i {
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #f1f5f9;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        background: #f8fafc;
+        transition: all 0.2s;
+        outline: none;
+        color: #1e293b;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .btn-submit-container {
+        grid-column: span 3;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        padding: 1.25rem 3.5rem;
+        border: none;
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+    }
+
+    .document-list {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: #f0fdf4;
+        border-radius: 12px;
+        border: 1px dashed var(--primary);
+    }
+
+    .document-list p {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 1100px) {
+        .application-form {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .btn-submit-container {
+            grid-column: span 2;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .application-form {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-submit-container {
+            grid-column: span 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
+{% endblock %}
 
-<div class="form-wrapper">
-    <h1>Apply for <b>{{ scholarship.title }}</b></h1>
+{% block content %}
+<div class="page-header">
+    <p
+        style="color: var(--primary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">
+        Scholarship Application</p>
+    <h1>{{ scholarship.title }}</h1>
+    <a href="{% url 'scholarship_detail' scholarship.pk %}" class="btn-ghost">
+        <i class="fas fa-arrow-left"></i> Back to Details
+    </a>
+</div>
 
-    {% if messages %}
-        <ul style="color:red;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+{% if messages %}
+<div style="max-width: 800px; margin: 0 auto 2rem;">
+    {% for message in messages %}
+    <div
+        style="padding: 1rem; border-radius: 10px; background: #fee2e2; color: #991b1b; margin-bottom: 1rem; font-weight: 600;">
+        <i class="fas fa-exclamation-circle"></i> {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+<form method="post" enctype="multipart/form-data" class="application-form">
+    {% csrf_token %}
 
-        <!-- Personal Information -->
-        <div class="form-section">
-            <h2><i class="fas fa-user"></i> Personal Information</h2>
+    <!-- Personal Information -->
+    <div class="form-section">
+        <h2><i class="fas fa-user"></i> Personal Details</h2>
 
+        <div class="form-group">
             <label for="first_name"><i class="fas fa-id-badge"></i> First Name</label>
-            <input type="text" name="first_name" id="first_name" required>
-            
-
-            <label for="middle_name"><i class="fas fa-id-card"></i> Middle Name</label>
-            <input type="text" name="middle_name" id="middle_name">
-
-            <label for="last_name"><i class="fas fa-id-badge"></i> Last Name</label>
-            <input type="text" name="last_name" id="last_name" required>
-             <label for="ID"><i class="fas fa-id-badge"></i> ID</label>
-            <input type="text" name="ID" id="ID" required>
-
-            <label for="email"><i class="fas fa-envelope"></i> Email</label>
-            <input type="email" name="email" id="email" required>
-
-            <label for="phone"><i class="fas fa-phone"></i> Phone</label>
-            <input type="text" name="phone" id="phone" required>
-
-            <label for="country"><i class="fas fa-globe"></i> Country</label>
-            <input type="text" name="country" id="country" required>
-
-            <label for="village"><i class="fas fa-home"></i> Village</label>
-            <input type="text" name="village" id="village">
-
-            <label for="cell"><i class="fas fa-mobile-alt"></i> Cell</label>
-            <input type="text" name="cell" id="cell">
-
-            <label for="nationality"><i class="fas fa-flag"></i> Nationality</label>
-            <input type="text" name="nationality" id="nationality" required>
-            
+            <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter first name"
+                required>
         </div>
 
-        <!-- Education & Documents -->
-        <div class="form-section">
-            <h2><i class="fas fa-graduation-cap"></i> Education & Documents</h2>
+        <div class="form-group">
+            <label for="middle_name"><i class="fas fa-id-card"></i> Middle Name</label>
+            <input type="text" name="middle_name" id="middle_name" class="form-control" placeholder="Optional">
+        </div>
 
+        <div class="form-group">
+            <label for="last_name"><i class="fas fa-id-badge"></i> Last Name</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter last name"
+                required>
+        </div>
+
+        <div class="form-group">
+            <label for="ID"><i class="fas fa-id-card"></i> ID Number / Passport</label>
+            <input type="text" name="ID" id="ID" class="form-control" placeholder="Official Identification" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="email@example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="+250..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="nationality"><i class="fas fa-flag"></i> Nationality</label>
+            <input type="text" name="nationality" id="nationality" class="form-control"
+                placeholder="Country of citizenship" required>
+        </div>
+
+        <div class="form-group">
+            <label for="country"><i class="fas fa-globe"></i> Residential Country</label>
+            <input type="text" name="country" id="country" class="form-control" placeholder="Current location" required>
+        </div>
+    </div>
+
+    <!-- Academic Information -->
+    <div class="form-section">
+        <h2><i class="fas fa-graduation-cap"></i> Academic & Docs</h2>
+
+        <div class="form-group">
             <label for="highest_qualification"><i class="fas fa-school"></i> Highest Qualification</label>
-            <textarea name="highest_qualification" id="highest_qualification" rows="2"></textarea>
+            <input type="text" name="highest_qualification" id="highest_qualification" class="form-control"
+                placeholder="e.g. Master's in CS">
+        </div>
 
-            <label for="education_background"><i class="fas fa-book"></i> Education Background</label>
-            <textarea name="education_background" id="education_background" rows="4"></textarea>
-
-            <label for="CV_file_upload"><i class="fas fa-file"></i> Upload CV</label>
-            <input type="file" name="CV_file_upload" id="CV_file_upload">
-
-            <label for="application_Lettle"><i class="fas fa-file-alt"></i> Application Letter</label>
-            <input type="file" name="application_Lettle" id="application_Lettle">
-
-            <label for="photo"><i class="fas fa-camera"></i> Photo</label>
-            <input type="file" name="photo" id="photo" required>
-            
-            <label for="other_documents"><i class="fas fa-file-contract"></i> Other Documents</label>
-            <input type="file" name="other_documents" id="other_documents">
-
-            <label for="passport"><i class="fas fa-passport"></i> Passport</label>
-            <input type="file" name="passport" id="passport">
+        <div class="form-group">
             <label for="marital_status"><i class="fas fa-heart"></i> Marital Status</label>
-              <select name="marital_status" id="marital_status" required>
+            <select name="marital_status" id="marital_status" class="form-control" required>
                 <option value="SINGLE">Single</option>
                 <option value="MARRIED">Married</option>
                 <option value="OTHER">Other</option>
-             </select>
-
-            
-
-           
+            </select>
         </div>
 
-        <!-- Guardian Information -->
-        <div class="form-section">
-            <h2><i class="fas fa-user-shield"></i> Guardian</h2>
+        <div class="form-group">
+            <label for="education_background"><i class="fas fa-history"></i> Brief Education History</label>
+            <textarea name="education_background" id="education_background" class="form-control" rows="3"
+                placeholder="Tell us about your previous studies..."></textarea>
+        </div>
 
-            <label for="guardian_name"><i class="fas fa-user"></i> Guardian Name</label>
-            <input type="text" name="guardian_name" id="guardian_name" required>
+        <div class="form-group">
+            <label for="CV_file_upload"><i class="fas fa-file-pdf"></i> Curriculum Vitae (CV)</label>
+            <input type="file" name="CV_file_upload" id="CV_file_upload" class="form-control">
+        </div>
 
-            <label for="guardian_address"><i class="fas fa-map-marker-alt"></i> Guardian Address</label>
-            <input type="text" name="guardian_address" id="guardian_address" required>
+        <div class="form-group">
+            <label for="application_Lettle"><i class="fas fa-file-alt"></i> Application Letter</label>
+            <input type="file" name="application_Lettle" id="application_Lettle" class="form-control">
+        </div>
 
-            <label for="guardian_location"><i class="fas fa-city"></i> Guardian Location</label>
-            <input type="text" name="guardian_location" id="guardian_location" required>
+        <div class="form-group">
+            <label for="photo"><i class="fas fa-camera"></i> Passport Photo</label>
+            <input type="file" name="photo" id="photo" class="form-control" required>
+        </div>
 
+        <div class="form-group">
+            <label for="passport"><i class="fas fa-passport"></i> Passport Copy</label>
+            <input type="file" name="passport" id="passport" class="form-control">
+        </div>
+    </div>
+
+    <!-- Guardian & Support Information -->
+    <div class="form-section">
+        <h2><i class="fas fa-user-shield"></i> Support & Guardian</h2>
+
+        <div class="form-group">
+            <label for="guardian_name"><i class="fas fa-user"></i> Guardian Full Name</label>
+            <input type="text" name="guardian_name" id="guardian_name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
             <label for="guardian_phone"><i class="fas fa-phone-alt"></i> Guardian Phone</label>
-            <input type="text" name="guardian_phone" id="guardian_phone" required>
-
-            <label for="guardian_email"><i class="fas fa-envelope"></i> Guardian Email</label>
-            <input type="email" name="guardian_email" id="guardian_email" required>
-
-            <label for="guardian_id_no"><i class="fas fa-id-card"></i> ID No</label>
-            <input type="text" name="guardian_id_no" id="guardian_id_no"><br><br>
-             <h4><p> <i class="fas fa-file"></i><u>Other Documents Required to Appplicant</u></p></h4>
-             <label for="visa"><i class="fas fa-briefcase"></i> Visa</label>
-            <input type="file" name="visa" id="visa">
-
-            <label for="bank_statement"><i class="fas fa-university"></i> Bank Statement</label>
-            <input type="file" name="bank_statement" id="bank_statement">
-
-
+            <input type="text" name="guardian_phone" id="guardian_phone" class="form-control" required>
         </div>
 
-        <button type="submit"><i class="fas fa-paper-plane"></i> Submit Application</button>
-    </form>
-</div>
+        <div class="form-group">
+            <label for="guardian_email"><i class="fas fa-envelope"></i> Guardian Email</label>
+            <input type="email" name="guardian_email" id="guardian_email" class="form-control" required>
+        </div>
 
+        <div class="form-group">
+            <label for="guardian_location"><i class="fas fa-map-marker-alt"></i> Guardian City/Location</label>
+            <input type="text" name="guardian_location" id="guardian_location" class="form-control" required>
+        </div>
+
+        <div class="document-list">
+            <p><i class="fas fa-info-circle"></i> Additional Documents Required</p>
+            <div class="form-group" style="margin-top: 1rem;">
+                <label for="visa"><i class="fas fa-passport"></i> Valid Visa (If any)</label>
+                <input type="file" name="visa" id="visa" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="bank_statement"><i class="fas fa-university"></i> Bank Statement</label>
+                <input type="file" name="bank_statement" id="bank_statement" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="other_documents"><i class="fas fa-folder-open"></i> Other Attachments</label>
+                <input type="file" name="other_documents" id="other_documents" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-submit-container">
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-paper-plane"></i> Finalize Application
+        </button>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">By submitting, you agree to our
+            terms of processing academic data.</p>
+    </div>
+</form>
+</div>
 {% endblock %}

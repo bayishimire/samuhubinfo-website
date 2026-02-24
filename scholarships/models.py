@@ -75,7 +75,7 @@ class ScholarshipApplication(models.Model):
     last_name = models.CharField(max_length=100)
     
     email = models.EmailField(unique=True)
-    phone=models.IntegerField(max_length=10)
+    phone = models.CharField(max_length=15)
     country = models.CharField(max_length=100)
     village = models.CharField(max_length=100, blank=True, null=True)
     cell = models.CharField(max_length=20)

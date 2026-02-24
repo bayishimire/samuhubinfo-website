@@ -1,31 +1,269 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block title %}{{ course.title }}{% endblock %}
+{% block title %}{{ course.title }} | SAMHUB{% endblock %}
+
+{% block extra_css %}
+<style>
+    .learning-container {
+        padding: 3rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Course Hero */
+    .course-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        padding: 4rem;
+        border-radius: 24px;
+        margin-bottom: 3rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 1rem;
+        background: rgba(34, 197, 94, 0.15);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #4ade80;
+        margin-bottom: 1.5rem;
+    }
+
+    .course-hero h1 {
+        font-family: 'Outfit';
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 2.5rem;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        flex-wrap: wrap;
+    }
+
+    .meta-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .meta-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+        font-weight: 700;
+    }
+
+    .meta-value {
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+    /* Content Section */
+    .content-section {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        border: 1px solid #f1f5f9;
+    }
+
+    .course-material {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #334155;
+    }
+
+    /* Exams Grid */
+    .exams-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 2rem;
+    }
+
+    .exam-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        transition: all 0.3s;
+    }
+
+    .exam-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        border-color: var(--primary);
+    }
+
+    .info-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.82rem;
+        color: #64748b;
+        padding: 0.4rem 0.8rem;
+        background: #f8fafc;
+        border-radius: 10px;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-exam {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.85rem;
+        border-radius: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .btn-start {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+    }
+
+    .btn-results {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: inline-block;
+    }
+
+    .badge-open {
+        background: #f0fdf4;
+        color: #16a34a;
+    }
+
+    .badge-upcoming {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .badge-closed {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div style="padding:20px; text-align:center;">
-    <h1 style="color:#ed05e2;">{{ course.title }}</h1>
-    <p>{{ course.description|default:"No description available" }}</p>
-    <p><strong>Price:</strong> ${{ course.price }}</p>
-
-    <h2 style="color:#ed05e2; margin-top:20px;">Exams</h2>
-    {% if exams %}
-        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
-            {% for exam in exams %}
-                <div style="border:1px solid #e0e0e0; padding:15px; border-radius:10px; max-width:250px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
-                    <h3>{{ exam.title }}</h3>
-                    <p>Total Marks: {{ exam.total_marks }}</p>
-                    <p>Passing Marks: {{ exam.passing_marks }}</p>
-                    <a href="{% url 'take_exam' exam.id %}" style="
-                        text-decoration:none; background-color:#ff14b1; color:#fff; padding:8px 15px; border-radius:6px;">
-                        Take Exam
-                    </a>
+<div class="learning-container">
+    <div class="course-hero">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-graduation-cap"></i> Course Dashboard</div>
+            <h1>{{ course.title }}</h1>
+            <div class="hero-meta">
+                <div class="meta-box">
+                    <span class="meta-label">Duration</span>
+                    <span class="meta-value">{{ course.duration_weeks }} Weeks</span>
                 </div>
-            {% endfor %}
+                <div class="meta-box">
+                    <span class="meta-label">Access</span>
+                    <span class="meta-value">Approved</span>
+                </div>
+                <div class="meta-box">
+                    <span class="meta-label">Price</span>
+                    <span class="meta-value">
+                        {% if course.price == 0 %}
+                        Free
+                        {% else %}
+                        ${{ course.price }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
         </div>
-    {% else %}
-        <p>No exams available for this course yet.</p>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert"
+        style="padding: 1rem; border-radius: 10px; background: #eff6ff; color: #1e40af; margin-bottom: 2rem; font-weight: 600;">
+        {{ message }}
+    </div>
+    {% endfor %}
     {% endif %}
+
+    {% if course.content %}
+    <div class="content-section">
+        <h2><i class="fas fa-book-reader"></i> Learning Material</h2>
+        <div class="course-material">{{ course.content|safe }}</div>
+    </div>
+    {% endif %}
+
+    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-family: 'Outfit';">Exams & Assessments</h2>
+        <a href="{% url 'exam_results' course.id %}"
+            style="color: var(--primary); font-weight: 700; text-decoration: none;">View All Results</a>
+    </div>
+
+    <div class="exams-grid">
+        {% for exam in exams %}
+        <div class="exam-card">
+            <span class="badge badge-{{ exam.status_label }}">
+                {{ exam.status_label|upper }}
+            </span>
+
+            <h3 style="margin-bottom: 1rem; font-family: 'Outfit';">{{ exam.title }}</h3>
+
+            <div style="margin-bottom: 1.5rem;">
+                <div class="info-chip"><i class="fas fa-star"></i> {{ exam.total_marks }} pts</div>
+                <div class="info-chip"><i class="fas fa-stopwatch"></i> {{ exam.duration_minutes }}m</div>
+            </div>
+
+            {% if exam.status_label == 'open' %}
+            <a href="{% url 'start_exam' exam.id %}" class="btn-exam btn-start">
+                <i class="fas fa-play"></i> Start Exam
+            </a>
+            {% elif exam.status_label == 'upcoming' %}
+            <div class="btn-exam" style="background: #f8fafc; color: #94a3b8;">
+                <i class="fas fa-clock"></i> Opens {{ exam.open_date|date:"M d, H:i" }}
+            </div>
+            {% else %}
+            <div class="btn-exam" style="background: #f8fafc; color: #94a3b8;">
+                <i class="fas fa-lock"></i> Exam Closed
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 3rem;">No exams available for this
+            course.</p>
+        {% endfor %}
+    </div>
+
+    <div style="text-align: center; margin-top: 4rem;">
+        <a href="{% url 'certificate_view' course.id %}" class="btn btn-primary"
+            style="padding: 1rem 2.5rem; border-radius: 15px; font-weight: 800;">
+            <i class="fas fa-award"></i> Certificate Status
+        </a>
+    </div>
 </div>
 {% endblock %}
