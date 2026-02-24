@@ -99,6 +99,20 @@
             <i class="fas fa-robot"></i> SAM AI
         </a>
 
+        {% if user.is_authenticated %}
+        {% if user.user_type == 'Student' %}
+        <a href="{% url 'student_dashboard' %}"
+            class="{% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}">
+            <i class="fas fa-user-graduate"></i> Student Dashboard
+        </a>
+        {% elif user.user_type == 'Admin' or user.is_superuser %}
+        <a href="{% url 'dashboard_admin' %}"
+            class="{% if request.resolver_match.url_name == 'dashboard_admin' %}active{% endif %}">
+            <i class="fas fa-user-shield"></i> Admin Dashboard
+        </a>
+        {% endif %}
+        {% endif %}
+
         <!-- Contact Dropdown -->
         <div class="nav-item contact-link">
             <a href="#"><i class="fas fa-envelope"></i> Contact <i class="fas fa-caret-down"></i></a>
