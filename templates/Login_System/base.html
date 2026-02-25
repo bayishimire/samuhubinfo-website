@@ -33,6 +33,16 @@
             <div class="user-profile">
                 <img src="{{ user.image.url }}" alt="{{ user.username }}">
                 <span style="font-weight: 600;">{{ user.username }}</span>
+                <a href="{% url 'mark_all_notifications_read' %}"
+                    style="position: relative; margin: 0 1rem; color: #475569;">
+                    <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
+                    {% if unread_notifications_count > 0 %}
+                    <span
+                        style="position: absolute; top: -8px; right: -10px; background: #ef4444; color: white; border-radius: 50%; padding: 0.1rem 0.4rem; font-size: 0.7rem; font-weight: 800; border: 2px solid white;">
+                        {{ unread_notifications_count }}
+                    </span>
+                    {% endif %}
+                </a>
                 <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
             {% else %}
@@ -58,10 +68,21 @@
             <a href="#"><i class="fas fa-project-diagram"></i> Projects <i class="fas fa-caret-down"></i></a>
             <div class="dropdown-menu">
                 {% if user.is_authenticated %}
+                {% if user.user_type == "Student" %}
+                <a href="{% url 'course_list' %}">
+                    <i class="fas fa-graduation-cap"></i> Learning
+                </a>
+                {% else %}
+                <a href="#" onclick="alert('Learning access is reserved for Students.')">
+                    <i class="fas fa-graduation-cap"></i> Learning
+                </a>
+                {% endif %}
                 <a href="#"><i class="fas fa-folder-open"></i> View Projects</a>
                 <a href="#"><i class="fas fa-plus"></i> Add Project</a>
                 {% else %}
-                <a href="{% url 'Login' %}"><i class="fas fa-sign-in-alt"></i> Login First</a>
+                <a href="{% url 'Login' %}">
+                    <i class="fas fa-sign-in-alt"></i> Login First
+                </a>
                 {% endif %}
             </div>
         </div>
@@ -93,10 +114,6 @@
         <a href="{% url 'chat_room' %}"
             class="{% if request.resolver_match.url_name == 'chat_room' %}active{% endif %}">
             <i class="fas fa-comments"></i> Community
-        </a>
-        <a href="{% url 'ai_chat_room' %}"
-            class="{% if request.resolver_match.url_name == 'ai_chat_room' %}active{% endif %}">
-            <i class="fas fa-robot"></i> SAM AI
         </a>
 
         {% if user.is_authenticated %}
@@ -148,41 +165,95 @@
     </main>
 
     <footer class="minimal-footer">
-        <div class="footer-core">
-            <h2 class="footer-logo">SAMHUB</h2>
+        <div class="footer-split">
+            <!-- LEFT: Footer Content Side -->
+            <div class="footer-content-side">
+                <h2 class="footer-logo">SAMHUB</h2>
 
-            <div class="footer-label">EXPERIENCE THE APP</div>
-            <div class="footer-store-badges">
-                <a href="#" class="store-item">
-                    <i class="fab fa-google-play"></i>
-                    <span>Play Store</span>
-                </a>
-                <a href="#" class="store-item">
-                    <i class="fab fa-apple"></i>
-                    <span>App Store</span>
-                </a>
+                <div class="footer-label">EXPERIENCE THE APP</div>
+                <div class="footer-store-badges">
+                    <a href="#" class="store-item">
+                        <i class="fab fa-google-play"></i>
+                        <span>Play Store</span>
+                    </a>
+                    <a href="#" class="store-item">
+                        <i class="fab fa-apple"></i>
+                        <span>App Store</span>
+                    </a>
+                </div>
+
+                <div class="footer-label">CONNECT WITH US</div>
+                <div class="social-grid">
+                    <a href="{% url 'chat_room' %}" class="social-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="#" class="social-item">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" class="social-item">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="social-item">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
             </div>
 
-            <div class="footer-label">CONNECT WITH US</div>
-            <div class="social-grid">
-                <a href="#" class="social-item">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>WhatsApp</span>
-                </a>
-                <a href="#" class="social-item">
-                    <i class="fab fa-instagram"></i>
-                    <span>Instagram</span>
-                </a>
-                <a href="#" class="social-item">
-                    <i class="fab fa-twitter"></i>
-                    <span>Twitter</span>
-                </a>
-                <a href="#" class="social-item">
-                    <i class="fab fa-linkedin"></i>
-                    <span>LinkedIn</span>
-                </a>
+            <!-- RIGHT: Map Side -->
+            <div class="footer-map-side">
+                <div class="map-container" id="footer-map-container">
+                    <div id="footer-map-status" class="map-status">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Locating…</span>
+                    </div>
+                    <iframe id="footer-map-iframe" class="map-iframe" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d63800!2d29.8739!3d-1.9403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2srw!4v1"></iframe>
+                </div>
+
+                <!-- Compact info row below map -->
+                <div class="map-info-row">
+                    <!-- Compass -->
+                    <div class="compass-widget" id="compass-widget">
+                        <div class="compass-ring">
+                            <span class="compass-n">N</span>
+                            <span class="compass-e">E</span>
+                            <span class="compass-s">S</span>
+                            <span class="compass-w">W</span>
+                            <div class="compass-needle" id="compass-needle">
+                                <div class="needle-north"></div>
+                                <div class="needle-south"></div>
+                            </div>
+                        </div>
+                        <div class="compass-label" id="direction-value">N 0°</div>
+                        <div class="compass-coords" id="direction-coords">—</div>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="info-pill" id="time-card">
+                        <i class="fas fa-clock time-icon-sm"></i>
+                        <div class="info-pill-text">
+                            <span class="info-pill-value" id="time-value">--:--</span>
+                            <span class="info-pill-sub" id="time-date">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Climate -->
+                    <div class="info-pill" id="climate-card">
+                        <i class="fas fa-cloud-sun climate-icon-sm" id="climate-icon-el"></i>
+                        <div class="info-pill-text">
+                            <span class="info-pill-value" id="climate-temp">--°C</span>
+                            <span class="info-pill-sub" id="climate-desc">Loading…</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="footer-bottom-text">
             <p>&copy; 2026 SAMHUB. All rights reserved.</p>
         </div>
@@ -226,6 +297,136 @@
                     behavior: 'smooth'
                 });
             });
+
+            // ============ FOOTER MAP & LIVE LOCATION ============
+            const mapIframe = document.getElementById('footer-map-iframe');
+            const mapStatus = document.getElementById('footer-map-status');
+            const directionValue = document.getElementById('direction-value');
+            const directionCoords = document.getElementById('direction-coords');
+            const compassNeedle = document.getElementById('compass-needle');
+            const timeValue = document.getElementById('time-value');
+            const timeDate = document.getElementById('time-date');
+            const climateTemp = document.getElementById('climate-temp');
+            const climateDesc = document.getElementById('climate-desc');
+            const climateIconEl = document.getElementById('climate-icon-el');
+
+            // --- Live Clock ---
+            function updateClock() {
+                const now = new Date();
+                timeValue.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                timeDate.textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // --- Direction helper ---
+            function getCardinal(deg) {
+                const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                return dirs[Math.round(deg / 45) % 8];
+            }
+
+            // --- Compass: device orientation (mobile) ---
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', function (e) {
+                    if (e.alpha !== null) {
+                        const heading = Math.round(e.alpha);
+                        compassNeedle.style.transform = `rotate(${-heading}deg)`;
+                        directionValue.textContent = getCardinal(heading) + ` ${heading}°`;
+                    }
+                });
+            }
+
+            // --- Weather Code to description & icon ---
+            function weatherInfo(code) {
+                const map = {
+                    0: { desc: 'Clear Sky', icon: 'fa-sun' },
+                    1: { desc: 'Mainly Clear', icon: 'fa-sun' },
+                    2: { desc: 'Partly Cloudy', icon: 'fa-cloud-sun' },
+                    3: { desc: 'Overcast', icon: 'fa-cloud' },
+                    45: { desc: 'Foggy', icon: 'fa-smog' },
+                    48: { desc: 'Rime Fog', icon: 'fa-smog' },
+                    51: { desc: 'Light Drizzle', icon: 'fa-cloud-rain' },
+                    53: { desc: 'Drizzle', icon: 'fa-cloud-rain' },
+                    55: { desc: 'Heavy Drizzle', icon: 'fa-cloud-showers-heavy' },
+                    61: { desc: 'Light Rain', icon: 'fa-cloud-rain' },
+                    63: { desc: 'Rain', icon: 'fa-cloud-showers-heavy' },
+                    65: { desc: 'Heavy Rain', icon: 'fa-cloud-showers-heavy' },
+                    71: { desc: 'Light Snow', icon: 'fa-snowflake' },
+                    73: { desc: 'Snow', icon: 'fa-snowflake' },
+                    75: { desc: 'Heavy Snow', icon: 'fa-snowflake' },
+                    80: { desc: 'Rain Showers', icon: 'fa-cloud-showers-heavy' },
+                    81: { desc: 'Showers', icon: 'fa-cloud-showers-heavy' },
+                    82: { desc: 'Heavy Showers', icon: 'fa-cloud-showers-heavy' },
+                    95: { desc: 'Thunderstorm', icon: 'fa-bolt' },
+                    96: { desc: 'T-storm + Hail', icon: 'fa-bolt' },
+                    99: { desc: 'Severe T-storm', icon: 'fa-bolt' },
+                };
+                return map[code] || { desc: 'Unknown', icon: 'fa-question' };
+            }
+
+            // --- Fetch Weather ---
+            let lastWeatherFetch = 0;
+            function fetchWeather(lat, lon) {
+                const now = Date.now();
+                if (now - lastWeatherFetch < 60000) return; // throttle to 1min
+                lastWeatherFetch = now;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+                fetch(url)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.current_weather) {
+                            const cw = data.current_weather;
+                            const wi = weatherInfo(cw.weathercode);
+                            climateTemp.textContent = `${Math.round(cw.temperature)}°C`;
+                            climateDesc.textContent = `${wi.desc} · ${Math.round(cw.windspeed)} km/h`;
+                            climateIconEl.className = `fas ${wi.icon} climate-icon-sm`;
+
+                            // Fallback compass from wind direction (desktop)
+                            if (!window.DeviceOrientationEvent || !('ontouchstart' in window)) {
+                                compassNeedle.style.transform = `rotate(${cw.winddirection}deg)`;
+                                directionValue.textContent = getCardinal(cw.winddirection) + ` ${Math.round(cw.winddirection)}°`;
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        climateDesc.textContent = 'Unavailable';
+                    });
+            }
+
+            // --- Update Map ---
+            let lastMapUpdate = 0;
+            function updateMap(lat, lon) {
+                const now = Date.now();
+                if (now - lastMapUpdate < 30000) return; // throttle to 30s
+                lastMapUpdate = now;
+                mapIframe.src = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3000!2d${lon}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2srw!4v1`;
+                mapStatus.style.display = 'none';
+                mapIframe.style.opacity = '1';
+            }
+
+            // --- Geolocation ---
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(
+                    function (pos) {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        directionCoords.textContent = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+                        updateMap(lat, lon);
+                        fetchWeather(lat, lon);
+                    },
+                    function () {
+                        mapStatus.innerHTML = '<i class="fas fa-map-marker-alt"></i> <span>Kigali, Rwanda</span>';
+                        directionCoords.textContent = '-1.9403°, 29.8739°';
+                        updateMap(-1.9403, 29.8739);
+                        fetchWeather(-1.9403, 29.8739);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
+                );
+            } else {
+                mapStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Geolocation not supported</span>';
+                updateMap(-1.9403, 29.8739);
+                fetchWeather(-1.9403, 29.8739);
+            }
         });
     </script>
 

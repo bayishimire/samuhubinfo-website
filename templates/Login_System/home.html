@@ -124,6 +124,116 @@
         margin-bottom: 1.5rem;
     }
 
+    /* Opportunities Grid */
+    .opportunities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 6rem;
+    }
+
+    .opp-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .opp-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .opp-image {
+        position: relative;
+        height: 180px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .opp-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .opp-image .placeholder {
+        font-size: 3rem;
+        color: var(--primary);
+    }
+
+    .opp-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: white;
+        z-index: 2;
+    }
+
+    .badge-job {
+        background: #2ecc71;
+    }
+
+    .badge-scholarship {
+        background: #e67e22;
+    }
+
+    .badge-course {
+        background: #9b59b6;
+    }
+
+    .opp-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .opp-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-main);
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .opp-content p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .btn-read-more {
+        display: inline-block;
+        padding: 0.6rem 1rem;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-read-more:hover {
+        background: var(--primary-dark);
+        transform: scale(1.05);
+        color: white;
+    }
+
     @keyframes fadeInDown {
         from {
             opacity: 0;
@@ -243,7 +353,159 @@
             Kigali.</p>
         <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
     </div>
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Interactive Learning</h3>
+        <p style="color: var(--text-muted);">Hands-on tutorials and coding exercises tailored for the modern developer.
+        </p>
+        <a href="{% url 'course_list' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Get Started</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <h3>Collaboration</h3>
+        <p style="color: var(--text-muted);">Work on real-world projects with peers and mentors to gain practical
+            experience.</p>
+        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Project</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Community</h3>
+        <p style="color: var(--text-muted);">Connect with a supportive community of learners and professionals in
+            Kigali.</p>
+        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Interactive Learning</h3>
+        <p style="color: var(--text-muted);">Hands-on tutorials and coding exercises tailored for the modern developer.
+        </p>
+        <a href="{% url 'course_list' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Get Started</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <h3>Collaboration</h3>
+        <p style="color: var(--text-muted);">Work on real-world projects with peers and mentors to gain practical
+            experience.</p>
+        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Project</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Community</h3>
+        <p style="color: var(--text-muted);">Connect with a supportive community of learners and professionals in
+            Kigali.</p>
+        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
+    </div>
+
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Interactive Learning</h3>
+        <p style="color: var(--text-muted);">Hands-on tutorials and coding exercises tailored for the modern developer.
+        </p>
+        <a href="{% url 'course_list' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Get Started</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <h3>Collaboration</h3>
+        <p style="color: var(--text-muted);">Work on real-world projects with peers and mentors to gain practical
+            experience.</p>
+        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Project</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Community</h3>
+        <p style="color: var(--text-muted);">Connect with a supportive community of learners and professionals in
+            Kigali.</p>
+        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
+    </div>
 </section>
+
+<div style="text-align: center; margin-top: 2rem; margin-bottom: 3rem;">
+    <h2 style="font-size: 2.25rem; font-family: 'Outfit';">Latest Opportunities & Updates</h2>
+    <p style="color: var(--text-muted);">Discover what's new in our community</p>
+</div>
+
+<section class="opportunities-grid">
+    <!-- Latest Jobs -->
+    {% for job in latest_jobs %}
+    <div class="opp-card card">
+        <div class="opp-image">
+            {% if job.image %}
+            <img src="{{ job.image.url }}" alt="{{ job.title }}">
+            {% else %}
+            <div class="placeholder"><i class="fas fa-briefcase"></i></div>
+            {% endif %}
+            <span class="opp-badge badge-job">Job</span>
+        </div>
+        <div class="opp-content">
+            <h3>{{ job.title }}</h3>
+            <p>{{ job.description|truncatewords:15 }}</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'job_detail' job.id %}" class="btn-read-more">Read more</a>
+            {% else %}
+            <a href="{% url 'Login' %}?next={% url 'job_detail' job.id %}" class="btn-read-more">Read more</a>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center w-full">No new jobs posted yet.</p>
+    {% endfor %}
+
+    <!-- Latest Scholarships -->
+    {% for sch in latest_scholarships %}
+    <div class="opp-card card">
+        <div class="opp-image">
+            {% if sch.image %}
+            <img src="{{ sch.image.url }}" alt="{{ sch.title }}">
+            {% else %}
+            <div class="placeholder"><i class="fas fa-graduation-cap"></i></div>
+            {% endif %}
+            <span class="opp-badge badge-scholarship">Scholarship</span>
+        </div>
+        <div class="opp-content">
+            <h3>{{ sch.title }}</h3>
+            <p>{{ sch.description|truncatewords:15 }}</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'scholarship_detail' sch.id %}" class="btn-read-more">Read more</a>
+            {% else %}
+            <a href="{% url 'Login' %}?next={% url 'scholarship_detail' sch.id %}" class="btn-read-more">Read more</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Latest Courses -->
+    {% for course in latest_courses %}
+    <div class="opp-card card">
+        <div class="opp-image">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+            {% else %}
+            <div class="placeholder"><i class="fas fa-laptop-code"></i></div>
+            {% endif %}
+            <span class="opp-badge badge-course">Course</span>
+        </div>
+        <div class="opp-content">
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description|truncatewords:15 }}</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'course_detail' course.id %}" class="btn-read-more">Read more</a>
+            {% else %}
+            <a href="{% url 'Login' %}?next={% url 'course_detail' course.id %}" class="btn-read-more">Read more</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+
 
 <script>
     const ticker = document.getElementById('ticker');

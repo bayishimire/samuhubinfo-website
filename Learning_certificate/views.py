@@ -184,11 +184,13 @@ def start_exam(request, exam_id):
     for ans in StudentAnswer.objects.filter(attempt=attempt):
         existing_answers[ans.question_id] = ans.selected_answer
 
+    import json
     return render(request, 'Learning_certificate/take_exam.html', {
         'exam': exam,
         'attempt': attempt,
         'questions': questions,
         'existing_answers': existing_answers,
+        'existing_answers_json': json.dumps(existing_answers),
         'time_remaining': int(attempt.time_remaining()),
     })
 

@@ -148,6 +148,15 @@
             </div>
 
             <div class="form-group">
+                <label for="job_mode">Job Mode</label>
+                <select id="job_mode" name="job_mode" class="form-control">
+                    <option value="ONSITE" selected>On-site</option>
+                    <option value="REMOTE">Remote</option>
+                    <option value="HYBRID">Hybrid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="experience_required">Experience Level</label>
                 <select id="experience_required" name="experience_required" class="form-control">
                     <option value="YES">Experience Required</option>
@@ -168,12 +177,27 @@
             </div>
 
             <div class="form-group">
+                <label for="required_documents_list">Required Documents</label>
+                <textarea id="required_documents_list" name="required_documents_list" class="form-control"
+                    placeholder="e.g. Updated CV, ID Card copy, Degree..."></textarea>
+            </div>
+
+            <div class="form-group">
                 <label for="deadline">Application Deadline</label>
                 <input type="date" id="deadline" name="deadline" class="form-control">
             </div>
 
             <div class="form-group">
-                <label for="support_document">Support Document (Optional)</label>
+                <label for="image">Job Image / Branding</label>
+                <div style="padding: 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px;">
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Upload a professional image
+                    for the listing.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="support_document">Support Documents (Optional)</label>
                 <div style="padding: 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px;">
                     <input type="file" id="support_document" name="support_document" accept=".pdf,.doc,.docx" multiple>
                 </div>

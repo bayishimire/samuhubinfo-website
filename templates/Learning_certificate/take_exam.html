@@ -342,28 +342,21 @@
         {% csrf_token %}
 
         {% for question in questions %}
-        <div class="question-card" id="qcard-{{ question.id }}" data-qid="{{ question.id }}" {% if question.id in
-            existing_answers %}class="question-card answered" {% endif %}>
-
+        <div class="question-card" id="qcard-{{ question.id }}" data-qid="{{ question.id }}">
             <span class="q-marks">{{ question.marks }} pt{{ question.marks|pluralize }}</span>
             <div class="q-number">{{ forloop.counter }}</div>
             <div class="q-text">{{ question.text }}</div>
 
             <div class="options-list">
-                {% with letters="ABCD" %}
                 {% for opt_val, opt_text in question.get_options %}
                 <label class="option-label" for="q{{ question.id }}_{{ opt_val }}">
                     <input type="radio" id="q{{ question.id }}_{{ opt_val }}" name="question_{{ question.id }}"
-                        value="{{ opt_val }}" {% if existing_answers and question.id in existing_answers %} {% for
-                        ea_qid, ea_val in existing_answers.items %} {% if ea_qid==question.id and ea_val==opt_val
-                        %}checked{% endif %} {% endfor %} {% endif %}
-                        onchange="saveAnswer({{ question.id }}, '{{ opt_val }}')">
+                        value="{{ opt_val }}" onchange="saveAnswer({{ question.id }}, '{{ opt_val }}')">
                     <span class="option-dot"></span>
                     <span class="option-letter">{{ opt_val }}</span>
                     <span class="option-text">{{ opt_text }}</span>
                 </label>
                 {% endfor %}
-                {% endwith %}
             </div>
         </div>
         {% endfor %}
@@ -379,57 +372,67 @@
 </div>
 
 <script>
-    // ── Timer ──
-    (function () {
-        var remaining = {{ time_remaining }
+    // ── Global Context ──
+    const GLOBAL_EXAM_CONTEXT = {
+        timeRemaining: parseInt("{{ time_remaining }}") || 0,
+        existingAnswers: JSON.parse('{{ existing_answers_json|safe }}' || '{}')
     };
-    var timerText = document.getElementById('timerText');
-    var examForm = document.getElementById('examForm');
 
-    function updateTimer() {
-        if (remaining <= 0) {
-            timerText.textContent = "TIME'S UP!";
-            timerText.className = 'timer-text danger';
-            // Auto-submit
-            examForm.submit();
-            return;
+    // ── Timer Logic ──
+    (function () {
+        let remaining = GLOBAL_EXAM_CONTEXT.timeRemaining;
+        const timerText = document.getElementById('timerText');
+        const examForm = document.getElementById('examForm');
+
+        function updateTimer() {
+            if (remaining <= 0) {
+                if (timerText) {
+                    timerText.textContent = "TIME'S UP!";
+                    timerText.className = 'timer-text danger';
+                }
+                if (examForm) examForm.submit();
+                return;
+            }
+
+            remaining--;
+            const min = Math.floor(remaining / 60);
+            const sec = remaining % 60;
+            if (timerText) {
+                timerText.textContent = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+                if (remaining <= 60) {
+                    timerText.className = 'timer-text danger';
+                } else if (remaining <= 300) {
+                    timerText.className = 'timer-text warning';
+                }
+            }
         }
 
-        remaining--;
-        var min = Math.floor(remaining / 60);
-        var sec = remaining % 60;
-        timerText.textContent = String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
-
-        if (remaining <= 60) {
-            timerText.className = 'timer-text danger';
-        } else if (remaining <= 300) {
-            timerText.className = 'timer-text warning';
-        }
-    }
-
-    updateTimer();
-    setInterval(updateTimer, 1000);
-}) ();
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    })();
 
     // ── Progress Tracker ──
     function updateProgress() {
-        var total = document.querySelectorAll('.question-card').length;
-        var answered = document.querySelectorAll('.question-card.answered').length;
-        document.getElementById('progressText').textContent = answered + '/' + total + ' answered';
-        document.getElementById('progressFill').style.width = (total > 0 ? (answered / total * 100) : 0) + '%';
+        const total = document.querySelectorAll('.question-card').length;
+        const answered = document.querySelectorAll('.question-card.answered').length;
+        const textElem = document.getElementById('progressText');
+        const fillElem = document.getElementById('progressFill');
+
+        if (textElem) textElem.textContent = answered + '/' + total + ' answered';
+        if (fillElem) fillElem.style.width = (total > 0 ? (answered / total * 100) : 0) + '%';
     }
 
     // ── Save answer via AJAX ──
     function saveAnswer(questionId, answer) {
-        var card = document.getElementById('qcard-' + questionId);
-        card.classList.add('answered');
+        const card = document.getElementById('qcard-' + questionId);
+        if (card) card.classList.add('answered');
         updateProgress();
 
-        // AJAX save
-        var form = new FormData();
+        const form = new FormData();
         form.append('question_id', questionId);
         form.append('answer', answer);
-        form.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+        const csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrf) form.append('csrfmiddlewaretoken', csrf.value);
 
         fetch('{% url "save_answer" exam.id %}', {
             method: 'POST',
@@ -437,7 +440,20 @@
         });
     }
 
-    // Init progress
-    document.addEventListener('DOMContentLoaded', updateProgress);
+    // ── Initialization ──
+    window.addEventListener('DOMContentLoaded', () => {
+        // Load existing answers
+        const answers = GLOBAL_EXAM_CONTEXT.existingAnswers;
+        for (const qid in answers) {
+            const val = answers[qid];
+            const radio = document.getElementById(`q${qid}_${val}`);
+            if (radio) {
+                radio.checked = true;
+                const card = document.getElementById(`qcard-${qid}`);
+                if (card) card.classList.add('answered');
+            }
+        }
+        updateProgress();
+    });
 </script>
 {% endblock %}

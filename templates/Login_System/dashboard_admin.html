@@ -1,213 +1,739 @@
 {% extends "Login_System/base.html" %}
-{% block title %}Admin Dashboard | SAMHUB{% endblock %}
+{% block title %}Admin Advanced Dashboard | SAMHUB{% endblock %}
 
 {% block extra_css %}
-<!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    integrity="sha512-yHfZbP8v5e4Fz9e8bV2F5yQGpCbb/vu3KFYV8o2yPSzHnhFydI0j9rBg2/6bl7hlz9l9+o14M3XjWcX/3sX9ZA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    /* Wrapper now unified */
-    .dashboard-wrapper {
+    :root {
+        --primary: #10B981;
+        --primary-dark: #059669;
+        --secondary: #6366F1;
+        --bg-light: #F9FAFB;
+        --text-main: #1F2937;
+        --text-muted: #6B7280;
+        --white: #FFFFFF;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --radius-lg: 1rem;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-main);
+    }
+
+    .dashboard-container {
         max-width: 1400px;
-        margin: 32px auto;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Header Section */
+    .dashboard-header {
         display: flex;
-        font-family: 'Roboto', sans-serif;
-        border-radius: 16px;
-        overflow: hidden;
-        /* ensures gradient touches right panel */
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
     }
 
-    /* LEFT PANEL - Moving Purple Gradient Background */
-    .dashboard-left {
-        flex: 1;
-        background: linear-gradient(-45deg, #10B981, #059669, #34d399, #10B981);
-        background-size: 400% 400%;
-        animation: gradientBG 12s ease infinite;
-        color: white;
-        padding: 50px 25px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        min-height: 600px;
-    }
-
-    @keyframes gradientBG {
-        0% {
-            background-position: 0% 50%;
-        }
-
-        50% {
-            background-position: 100% 50%;
-        }
-
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-    .dashboard-left h1 {
-        font-size: 38px;
+    .dashboard-header h1 {
+        font-size: 1.875rem;
         font-weight: 700;
-        margin-bottom: 25px;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Left panel description */
-    .dashboard-left p {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 40px;
-    }
-
-    /* Left panel stats with icons */
-    .stats-left {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .stat-left {
-        background: rgba(255, 255, 255, 0.15);
-        padding: 18px 15px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 18px;
+        color: var(--text-main);
         display: flex;
         align-items: center;
-        gap: 12px;
-        transition: background 0.3s, transform 0.3s;
+        gap: 0.75rem;
     }
 
-    .stat-left:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateX(5px);
+    .dashboard-header h1 i {
+        color: var(--primary);
     }
 
-    .stat-left i {
-        font-size: 24px;
+    /* Grid Layout */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    /* RIGHT PANEL now transparent to blend with left */
-    .dashboard-right {
-        flex: 2;
-        background: rgba(255, 255, 255, 0.95);
-        /* slightly see-through for gradient effect */
-        padding: 100px;
-        border-left: 2px solid rgba(16, 185, 129, 0.5);
-        /* optional divider */
+    /* Stat Cards */
+    .stat-card {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid #E5E7EB;
     }
 
-    /* Right panel header */
-    .dashboard-right h2 {
-        color: #059669;
-        font-size: 28px;
-        margin-bottom: 20px;
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
     }
 
-    /* Table */
+    .stat-card .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card.primary .icon-box {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--primary);
+    }
+
+    .stat-card.secondary .icon-box {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--secondary);
+    }
+
+    .stat-card.warning .icon-box {
+        background: rgba(245, 158, 11, 0.1);
+        color: #F59E0B;
+    }
+
+    .stat-card.danger .icon-box {
+        background: rgba(239, 68, 68, 0.1);
+        color: #EF4444;
+    }
+
+    .stat-card h3 {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    /* Analytics Section */
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-container {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid #E5E7EB;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-header h2 {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    /* Table Section */
+    .table-container {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid #E5E7EB;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+    }
+
+    .table-header {
+        margin-bottom: 1rem;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
-        background: #fff;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
-    table th,
-    table td {
-        padding: 14px 12px;
+    th {
         text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    table th {
-        background: #10B981;
-        color: white;
+        padding: 0.75rem 1rem;
+        background: #F9FAFB;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
         font-weight: 600;
     }
 
-    table tr:hover {
-        background: #f1f1f1;
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #F3F4F6;
+        font-size: 0.875rem;
     }
 
-    /* Buttons */
-    button {
-        background: linear-gradient(135deg, #10B981, #059669);
-        color: white;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        cursor: pointer;
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
         font-weight: 500;
-        transition: transform 0.2s, opacity 0.2s;
     }
 
-    button:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
+    .status-pending {
+        background: #FEF3C7;
+        color: #92400E;
     }
 
-    /* Responsive */
-    @media(max-width: 1024px) {
-        .dashboard-wrapper {
-            flex-direction: column;
+    .status-active {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    /* Social Section */
+    .social-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    .social-card {
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        color: white;
+    }
+
+    .social-card.whatsapp {
+        background: #25D366;
+    }
+
+    .social-card.linkedin {
+        background: #0077B5;
+    }
+
+    .social-card.twitter {
+        background: #1DA1F2;
+    }
+
+    .social-card.instagram {
+        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .social-card i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .social-card .count {
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    @media (max-width: 1024px) {
+
+        .dashboard-grid,
+        .analytics-grid,
+        .social-stats {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-wrapper">
-
-    <!-- LEFT PANEL -->
-    <div class="dashboard-left">
-        <h1><i class="fa-solid fa-tachometer-alt"></i> ADMIN DASHBOARD</h1>
-        <p>Welcome to SAMHUB admin panel. Monitor users, approve admins, and manage the platform.</p>
-
-        <div class="stats-left">
-            <div class="stat-left"><i class="fa-solid fa-users"></i> Total Users: {{ total_users }}</div>
-            <div class="stat-left"><i class="fa-solid fa-user-shield"></i> Total Admins: {{ total_admins }}</div>
-            <div class="stat-left"><i class="fa-solid fa-hourglass-half"></i> Pending Approvals: {{ pending_admins.count
-                }}</div>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1><i class="fas fa-chart-line"></i> SAMHUB Advanced Insights</h1>
+        <div class="date-badge">
+            <span class="text-muted"><i class="far fa-calendar-alt"></i> {% now "F j, Y" %}</span>
         </div>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="dashboard-right">
-        <h2>Pending Admin Accounts</h2>
+    <!-- Overview Stats -->
+    <div class="dashboard-grid">
+        <div class="stat-card primary">
+            <div class="icon-box"><i class="fas fa-users"></i></div>
+            <h3>Total Community</h3>
+            <div class="value">{{ total_users }}</div>
+        </div>
+        <div class="stat-card secondary">
+            <div class="icon-box"><i class="fas fa-briefcase"></i></div>
+            <h3>Job Applications</h3>
+            <div class="value">{{ total_job_apps }}</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="icon-box"><i class="fas fa-graduation-cap"></i></div>
+            <h3>Scholarship Apps</h3>
+            <div class="value">{{ scholarship_stats.applications }}</div>
+        </div>
+        <div class="stat-card danger">
+            <div class="icon-box"><i class="fas fa-certificate"></i></div>
+            <h3>Certificates Issued</h3>
+            <div class="value">{{ course_stats.certificates }}</div>
+        </div>
+    </div>
+
+    <!-- Daily Activity Stats -->
+    <div class="dashboard-grid" style="margin-top: -1rem;">
+        <div class="stat-card info">
+            <div class="icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;"><i
+                    class="fas fa-comments"></i></div>
+            <h3>Messages Today</h3>
+            <div class="value">{{ messages_today }}</div>
+        </div>
+        <div class="stat-card primary">
+            <div class="icon-box"><i class="fas fa-clock"></i></div>
+            <h3>Exam Time Today</h3>
+            <div class="value">{{ exam_duration_hours }} hrs</div>
+        </div>
+        <div class="stat-card secondary">
+            <div class="icon-box"><i class="fas fa-user-plus"></i></div>
+            <h3>New Joins Today</h3>
+            <div class="value">{{ users_joined_today.count }}</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
+            <h3>App Success Rate</h3>
+            <div class="value">{{ scholarship_stats.rate }}%</div>
+        </div>
+    </div>
+
+    <!-- Action Analysis Graph -->
+    <div class="table-container">
+        <div class="chart-header">
+            <h2><i class="fas fa-chart-area"></i> Daily Action Analysis</h2>
+        </div>
+        <div style="height: 300px;">
+            <canvas id="actionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Analytics Charts -->
+    <div class="analytics-grid">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2>Scholarship & Course Engagement</h2>
+            </div>
+            <canvas id="mainChart" height="200"></canvas>
+        </div>
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2>Exam Pass Rate</h2>
+            </div>
+            <div
+                style="position: relative; height: 200px; display: flex; align-items: center; justify-content: center;">
+                <canvas id="passRateChart"></canvas>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <span class="value" style="color: var(--primary);">{{ course_stats.pass_rate }}%</span>
+                <p class="text-muted">Global Success Rate</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Submissions Section -->
+    <div class="table-container">
+        <div class="table-header">
+            <h2><i class="fas fa-file-invoice"></i> Recent Job Submissions</h2>
+        </div>
         <table>
             <thead>
                 <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Approve</th>
+                    <th>Applicant</th>
+                    <th>Job Title</th>
+                    <th>Resume</th>
+                    <th>Date Submitted</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                {% for admin in pending_admins %}
+                {% for app in recent_job_apps %}
                 <tr>
-                    <td>{{ admin.username }}</td>
-                    <td>{{ admin.email }}</td>
-                    <td>{{ admin.phone }}</td>
                     <td>
-                        <a href="{% url 'approve_admin' admin.id %}">
-                            <button>Approve</button>
-                        </a>
+                        <div style="font-weight: 600;">{{ app.full_name }}</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">{{ app.email }}</div>
                     </td>
+                    <td>{{ app.job.title }}</td>
+                    <td><a href="{{ app.resume.url }}" target="_blank"><i class="fas fa-file-pdf"></i> View Resume</a>
+                    </td>
+                    <td>{{ app.submitted_at|date:"M d, Y" }}</td>
+                    <td><span
+                            class="status-badge {% if app.status == 'PENDING' %}status-pending{% else %}status-active{% endif %}">{{
+                            app.status }}</span></td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">No pending admins</td>
+                    <td colspan="5" style="text-align: center; padding: 2rem;">No job submissions found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
+    <!-- Scholarship Applications Section -->
+    <div class="table-container">
+        <div class="table-header">
+            <h2><i class="fas fa-user-graduate"></i> Scholarship Document Applications</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Applicant</th>
+                    <th>Scholarship</th>
+                    <th>Documents</th>
+                    <th>Date Applied</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in recent_scholarship_apps %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">{{ app.first_name }} {{ app.last_name }}</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">{{ app.email }}</div>
+                    </td>
+                    <td>{{ app.scholarship.title }}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            {% if app.CV_file_upload %}<a href="{{ app.CV_file_upload.url }}" title="CV"><i
+                                    class="fas fa-id-card"></i></a>{% endif %}
+                            {% if app.passport %}<a href="{{ app.passport.url }}" title="Passport"><i
+                                    class="fas fa-passport"></i></a>{% endif %}
+                            {% if app.application_Lettle %}<a href="{{ app.application_Lettle.url }}" title="Letter"><i
+                                    class="fas fa-envelope-open-text"></i></a>{% endif %}
+                            {% if app.bank_statement %}<a href="{{ app.bank_statement.url }}" title="Bank"><i
+                                    class="fas fa-university"></i></a>{% endif %}
+                        </div>
+                    </td>
+                    <td>{{ app.applied_date|date:"M d, Y" }}</td>
+                    <td>
+                        {% if app.is_approved %}<span class="status-badge status-active">Approved</span>
+                        {% elif app.is_rejected %}<span class="status-badge"
+                            style="background:#FEE2E2; color:#B91C1C;">Rejected</span>
+                        {% else %}<span class="status-badge status-pending">Pending</span>{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem;">No scholarship applications found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Real People Join Team Today -->
+    <div class="table-container">
+        <div class="table-header">
+            <h2><i class="fas fa-users-cog"></i> Team Members Joined Today</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>User Type</th>
+                    <th>Contact</th>
+                    <th>Join Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users_joined_today %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <img src="{{ user.image.url }}"
+                                style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <div style="font-weight: 600;">{{ user.username }}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">UID: {{ user.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ user.user_type }}</td>
+                    <td>{{ user.email }}<br><small>{{ user.phone }}</small></td>
+                    <td>{{ user.created_at|date:"H:i" }}</td>
+                    <td>
+                        {% if user.is_active %}<span class="status-badge status-active">Active</span>
+                        {% else %}<span class="status-badge status-pending">Inactive</span>{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem;">No new members joined today.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pending Actions Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h2><i class="fas fa-clock"></i> Pending Admin Approvals</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>User Profile</th>
+                    <th>Contact Info</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in pending_admins %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <img src="{{ admin.image.url }}"
+                                style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <div style="font-weight: 600;">{{ admin.username }}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">{{ admin.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ admin.phone }}</td>
+                    <td>{{ admin.date_joined|date:"M d, Y" }}</td>
+                    <td><span class="status-badge status-pending">Pending Approval</span></td>
+                    <td>
+                        <a href="{% url 'approve_admin' admin.id %}"
+                            style="background: var(--primary); color: white; padding: 0.4rem 0.8rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.8rem;">
+                            Approve
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No pending
+                        administrative requests at this time.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Analytics Grid (Second Row) -->
+    <div class="analytics-grid">
+        <div class="table-container" style="margin-bottom: 0;">
+            <div class="table-header">
+                <h2><i class="fas fa-graduation-cap"></i> Courses Overview</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Enrollments</th>
+                        <th>Passed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in course_list %}
+                    <tr>
+                        <td><strong>{{ course.title }}</strong></td>
+                        <td>{{ course.enrollment_count }}</td>
+                        <td>{{ course.pass_count }}</td>
+                        <td><span class="status-badge status-active">Live</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">No courses available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" style="margin-bottom: 0;">
+            <div class="table-header">
+                <h2><i class="fas fa-calendar-alt"></i> Upcoming Exams</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for exam in upcoming_exams %}
+                <div
+                    style="padding: 0.75rem; border-left: 4px solid var(--secondary); background: #F3F4F6; border-radius: 0.5rem;">
+                    <div style="font-weight: 600; font-size: 0.9rem;">{{ exam.title }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                        <i class="far fa-clock"></i> Opens: {{ exam.open_date|date:"M d, H:i" }}
+                    </div>
+                </div>
+                {% empty %}
+                <div style="text-align: center; color: var(--text-muted); padding: 1rem;">No upcoming exams scheduled.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Administrative Controls -->
+    <div class="chart-header" style="margin-top: 2rem;">
+        <h2><i class="fas fa-tools"></i> Administrative Controls</h2>
+    </div>
+    <div class="dashboard-grid" style="margin-bottom: 2rem;">
+        <a href="/admin/scholarships/scholarship/" class="stat-card primary"
+            style="text-decoration: none; text-align: center;">
+            <div class="icon-box" style="margin: 0 auto 1rem;"><i class="fas fa-plus-circle"></i></div>
+            <h3 style="color: var(--primary);">Manage Scholarships</h3>
+        </a>
+        <a href="/admin/Learning_certificate/course/" class="stat-card secondary"
+            style="text-decoration: none; text-align: center;">
+            <div class="icon-box" style="margin: 0 auto 1rem;"><i class="fas fa-edit"></i></div>
+            <h3 style="color: var(--secondary);">Manage Courses</h3>
+        </a>
+        <a href="/admin/Learning_certificate/exam/" class="stat-card warning"
+            style="text-decoration: none; text-align: center;">
+            <div class="icon-box" style="margin: 0 auto 1rem;"><i class="fas fa-tasks"></i></div>
+            <h3 style="color: #F59E0B;">Exams Control</h3>
+        </a>
+        <a href="/admin/" class="stat-card danger" style="text-decoration: none; text-align: center;">
+            <div class="icon-box" style="margin: 0 auto 1rem;"><i class="fas fa-user-cog"></i></div>
+            <h3 style="color: #EF4444;">System Settings</h3>
+        </a>
+    </div>
+
+    <!-- Social Media Tracking -->
+    <div class="chart-header" style="margin-bottom: 1rem;">
+        <h2><i class="fas fa-share-alt"></i> Community Growth & Social Reach</h2>
+    </div>
+    <div class="social-stats">
+        <div class="social-card whatsapp">
+            <i class="fab fa-whatsapp"></i>
+            <div class="count">{{ social_stats.whatsapp }}</div>
+            <div style="font-size: 0.75rem;">WhatsApp Group</div>
+        </div>
+        <div class="social-card linkedin">
+            <i class="fab fa-linkedin-in"></i>
+            <div class="count">{{ social_stats.linkedin }}</div>
+            <div style="font-size: 0.75rem;">LinkedIn Network</div>
+        </div>
+        <div class="social-card twitter">
+            <i class="fab fa-twitter"></i>
+            <div class="count">{{ social_stats.twitter }}</div>
+            <div style="font-size: 0.75rem;">Twitter Feed</div>
+        </div>
+        <div class="social-card instagram">
+            <i class="fab fa-instagram"></i>
+            <div class="count">{{ social_stats.instagram }}</div>
+            <div style="font-size: 0.75rem;">Instagram Base</div>
+        </div>
+    </div>
 </div>
+
+<script>
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Users', 'Scholarships', 'Applications', 'Enrollments', 'Exams'],
+            datasets: [{
+                label: 'Activity Volume',
+                data: [{{ total_users }}, {{ scholarship_stats.total }}, {{ scholarship_stats.applications }}, {{ course_stats.total_enrollments }}, {{ course_stats.total_exams }}],
+        backgroundColor: [
+        'rgba(99, 102, 241, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(239, 68, 68, 0.8)'
+    ],
+        borderRadius: 8
+            }]
+        },
+        options: {
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: { beginAtZero: true, grid: { display: false } },
+            x: { grid: { display: false } }
+        }
+    }
+    });
+
+    const passCtx = document.getElementById('passRateChart').getContext('2d');
+    new Chart(passCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Passed', 'Failed/Remaining'],
+            datasets: [{
+                data: [{{ course_stats.pass_rate }}, 100 - {{ course_stats.pass_rate }}],
+        backgroundColor: ['#10B981', '#E5E7EB'],
+        borderWidth: 0,
+        cutout: '80%'
+    }]
+        },
+        options: {
+        plugins: {
+            legend: { display: false }
+        }
+    }
+    });
+
+    // Action Analysis Chart
+    const actionCtx = document.getElementById('actionChart').getContext('2d');
+    new Chart(actionCtx, {
+        type: 'line',
+        data: {
+            labels: [{% for stat in daily_stats %}'{{ stat.date }}',{% endfor %}],
+        datasets: [
+        {
+            label: 'Registrations',
+            data: [{% for stat in daily_stats %}{{ stat.regs }}, {% endfor %}],
+        borderColor: '#6366F1',
+        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+        fill: true,
+        tension: 0.4
+                },
+        {
+            label: 'Job Apps',
+            data: [{% for stat in daily_stats %}{{ stat.job_apps }}, {% endfor %}],
+        borderColor: '#10B981',
+        fill: false,
+        tension: 0.4
+                },
+        {
+            label: 'Sch. Apps',
+            data: [{% for stat in daily_stats %}{{ stat.sch_apps }}, {% endfor %}],
+        borderColor: '#F59E0B',
+        fill: false,
+        tension: 0.4
+                },
+        {
+            label: 'Enrollments',
+            data: [{% for stat in daily_stats %}{{ stat.enrolls }}, {% endfor %}],
+        borderColor: '#3B82F6',
+        fill: false,
+        tension: 0.4
+                },
+        {
+            label: 'Messages',
+            data: [{% for stat in daily_stats %}{{ stat.msgs }}, {% endfor %}],
+        borderColor: '#EF4444',
+        fill: false,
+        tension: 0.4
+                }
+            ]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top' }
+        },
+        scales: {
+            y: { beginAtZero: true, grid: { color: '#F3F4F6' } },
+            x: { grid: { display: false } }
+        }
+    }
+    });
+</script>
 {% endblock %}

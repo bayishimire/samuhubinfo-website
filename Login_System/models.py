@@ -53,3 +53,25 @@ class OTP(models.Model):
     def mark_used(self):
         self.used = True
         self.save()
+
+class Notification(models.Model):
+    CATEGORY_CHOICES = [
+        ('COURSE', 'New Course'),
+        ('JOB', 'New Job'),
+        ('ADV', 'Advertisement'),
+        ('OTHER', 'Announcement'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    link = models.CharField(max_length=500, blank=True, null=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='OTHER')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.category}: {self.title} for {self.user.username}"

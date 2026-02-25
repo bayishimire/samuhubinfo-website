@@ -10,5 +10,7 @@ urlpatterns = [
     path('approve_admin/<int:admin_id>/', views.approve_admin, name='approve_admin'),
     path('verify/<uuid:token>/', views.verify_otp, name='verify_otp'),
     path('resend-otp/<int:user_id>/', views.resend_otp, name='resend_otp'),
+    path('notification/read/<int:notification_id>/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/read-all/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
     
 ]

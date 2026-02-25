@@ -32,6 +32,17 @@ class Job(models.Model):
     ]
     experience_required = models.CharField(max_length=3, choices=EXPERIENCE_CHOICES, default='NO')
 
+    # Job Mode (Remote/On-site/Hybrid)
+    MODE_CHOICES = [
+        ('REMOTE', 'Remote'),
+        ('ONSITE', 'On-site'),
+        ('HYBRID', 'Hybrid'),
+    ]
+    job_mode = models.CharField(max_length=10, choices=MODE_CHOICES, default='ONSITE')
+
+    # Detailed required documents
+    required_documents_list = models.TextField(blank=True, help_text="List documents separated by commas")
+
     def __str__(self):
         return f"{self.title} at {self.company}"
 

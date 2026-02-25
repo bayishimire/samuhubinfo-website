@@ -111,6 +111,8 @@ def add_job(request):
             location=location,
             description=description,
             requirements=requirements,
+            job_mode=request.POST.get('job_mode', 'ONSITE'),
+            required_documents_list=request.POST.get('required_documents_list', ''),
             image=request.FILES.get('image'),
             deadline=deadline if deadline else None,
             posted_by=request.user,
@@ -138,6 +140,8 @@ def edit_job(request, job_id):
         job.requirements = request.POST.get('requirements')
         job.deadline = request.POST.get('deadline') if request.POST.get('deadline') else job.deadline
         job.experience_required = request.POST.get('experience_required', job.experience_required)
+        job.job_mode = request.POST.get('job_mode', job.job_mode)
+        job.required_documents_list = request.POST.get('required_documents_list', job.required_documents_list)
         
         if request.FILES.get('image'):
             job.image = request.FILES.get('image')
