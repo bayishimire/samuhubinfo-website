@@ -94,10 +94,7 @@
             class="{% if request.resolver_match.url_name == 'chat_room' %}active{% endif %}">
             <i class="fas fa-comments"></i> Community
         </a>
-        <a href="{% url 'ai_chat_room' %}"
-            class="{% if request.resolver_match.url_name == 'ai_chat_room' %}active{% endif %}">
-            <i class="fas fa-robot"></i> SAM AI
-        </a>
+        
 
         {% if user.is_authenticated %}
         {% if user.user_type == 'Student' %}

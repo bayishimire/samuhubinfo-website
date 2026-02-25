@@ -20,7 +20,21 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 def home(request):
-    return render(request, 'Login_System/home.html')
+    from Job_Opportunity.models import Job
+    from scholarships.models import Scholarship
+    from Learning_certificate.models import Course
+    
+    latest_jobs = Job.objects.all().order_by('-posted_at')[:3]
+    latest_scholarships = Scholarship.objects.all().order_by('-posted_date')[:3]
+    latest_courses = Course.objects.filter(is_active=True).order_by('-created_at')[:3]
+    
+    context = {
+        'latest_jobs': latest_jobs,
+        'latest_scholarships': latest_scholarships,
+        'latest_courses': latest_courses,
+    }
+    return render(request, 'Login_System/home.html', context)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
