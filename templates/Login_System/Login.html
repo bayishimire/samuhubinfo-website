@@ -1,6 +1,6 @@
 {% extends "Login_System/base.html" %}
 {% load socialaccount %}
-{% block title %}Sign In | SAMHUB{% endblock %}
+{% block title %}Sign In | Fursa.Link{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -455,7 +455,7 @@
             <i class="fas fa-fingerprint"></i>
         </div>
         <div class="brand-title">Welcome Back</div>
-        <p class="brand-sub">Sign in to access your SAMHUB workspace, projects, and community.</p>
+        <p class="brand-sub">Sign in to access your Fursa.Link workspace, projects, and community.</p>
 
         <div class="auth-steps">
             <span class="step-pill active">1 · Login</span>
@@ -473,7 +473,7 @@
             </button>
             <div class="more-dropdown" id="dotsMenu">
                 <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Create Account</a>
-                <a href="#"><i class="fas fa-key"></i> Forgot Password</a>
+                <a href="/accounts/password/reset/"><i class="fas fa-key"></i> Forgot Password</a>
                 <div style="height:1px; background:#f1f5f9; margin:0.4rem 0;"></div>
                 <a href="tel:+250788123456"><i class="fas fa-headset"></i> Support</a>
             </div>
@@ -490,37 +490,42 @@
         {% endfor %}
         {% endif %}
 
-        <form method="POST" id="loginForm">
+        <form method="POST" id="loginForm" action="{% url 'Login' %}">
             {% csrf_token %}
 
             <div class="field">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" name="username" placeholder="Enter your username" required
+                <label for="loginUsername">Username or Email</label>
+                <input type="text" id="loginUsername" name="username" placeholder="your_username" required
                     autocomplete="username">
                 <i class="fas fa-user icon"></i>
             </div>
 
             <div class="field">
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" name="password" placeholder="••••••••••" required
+                <input type="password" id="loginPassword" name="password"
+                    placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required
                     autocomplete="current-password">
                 <i class="fas fa-lock icon"></i>
-                <button type="button" class="pwd-toggle" id="pwdToggle" aria-label="Toggle password visibility">
+                <button type="button" class="pwd-toggle" id="pwdToggle" aria-label="Toggle password">
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
 
             <button type="submit" class="btn-login">
-                Sign In <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-sign-in-alt"></i> Sign In
             </button>
         </form>
-
         <div class="divider">or continue with</div>
 
-        <a href="{% provider_login_url 'google' %}" class="btn-google">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
-            Continue with Google
-        </a>
+
+        <div style="margin-top: 2rem;">
+            <a href="{% provider_login_url 'google' %}" class="btn-google"
+                style="padding: 1.5rem; font-size: 1.2rem; border-color: #22c55e; background: #f0fdf4;">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google"
+                    style="width: 30px; height: 30px;">
+                Sign in with Google
+            </a>
+        </div>
 
         <div class="auth-bottom">
             Don't have an account? <a href="{% url 'register' %}">Create one now</a>

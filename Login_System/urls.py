@@ -10,5 +10,6 @@ urlpatterns = [
     path('approve_admin/<int:admin_id>/', views.approve_admin, name='approve_admin'),
     path('verify/<uuid:token>/', views.verify_otp, name='verify_otp'),
     path('resend-otp/<int:user_id>/', views.resend_otp, name='resend_otp'),
-    
+    path('dashboard/user/', views.dashboard_user, name='user_dashboard'),
+    path('profile/update/', views.profile_update, name='profile_update'),
 ]

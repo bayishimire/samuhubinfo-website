@@ -1,113 +1,91 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block title %}Explore SAMHUB - Learning & Careers{% endblock %}
+{% block title %}Explore Fursa.Link – Learn, Work & Grow{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Hero Section */
-    .hero {
-        position: relative;
+    /* ── Section Headings ── */
+    .section-heading {
         text-align: center;
-        padding: 5rem 2rem;
-        background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent),
-            linear-gradient(135deg, #2F5D8A, #1e3a5f);
-        color: #ffff;
+        margin-bottom: 2.5rem;
+    }
+
+    .section-heading h2 {
+        font-size: 2.25rem;
+        font-family: 'Outfit', sans-serif;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-heading p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin-inline: auto;
+    }
+
+    .welcome-box {
+        background: var(--primary-light);
+        padding: 3.5rem 2rem;
         border-radius: var(--radius-lg);
         margin-bottom: 3rem;
-        overflow: hidden;
-    }
-
-    .hero h2 {
-        font-size: 3rem;
-        font-family: 'Outfit', sans-serif;
-        margin-bottom: 1rem;
-        animation: fadeInDown 0.8s ease-out;
-    }
-
-    .hero p {
-        font-size: 1.25rem;
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-        opacity: 0.9;
-    }
-
-    /* Scrolling Ticker for Opportunities */
-    .ticker-wrapper {
-        margin-top: 2rem;
-        width: 100%;
-        overflow: hidden;
-        padding: 1rem 0;
-    }
-
-    .ticker {
-        display: flex;
-        gap: 2rem;
-        will-change: transform;
-    }
-
-    /* Advanced Flip Card */
-    .ticker-card {
-        perspective: 1000px;
-        min-width: 380px;
-        height: 280px;
-    }
-
-    .ticker-card-inner {
+        text-align: center;
+        border: 1px solid rgba(16, 185, 129, 0.1);
         position: relative;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        transform-style: preserve-3d;
-        cursor: pointer;
+        overflow: hidden;
     }
 
-    .ticker-card:hover .ticker-card-inner {
-        transform: rotateY(180deg);
-    }
-
-    .ticker-card-front,
-    .ticker-card-back {
+    .welcome-box::before {
+        content: '';
         position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        border-radius: var(--radius-lg);
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        box-shadow: var(--shadow-md);
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+        pointer-events: none;
     }
 
-    .ticker-card-front {
-        background: white;
-        color: var(--text-main);
-        border: 1px solid var(--border);
-    }
-
-    .ticker-card-front h3 {
-        color: var(--primary);
-        font-size: 1.5rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .ticker-card-back {
+    .welcome-badge {
+        display: inline-block;
         background: var(--primary);
         color: white;
-        transform: rotateY(180deg);
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     }
 
-    /* Features Grid */
+    .welcome-box h2 {
+        font-size: 2.75rem;
+        font-family: 'Outfit', sans-serif;
+        color: var(--text-main);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .welcome-box h2 span {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text; /* Standard property */
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+
+    /* ── Features Grid ── */
     .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 2rem;
-        margin-bottom: 6rem;
+        margin-bottom: 5rem;
     }
 
     .feature-card {
-        padding: 2.5rem;
+        padding: 2.25rem;
         text-align: left;
     }
 
@@ -121,15 +99,20 @@
         align-items: center;
         justify-content: center;
         font-size: 1.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
     }
 
-    /* Opportunities Grid */
+    .feature-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.6rem;
+    }
+
+    /* ── Opportunity Cards ── */
     .opportunities-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2.5rem;
-        margin-bottom: 6rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 5rem;
     }
 
     .opp-card {
@@ -137,20 +120,20 @@
         border-radius: var(--radius-lg);
         overflow: hidden;
         border: 1px solid var(--border);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
         display: flex;
         flex-direction: column;
         box-shadow: var(--shadow-sm);
     }
 
     .opp-card:hover {
-        transform: translateY(-8px);
+        transform: translateY(-6px);
         box-shadow: var(--shadow-lg);
     }
 
     .opp-image {
         position: relative;
-        height: 200px;
+        height: 190px;
         background: var(--primary-light);
         display: flex;
         align-items: center;
@@ -167,14 +150,14 @@
     .opp-image .placeholder {
         font-size: 3.5rem;
         color: var(--primary);
-        opacity: 0.5;
+        opacity: 0.45;
     }
 
     .opp-badge {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
-        padding: 0.4rem 1rem;
+        top: 0.85rem;
+        right: 0.85rem;
+        padding: 0.35rem 0.9rem;
         border-radius: 2rem;
         font-size: 0.7rem;
         font-weight: 800;
@@ -182,7 +165,7 @@
         color: white;
         letter-spacing: 0.05em;
         z-index: 2;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     }
 
     .badge-job {
@@ -198,44 +181,61 @@
     }
 
     .opp-content {
-        padding: 1.75rem;
+        padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
 
     .opp-content h3 {
-        font-size: 1.4rem;
-        margin-bottom: 0.8rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.6rem;
         color: var(--text-main);
         font-family: 'Outfit', sans-serif;
     }
 
     .opp-content p {
         color: var(--text-muted);
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         line-height: 1.6;
-        margin-bottom: 1.8rem;
+        margin-bottom: 1.5rem;
         flex-grow: 1;
     }
 
     .btn-read-more {
         display: inline-block;
-        padding: 0.75rem 1.25rem;
+        padding: 0.65rem 1.2rem;
         background: var(--primary);
         color: white;
         text-decoration: none;
         border-radius: var(--radius-md);
         font-weight: 600;
         text-align: center;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
+        transition: background 0.25s ease, box-shadow 0.25s ease;
+        font-size: 0.88rem;
+        align-self: flex-start;
     }
 
     .btn-read-more:hover {
-        background: var(--primary-dark);
+        background: var(--primary-hover);
+        /* uses the existing --primary-hover */
         color: white;
-        box-shadow: 0 4px 12px rgba(47, 93, 138, 0.3);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Empty-state helper */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        opacity: 0.4;
     }
 
     @keyframes fadeInDown {
@@ -253,120 +253,19 @@
 {% endblock %}
 
 {% block content %}
-<section class="hero shadow-lg">
-    <h2>Explore. Learn. Build.</h2>
-    <p>Join Rwanda's fastest-growing digital hub. Connect with international scholarships, local tech jobs, and
-        collaborative projects.</p>
 
-    <div style="display: flex; gap: 1rem; justify-content: center; z-index: 10;">
-        <a href="{% url 'scholarship_list' %}" class="btn btn-primary"
-            style="background: white; color: var(--primary);">
-            <i class="fas fa-graduation-cap"></i> Scholarships
-        </a>
-        <a href="{% url 'job_list' %}" class="btn btn-ghost"
-            style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">
-            <i class="fas fa-briefcase"></i> View Jobs
-        </a>
-    </div>
 
-    <!-- Seamles Ticker -->
-    <div class="ticker-wrapper">
-        <div class="ticker" id="ticker">
-            <!-- Card 1 -->
-            <div class="ticker-card">
-                <div class="ticker-card-inner">
-                    <div class="ticker-card-front">
-                        <h3>🎓 Global Scholarships</h3>
-                        <p style="color: var(--text-muted);">Discover fully funded opportunities for 2026/2027 academic
-                            year.</p>
-                    </div>
-                    <div class="ticker-card-back">
-                        <h3>Study Abroad</h3>
-                        <p style="margin-bottom: 1.5rem;">Access tuition-free master's and PhD programs in Europe, USA,
-                            and Asia.</p>
-                        <a href="{% url 'scholarship_list' %}" class="btn btn-primary"
-                            style="background: white; color: var(--primary); align-self: flex-start;">Apply Now</a>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="ticker-card">
-                <div class="ticker-card-inner">
-                    <div class="ticker-card-front">
-                        <h3>💼 Tech Careers</h3>
-                        <p style="color: var(--text-muted);">Find senior and junior developer roles in Kigali and
-                            Remote.</p>
-                    </div>
-                    <div class="ticker-card-back">
-                        <h3>Hiring Now</h3>
-                        <p style="margin-bottom: 1.5rem;">Join top engineering teams. Roles in AI, Web, and Mobile dev
-                            available.</p>
-                        <a href="{% url 'job_list' %}" class="btn btn-primary"
-                            style="background: white; color: var(--primary); align-self: flex-start;">View Jobs</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="ticker-card">
-                <div class="ticker-card-inner">
-                    <div class="ticker-card-front">
-                        <h3>🚀 Python Mastery</h3>
-                        <p style="color: var(--text-muted);">New advanced Python OOP and AI tracks just released.</p>
-                    </div>
-                    <div class="ticker-card-back">
-                        <h3>Learn Coding</h3>
-                        <p style="margin-bottom: 1.5rem;">Interactive workshops and certificates to boost your
-                            professional portfolio.</p>
-                        <a href="{% url 'course_list' %}" class="btn btn-primary"
-                            style="background: white; color: var(--primary); align-self: flex-start;">Start Learning</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div style="text-align: center; margin-bottom: 3rem;">
-    <h2 style="font-size: 2.25rem; font-family: 'Outfit';">Our Core Ecosystem</h2>
-    <p style="color: var(--text-muted);">Everything you need to succeed in the Rwandan tech landscape</p>
-</div>
-
-<section class="features-grid">
-    <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
-        <h3>Interactive Learning</h3>
-        <p style="color: var(--text-muted);">Hands-on tutorials and coding exercises tailored for the modern developer.
-        </p>
-        <a href="{% url 'course_list' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Get Started</a>
-    </div>
-
-    <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
-        <h3>Collaboration</h3>
-        <p style="color: var(--text-muted);">Work on real-world projects with peers and mentors to gain practical
-            experience.</p>
-        <a href="#" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Project</a>
-    </div>
-
-    <div class="feature-card card">
-        <div class="feature-icon"><i class="fas fa-users"></i></div>
-        <h3>Community</h3>
-        <p style="color: var(--text-muted);">Connect with a supportive community of learners and professionals in
-            Kigali.</p>
-        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.5rem;">Join Chat</a>
-    </div>
-</section>
-
-<div style="text-align: center; margin-top: 4rem; margin-bottom: 3.5rem;">
-    <h2 style="font-size: 2.5rem; font-family: 'Outfit'; margin-bottom: 0.5rem;">Latest Updates & Opportunities</h2>
-    <p style="color: var(--text-muted); font-size: 1.1rem;">Discover the newest jobs, scholarships, and courses added
-        recently.</p>
+<!-- ══════════════════ WELCOME SECTION ══════════════════ -->
+<div class="welcome-box">
+    <div class="welcome-badge">Fursa.Link</div>
+    <h2>Welcome to <span>Fursa.Link</span> Rwanda Educational Opportunities</h2>
+    <p>Discover the newest jobs, scholarships, and premium courses added recently to accelerate your career.</p>
 </div>
 
 <section class="opportunities-grid">
-    <!-- Latest Jobs -->
+
+    <!-- ── Latest Jobs ── -->
     {% for job in latest_jobs %}
     <div class="opp-card">
         <div class="opp-image">
@@ -378,18 +277,23 @@
             <span class="opp-badge badge-job">New Job</span>
         </div>
         <div class="opp-content">
+            <div class="date-tag">
+                <i class="far fa-calendar-alt"></i> Posted {{ job.posted_at|date:"M d, Y" }}
+            </div>
             <h3>{{ job.title }}</h3>
             <p>{{ job.description|truncatewords:20 }}</p>
             {% if user.is_authenticated %}
-            <a href="{% url 'job_detail' job.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'job_detail' job.id %}" class="btn-read-more">View Details</a>
             {% else %}
-            <a href="{% url 'Login' %}?next={% url 'job_detail' job.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'Login' %}?next={% url 'job_detail' job.id %}" class="btn-read-more">View Details</a>
             {% endif %}
         </div>
     </div>
+    {% empty %}
+    <!-- No empty state shown here — handled by the combined empty block below -->
     {% endfor %}
 
-    <!-- Latest Scholarships -->
+    <!-- ── Latest Scholarships ── -->
     {% for sch in latest_scholarships %}
     <div class="opp-card">
         <div class="opp-image">
@@ -401,18 +305,21 @@
             <span class="opp-badge badge-scholarship">Scholarship</span>
         </div>
         <div class="opp-content">
+            <div class="date-tag">
+                <i class="far fa-calendar-alt"></i> Posted {{ sch.posted_date|date:"M d, Y" }}
+            </div>
             <h3>{{ sch.title }}</h3>
             <p>{{ sch.description|truncatewords:20 }}</p>
             {% if user.is_authenticated %}
-            <a href="{% url 'scholarship_detail' sch.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'scholarship_detail' sch.id %}" class="btn-read-more">View Details</a>
             {% else %}
-            <a href="{% url 'Login' %}?next={% url 'scholarship_detail' sch.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'Login' %}?next={% url 'scholarship_detail' sch.id %}" class="btn-read-more">View Details</a>
             {% endif %}
         </div>
     </div>
     {% endfor %}
 
-    <!-- Latest Courses -->
+    <!-- ── Latest Courses ── -->
     {% for course in latest_courses %}
     <div class="opp-card">
         <div class="opp-image">
@@ -424,38 +331,89 @@
             <span class="opp-badge badge-course">New Course</span>
         </div>
         <div class="opp-content">
+            <div class="date-tag">
+                <i class="far fa-calendar-alt"></i> Released {{ course.created_at|date:"M d, Y" }}
+            </div>
             <h3>{{ course.title }}</h3>
             <p>{{ course.description|truncatewords:20 }}</p>
             {% if user.is_authenticated %}
-            <a href="{% url 'course_detail' course.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'course_detail' course.id %}" class="btn-read-more">View Details</a>
             {% else %}
-            <a href="{% url 'Login' %}?next={% url 'course_detail' course.id %}" class="btn-read-more">Read more</a>
+            <a href="{% url 'Login' %}?next={% url 'course_detail' course.id %}" class="btn-read-more">View Details</a>
             {% endif %}
         </div>
     </div>
     {% endfor %}
+
+    <!-- ── Featured Projects ── -->
+    {% for project in latest_projects %}
+    <div class="opp-card">
+        <div class="opp-image">
+            {% if project.image %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}">
+            {% else %}
+            <div class="placeholder"><i class="fas fa-project-diagram"></i></div>
+            {% endif %}
+            <span class="opp-badge badge-job" style="background: #3b82f6;">Project</span>
+        </div>
+        <div class="opp-content">
+            <div class="date-tag">
+                <i class="far fa-calendar-alt"></i> Started {{ project.created_at|date:"M d, Y" }}
+            </div>
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.description|truncatewords:20 }}</p>
+            <a href="{% url 'projects:detail' project.id %}" class="btn-read-more" style="background: #3b82f6;">View
+                Details</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- ── Fallback when ALL querysets are empty ── -->
+    {% if not latest_jobs and not latest_scholarships and not latest_courses and not latest_projects %}
+    <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No opportunities or projects have been posted yet — check back soon!</p>
+    </div>
+    {% endif %}
+
+</section>
+
+<!-- ══════════════════ CORE ECOSYSTEM ══════════════════ -->
+<div class="section-heading">
+    <h2>Our Core Ecosystem</h2>
+    <p>Everything you need to succeed in the Rwandan tech landscape</p>
+</div>
+
+<section class="features-grid">
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+        <h3>Interactive Learning</h3>
+        <p style="color: var(--text-muted);">
+            Hands-on tutorials and coding exercises tailored for the modern developer.
+        </p>
+        <a href="{% url 'course_list' %}" class="btn btn-ghost" style="margin-top: 1.25rem;">Get Started</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <h3>Collaboration</h3>
+        <p style="color: var(--text-muted);">
+            Work on real-world projects with peers and mentors to gain practical experience.
+        </p>
+        <a href="{% url 'projects:list' %}" class="btn btn-ghost" style="margin-top: 1.25rem;">Join Project</a>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Community</h3>
+        <p style="color: var(--text-muted);">
+            Connect with a supportive community of learners and professionals in Kigali.
+        </p>
+        <a href="{% url 'chat_room' %}" class="btn btn-ghost" style="margin-top: 1.25rem;">Join Chat</a>
+    </div>
 </section>
 
 
-<script>
-    const ticker = document.getElementById('ticker');
-    // Duplicate cards for seamless loop
-    ticker.innerHTML += ticker.innerHTML;
 
-    let scrollPos = 0;
-    let isPaused = false;
 
-    ticker.addEventListener('mouseenter', () => isPaused = true);
-    ticker.addEventListener('mouseleave', () => isPaused = false);
-
-    function animateTicker() {
-        if (!isPaused) {
-            scrollPos += 0.5; // Slower speed for better readability
-            if (scrollPos >= ticker.scrollWidth / 2) scrollPos = 0;
-            ticker.style.transform = `translateX(${-scrollPos}px)`;
-        }
-        requestAnimationFrame(animateTicker);
-    }
-    animateTicker();
-</script>
 {% endblock %}

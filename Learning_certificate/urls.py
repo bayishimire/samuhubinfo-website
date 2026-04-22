@@ -20,4 +20,9 @@ urlpatterns = [
     # Dashboard & About
     path('User_Dashboard/', views.user_dashboard, name='user_dashboard'),
     path('about/', views.about, name='about'),
+
+    # Custom Admin Native URLs
+    path('admin-panel/', views.admin_course_dashboard, name='admin_course_dashboard'),
+    path('admin-panel/add/', views.admin_add_course, name='admin_add_course'),
+    path('admin-panel/delete/<int:course_id>/', views.admin_delete_course, name='admin_delete_course'),
 ]

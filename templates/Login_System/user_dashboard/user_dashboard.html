@@ -1,325 +1,615 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-{% block title %}Dashboard{% endblock %}
-
+{% block title %}User Dashboard | Fursa.Link{% endblock %}
 
 {% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    .dashboard-container {
-        padding: 4rem 2rem;
-        max-width: 1300px;
+    :root {
+        --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --secondary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.05);
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --bg-soft: #f8fafc;
+    }
+
+    body {
+        background-color: var(--bg-soft);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .dashboard-wrapper {
+        max-width: 1400px;
         margin: 0 auto;
-    }
-
-    .welcome-card {
-        background: white;
-        padding: 2.5rem;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border);
-        text-align: center;
-        margin-bottom: 3rem;
-        animation: fadeIn 0.8s ease-out;
-    }
-
-    .welcome-card h1 {
-        font-family: 'Outfit';
-        font-size: 2.5rem;
-        color: var(--text-main);
-        margin: 0;
-    }
-
-    .section-title {
-        font-family: 'Outfit';
-        font-size: 1.75rem;
-        color: var(--text-main);
-        margin-bottom: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .section-title i {
-        color: var(--primary);
-    }
-
-    /* Courses Grid */
-    .courses-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-bottom: 4rem;
-    }
-
-    .course-card {
-        background: white;
-        border-radius: var(--radius-lg);
         padding: 2rem;
-        border: 1px solid var(--border);
-        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-        display: flex;
-        flex-direction: column;
     }
 
-    .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--primary);
-    }
-
-    .course-card h3 {
-        color: var(--primary);
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-    }
-
-    .progress-info {
-        background: #f8fafc;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: #64748b;
-    }
-
-    .course-actions {
-        display: flex;
-        gap: 0.75rem;
-        margin-top: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .btn-dash {
-        flex: 1;
-        padding: 0.75rem;
-        border-radius: 10px;
-        font-weight: 700;
-        text-decoration: none;
-        font-size: 0.85rem;
-        text-align: center;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary-dash {
-        background: var(--primary);
+    /* --- Header & Summary --- */
+    .dashboard-header {
+        background: var(--primary-gradient);
+        border-radius: 24px;
+        padding: 3rem;
         color: white;
-    }
-
-    .btn-primary-dash:hover {
-        background: var(--primary-hover);
-    }
-
-    .btn-accent-dash {
-        background: #f1f5f9;
-        color: #475569;
-    }
-
-    .btn-accent-dash:hover {
-        background: #e2e8f0;
-    }
-
-    /* Applications Table */
-    .table-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border);
+        margin-bottom: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.2);
+        position: relative;
         overflow: hidden;
     }
 
-    .apps-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
+    .header-content { position: relative; z-index: 2; }
+    .header-content h1 {
+        font-family: 'Outfit';
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+    .header-content p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
     }
 
-    .apps-table th {
-        background: #f8fafc;
-        padding: 1.25rem 1.5rem;
+    .header-illustration {
+        position: absolute;
+        right: -20px;
+        bottom: -30px;
+        font-size: 12rem;
+        opacity: 0.1;
+        transform: rotate(-15deg);
+    }
+
+    /* --- Stats Grid --- */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: -5rem;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow-premium);
+        border: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .stat-icon.blue { background: #eff6ff; color: #3b82f6; }
+    .stat-icon.green { background: #ecfdf5; color: #10b981; }
+    .stat-icon.purple { background: #f5f3ff; color: #8b5cf6; }
+    .stat-icon.orange { background: #fff7ed; color: #f97316; }
+
+    .stat-info h4 { font-size: 1.5rem; font-weight: 700; margin: 0; color: var(--text-dark); }
+    .stat-info span { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+    /* --- Tab Navigation --- */
+    .content-tabs {
+        display: flex;
+        gap: 1rem;
+        margin: 4rem 0 2rem;
+        padding: 0.5rem;
+        background: #f1f5f9;
+        border-radius: 16px;
+        width: fit-content;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .tab-btn.active {
+        background: white;
+        color: var(--text-dark);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* --- Section Containers --- */
+    .dashboard-section {
+        margin-bottom: 4rem;
+        animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Card Aesthetics --- */
+    .premium-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        border: 1px solid #f1f5f9;
+        box-shadow: var(--shadow-premium);
+        height: 100%;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .section-header h2 {
+        font-family: 'Outfit';
+        font-size: 1.8rem;
         font-weight: 700;
-        color: #475569;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 2px solid #f1f5f9;
+        color: var(--text-dark);
+        margin: 0;
     }
 
-    .apps-table td {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #f1f5f9;
-        color: var(--text-main);
+    /* --- List Items/Tables --- */
+    .app-list { list-style: none; padding: 0; margin: 0; }
+    .app-item {
+        padding: 1.25rem;
+        border-radius: 18px;
+        border: 1px solid #f8fafc;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+    }
+    .app-item:hover { background: #f8fafc; border-color: #e2e8f0; }
+
+    .app-info { display: flex; align-items: center; gap: 1rem; }
+    .app-thumb {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #94a3b8;
+        object-fit: cover;
     }
 
-    .status-badge {
-        padding: 0.35rem 0.75rem;
+    .app-details h5 { font-size: 1rem; margin: 0; color: var(--text-dark); font-weight: 600; }
+    .app-details p { font-size: 0.85rem; color: var(--text-muted); margin: 2px 0 0; }
+
+    .status-pill {
+        padding: 0.4rem 1rem;
         border-radius: 20px;
         font-size: 0.75rem;
-        font-weight: 800;
+        font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: 0.02em;
     }
+    .status-pill.pending { background: #fff7ed; color: #ea580c; }
+    .status-pill.accepted { background: #f0fdf4; color: #166534; }
+    .status-pill.rejected { background: #fef2f2; color: #991b1b; }
 
-    .status-pending {
-        background: #fffbeb;
-        color: #92400e;
+    /* --- News Section --- */
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .news-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid #f1f5f9;
+        position: relative;
+        transition: all 0.3s;
     }
-
-    .status-accepted {
-        background: #dcfce7;
-        color: #166534;
+    .news-card:hover { border-color: #10b981; transform: scale(1.02); }
+    .news-tag {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: #10b981;
+        color: white;
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
     }
+    .news-content h4 { margin: 1rem 0 0.5rem; font-size: 1.1rem; font-weight: 700; }
+    .news-content p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
 
-    .status-rejected {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .no-data {
-        padding: 4rem;
+    /* --- Empty State --- */
+    .empty-state {
         text-align: center;
-        color: var(--text-muted);
+        padding: 5rem 2rem;
     }
+    .empty-state i { font-size: 4rem; color: #e2e8f0; margin-bottom: 1.5rem; }
+    .empty-state p { color: var(--text-muted); font-size: 1.1rem; }
 
-    .cert-issued {
-        font-weight: 700;
-        color: #10B981;
-    }
-
-    .cert-pending {
-        font-weight: 700;
-        color: #94a3b8;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+        .dashboard-header { padding: 2rem; flex-direction: column; text-align: center; }
+        .header-content h1 { font-size: 2rem; }
+        .stats-grid { grid-template-columns: 1fr 1fr; padding: 0 1rem; }
+        .content-tabs { width: 100%; overflow-x: auto; white-space: nowrap; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Welcome Header -->
-    <div class="welcome-card">
-        <h1><i class="fas fa-user-circle"></i> Welcome Back, {{ request.user.username }}</h1>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">Track your learning progress and career applications in
-            one place.</p>
-    </div>
-
-    <!-- Career Applications Section -->
-    <div class="section-title">
-        <i class="fas fa-paper-plane"></i> Your Career Applications
-    </div>
-
-    <div class="table-card" style="margin-bottom: 4rem;">
-        {% if job_applications %}
-        <div style="overflow-x: auto;">
-            <table class="apps-table">
-                <thead>
-                    <tr>
-                        <th>Position</th>
-                        <th>Company</th>
-                        <th>Applied Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for app in job_applications %}
-                    <tr>
-                        <td><strong>{{ app.job.title }}</strong></td>
-                        <td>{{ app.job.company }}</td>
-                        <td style="color: #64748b; font-size: 0.9rem;">{{ app.submitted_at|date:"M d, Y" }}</td>
-                        <td>
-                            <span class="status-badge status-{{ app.status|lower }}">
-                                {{ app.status }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{% url 'job_detail' app.job.id %}"
-                                style="color: var(--primary); font-weight: 700; text-decoration: none; font-size: 0.9rem;">
-                                View Job <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="dashboard-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1>Halo, {{ request.user.username }}!</h1>
+            <p>Welcome back to your command center. Everything you need is right here.</p>
         </div>
-        {% else %}
-        <div class="no-data">
-            <i class="fas fa-briefcase"
-                style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
-            <p>You haven't applied for any jobs yet.</p>
-            <a href="{% url 'job_list' %}" style="color: var(--primary); font-weight: 700;">Browse Available Jobs</a>
+        <div class="header-illustration">
+            <i class="fas fa-rocket"></i>
         </div>
-        {% endif %}
     </div>
 
-    <!-- Learning Progress Section -->
-    <div class="section-title">
-        <i class="fas fa-graduation-cap"></i> Learning Progress
+    <!-- Navigation Tabs -->
+    <!-- Dashboard Navigation Links (Internal Anchors) -->
+    <div class="content-tabs">
+        <a href="#jobs" class="tab-btn"><i class="fas fa-file-signature"></i> Jobs</a>
+        <a href="#scholarships" class="tab-btn"><i class="fas fa-user-graduate"></i> Scholarships</a>
+        <a href="#internships" class="tab-btn"><i class="fas fa-user-tie"></i> Internships</a>
+        <a href="#learning" class="tab-btn"><i class="fas fa-play-circle"></i> Learning</a>
+        <a href="#news" class="tab-btn"><i class="fas fa-newspaper"></i> News</a>
+        <a href="#others" class="tab-btn"><i class="fas fa-layer-group"></i> Projects</a>
     </div>
 
-    {% if courses_info %}
-    <div class="courses-grid">
-        {% for info in courses_info %}
-        <div class="course-card">
-            <h3>{{ info.course.title }}</h3>
-            <p style="color: #475569; font-size: 0.95rem; line-height: 1.5; height: 3rem; overflow: hidden;">
-                {{ info.course.description|default:"No description available" }}
-            </p>
-
-            <div class="progress-info">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span>Progress</span>
-                    <strong>{{ info.progress }}</strong>
+    <!-- OVERVIEW & MARKET UPDATES -->
+    <div class="dashboard-section">
+        <div class="news-grid" style="grid-template-columns: 2fr 1fr;">
+            <!-- Welcome Sidebar -->
+            <div class="premium-card">
+                <div class="section-header">
+                    <h2>Recent Updates</h2>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Certificate Status</span>
-                    <span class="{% if info.certificate_status %}cert-issued{% else %}cert-pending{% endif %}">
-                        {% if info.certificate_status %}Issued ✅{% else %}Pending{% endif %}
-                    </span>
+                <p style="color: var(--text-muted); line-height: 1.8;">
+                    You have total of <strong>{{ job_applications|length|add:scholarship_apps|length }}</strong> active applications across the platform. 
+                    Keep an eye on the status pills for real-time updates from our administrators.
+                </p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="{% url 'profile_update' %}" class="tab-btn active" style="background:#1e293b; color: white;">Update Profile</a>
+                    <a href="{% url 'chat_room' %}" class="tab-btn" style="background:#f1f5f9; color: var(--text-dark);">Open Chat</a>
                 </div>
             </div>
 
-            <div class="course-actions">
-                <a href="{% url 'course_detail' info.course.id %}" class="btn-dash btn-primary-dash">
-                    <i class="fas fa-play-circle"></i> Resume Learning
-                </a>
-                <a href="{% url 'exam_results' info.course.id %}" class="btn-dash btn-accent-dash">
-                    <i class="fas fa-chart-bar"></i> Results
-                </a>
-                {% if not info.certificate_status %}
-                <a href="{% url 'certificate_view' info.course.id %}" class="btn-dash btn-accent-dash"
-                    style="flex: 1 1 100%;">
-                    <i class="fas fa-award"></i> Check Certificate
-                </a>
+            <!-- News Sidebar -->
+            <div class="premium-card" style="background: #1e293b; color: white; border: none;">
+                <h2 style="color: white; font-family: 'Outfit'; margin-bottom: 1.5rem;">Market News</h2>
+                {% if news_items %}
+                    {% for item in news_items %}
+                    <div style="border-left: 2px solid #10b981; padding-left: 1rem; margin-bottom: 2rem;">
+                        <span style="font-size: 0.75rem; color: #10b981; font-weight: 700; text-transform: uppercase;">{{ item.type }}</span>
+                        <h4 style="margin: 0.5rem 0; font-size: 1rem;">{{ item.title }}</h4>
+                        <p style="font-size: 0.8rem; color: #94a3b8;">{{ item.date|date:"d M Y" }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #64748b; font-size: 0.9rem;">Check back later for platform updates.</p>
                 {% endif %}
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="welcome-card" style="padding: 4rem;">
-        <i class="fas fa-book-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
-        <p style="color: #64748b;">You are not enrolled in any courses yet.</p>
-        <a href="{% url 'course_list' %}" class="btn-dash btn-primary-dash"
-            style="display: inline-flex; width: auto; margin-top: 1rem; padding-left: 2rem; padding-right: 2rem;">
-            Browse Courses
-        </a>
+
+    <!-- JOBS & OPPORTUNITIES SECTION -->
+    <div id="jobs" class="dashboard-section">
+        <div class="premium-card">
+            <div class="section-header">
+                <h2>Available Jobs & Opportunities</h2>
+                <a href="{% url 'job_list' %}" class="tab-btn active" style="background: var(--primary-gradient); color:white;">Find More Jobs</a>
+            </div>
+            
+            {% if all_jobs %}
+            <div class="news-grid">
+                {% for job in all_jobs %}
+                <div class="news-card">
+                    <div class="news-content">
+                        <h4 style="margin: 0; font-size: 1.1rem;">{{ job.title }}</h4>
+                        <p style="margin: 0.5rem 0; font-size: 0.85rem; color: var(--text-muted);">{{ job.company }} • {{ job.location }}</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <a href="{% url 'job_detail' job.id %}" class="tab-btn active" style="flex: 1; justify-content: center; background: #1e293b; color: white;">Details</a>
+                            <a href="{% url 'apply_job' job.id %}" class="tab-btn" style="flex: 1; justify-content: center; background: var(--bg-soft); color: var(--text-dark);">Apply</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-briefcase"></i>
+                <p>No active jobs found.</p>
+            </div>
+            {% endif %}
+
+            <h3 style="margin-top: 3rem; font-family: 'Outfit'; color: var(--text-dark);">Your Applications</h3>
+            {% if job_applications %}
+            <ul class="app-list" style="margin-top: 1rem;">
+                {% for app in job_applications %}
+                <li class="app-item">
+                    <div class="app-info">
+                        <div class="app-thumb">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="app-details">
+                            <h5>{{ app.job.title }}</h5>
+                            <p>{{ app.job.company }} • Applied {{ app.submitted_at|date }}</p>
+                        </div>
+                    </div>
+                    <span class="status-pill {{ app.status|lower }}">{{ app.status }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="text-align: center; color: var(--text-muted);">No applications yet.</p>
+            {% endif %}
+        </div>
     </div>
-    {% endif %}
+
+    <!-- SCHOLARSHIPS SECTION -->
+    <div id="scholarships" class="dashboard-section">
+        <div class="premium-card">
+            <div class="section-header">
+                <h2>All Scholarships</h2>
+                <a href="{% url 'scholarship_list' %}" class="tab-btn active" style="background: var(--primary-gradient); color:white;">Browse All</a>
+            </div>
+            
+            {% if all_scholarships %}
+            <div class="news-grid">
+                {% for sch in all_scholarships %}
+                <div class="news-card">
+                    <div class="news-content">
+                        <h4 style="margin: 0; font-size: 1.1rem;">{{ sch.title }}</h4>
+                        <p style="margin: 0.5rem 0; font-size: 0.85rem; color: var(--text-muted);">{{ sch.university }} • {{ sch.country }}</p>
+                        <p style="font-size: 0.8rem; color: var(--accent-gradient);">Deadline: {{ sch.deadline }}</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <a href="{% url 'scholarship_detail' sch.id %}" class="tab-btn active" style="flex: 1; justify-content: center; background: #8b5cf6; color: white;">View Detail</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-graduation-cap"></i>
+                <p>No scholarships found.</p>
+            </div>
+            {% endif %}
+
+            <h3 style="margin-top: 3rem; font-family: 'Outfit'; color: var(--text-dark);">Your Scholarship Applications</h3>
+            {% if scholarship_apps %}
+            <ul class="app-list" style="margin-top: 1rem;">
+                {% for app in scholarship_apps %}
+                <li class="app-item">
+                    <div class="app-info">
+                        <div class="app-thumb" style="background: #f5f3ff; color: #8b5cf6;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div class="app-details">
+                            <h5>{{ app.scholarship.title }}</h5>
+                            <p>{{ app.scholarship.university }} • Applied {{ app.applied_date|date }}</p>
+                        </div>
+                    </div>
+                    <span class="status-pill {% if app.is_approved %}accepted{% elif app.is_rejected %}rejected{% else %}pending{% endif %}">
+                        {% if app.is_approved %}Approved{% elif app.is_rejected %}Rejected{% else %}Pending{% endif %}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="text-align: center; color: var(--text-muted);">No scholarship applications found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- INTERNSHIPS SECTION -->
+    <div id="internships" class="dashboard-section">
+        <div class="premium-card">
+            <div class="section-header">
+                <h2>Internship Opportunities</h2>
+                <a href="{% url 'job_list' %}" class="tab-btn active" style="background: var(--primary-gradient); color:white;">Explore More</a>
+            </div>
+            
+            {% if internships %}
+            <div class="news-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                {% for job in internships %}
+                <div class="news-card">
+                    <div class="news-content">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-dark);">{{ job.title }}</h4>
+                            <span style="font-size: 0.7rem; background: #ecfdf5; color: #10b981; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700;">ACTIVE</span>
+                        </div>
+                        <p style="margin: 0.5rem 0 1.5rem; font-size: 0.85rem; color: var(--text-muted);">{{ job.company }} • {{ job.location }}</p>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{% url 'job_detail' job.id %}" class="tab-btn active" style="flex: 1; justify-content: center; background: #1e293b; color: white; padding: 0.5rem;">Details</a>
+                            <a href="{% url 'apply_job' job.id %}" class="tab-btn" style="flex: 1; justify-content: center; background: var(--primary-light); color: var(--primary); padding: 0.5rem; font-weight: 700;">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-tie"></i>
+                <p>No internships found at the moment. Check back later!</p>
+            </div>
+            {% endif %}
+
+            <h3 style="margin-top: 3rem; font-family: 'Outfit'; color: var(--text-dark);">Your Internship Applications</h3>
+            {% if internship_apps %}
+            <ul class="app-list" style="margin-top: 1rem;">
+                {% for app in internship_apps %}
+                <li class="app-item">
+                    <div class="app-info">
+                        <div class="app-thumb" style="background: #eff6ff; color: #3b82f6;">
+                            <i class="fas fa-id-card-alt"></i>
+                        </div>
+                        <div class="app-details">
+                            <h5>{{ app.job.title }}</h5>
+                            <p>{{ app.job.company }} • Applied {{ app.submitted_at|timesince }} ago</p>
+                        </div>
+                    </div>
+                    <span class="status-pill {{ app.status|lower }}">{{ app.status }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">You haven't applied for any internships yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- LEARNING SECTION -->
+    <div id="learning" class="dashboard-section">
+        <div class="section-header">
+            <h2>Course Progress</h2>
+            <a href="{% url 'course_list' %}" class="tab-btn active" style="background: var(--secondary-gradient); color:white;">Go to Classroom</a>
+        </div>
+        
+        <div class="news-grid">
+            {% for info in courses_info %}
+            <div class="premium-card" style="display: flex; flex-direction: column;">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="app-thumb" style="background: #ecfdf5; color: #10b981; flex-shrink: 0;">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-dark);">{{ info.course.title|truncatechars:40 }}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">{{ info.course.duration_weeks }} Weeks Program</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: auto;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                        <span>Completion</span>
+                        <span style="font-weight: 700;">{{ info.progress }}</span>
+                    </div>
+                    <div style="height: 8px; background: #f1f5f9; border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem;">
+                        <div style="width: {% widthratio info.passed_exams info.total_exams 100 %}%; height: 100%; background: var(--primary-gradient);"></div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'course_detail' info.course.id %}" class="tab-btn active" style="flex: 2; justify-content: center; background: #1e293b; color: white;">Resume</a>
+                        <a href="{% url 'exam_results' info.course.id %}" class="tab-btn" style="flex: 1; justify-content: center; background: #f1f5f9; color: var(--text-dark);"><i class="fas fa-chart-line"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="premium-card" style="grid-column: span 3; text-align: center; padding: 4rem;">
+                <i class="fas fa-book-open" style="font-size: 3rem; color: #e2e8f0; margin-bottom: 1rem;"></i>
+                <p>You are not enrolled in any courses.</p>
+                <a href="{% url 'course_list' %}" style="color: #6366f1; font-weight: 700; text-decoration: none;">Browse Academy</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- NEWS SECTION -->
+    <div id="news" class="dashboard-section">
+        <div class="premium-card">
+            <div class="section-header">
+                <h2>Platform News & Updates</h2>
+            </div>
+            
+            {% if news_items %}
+            <div class="news-grid">
+                {% for item in news_items %}
+                <div class="news-card">
+                    <span class="news-tag">{{ item.type }}</span>
+                    <div class="news-content">
+                        <h4>{{ item.title }}</h4>
+                        <p>A new opportunity has been posted. Stay ahead of the curve and apply today!</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ item.date|date:"F d, Y" }}</span>
+                            <a href="{{ item.url }}" style="color: #10b981; font-weight: 700; text-decoration: none; font-size: 0.9rem;">Read More <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-newspaper"></i>
+                <p>No news items available right now.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- OTHERS / PROJECTS SECTION -->
+    <div id="others" class="dashboard-section">
+        <div class="premium-card">
+            <div class="section-header">
+                <h2>Project Connections & Others</h2>
+                <a href="{% url 'projects:list' %}" class="tab-btn active" style="background: var(--accent-gradient); color:white;">View Projects</a>
+            </div>
+            
+            {% if project_connections %}
+            <ul class="app-list">
+                {% for conn in project_connections %}
+                <li class="app-item">
+                    <div class="app-info">
+                        <div class="app-thumb" style="background: #fff7ed; color: #f97316;">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="app-details">
+                            <h5>{{ conn.project.title }}</h5>
+                            <p>Owner: {{ conn.project.owner.username }} • Connected at {{ conn.connected_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'projects:detail' conn.project.id %}" class="tab-btn" style="padding: 0.5rem;"><i class="fas fa-link"></i></a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-layer-group"></i>
+                <p>No project connections found.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('.content-tabs a').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -3,214 +3,246 @@
 
 {% block extra_css %}
 <style>
-    .job-container {
-        padding: 4rem 2rem;
-        max-width: 1000px;
+    :root {
+        --accent-emerald: #10b981;
+        --accent-indigo: #6366f1;
+        --accent-ruby: #ef4444;
+        --text-slate: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+    }
+
+    .job-view-wrapper {
+        min-height: 100vh;
+        background: #f8fafc;
+        padding: 6rem 1.5rem;
+        background-image: radial-gradient(at 50% 0%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
+    }
+
+    .job-view-container {
+        max-width: 850px;
         margin: 0 auto;
     }
 
-    .job-info-card {
+    .job-master-card {
         background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border);
+        border-radius: 28px;
         padding: 4rem;
-        animation: fadeIn 0.8s ease-out;
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        animation: fadeInUp 0.6s ease-out;
     }
 
-    .job-info-card h1 {
+    .job-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .job-title-hero {
         font-family: 'Outfit', sans-serif;
-        font-size: 2.75rem;
-        color: var(--text-main);
-        margin-bottom: 2rem;
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--text-slate);
+        letter-spacing: -0.05em;
+        margin-bottom: 1rem;
+        line-height: 1.1;
+    }
+
+    .job-meta-strip {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .job-meta-strip span {
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 8px;
     }
 
-    .job-info-card h1 i {
-        color: var(--primary);
+    .job-meta-strip i {
+        color: var(--accent-emerald);
     }
 
-    .job-details {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+    /* Content Protocol */
+    .content-section {
+        margin-bottom: 3.5rem;
     }
 
-    .detail-item {
-        display: flex;
-        gap: 1rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 1.1rem;
-        color: #334155;
-    }
-
-    .detail-item i {
-        font-size: 1.25rem;
-        color: var(--primary);
-        width: 25px;
-    }
-
-    .detail-item strong {
-        color: var(--text-main);
-        min-width: 140px;
-    }
-
-    .documents-section {
-        background: #f8fafc;
-        padding: 2rem;
-        border-radius: var(--radius-md);
-        margin-top: 3rem;
-    }
-
-    .documents-section h3 {
+    .content-label {
         font-family: 'Outfit';
         font-size: 1.25rem;
-        margin-bottom: 1.5rem;
-        color: var(--text-main);
-    }
-
-    .doc-link {
+        font-weight: 800;
+        color: var(--text-slate);
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        transition: all 0.2s;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f1f5f9;
     }
 
-    .doc-link:hover {
-        transform: translateX(5px);
-        color: var(--primary-hover);
+    .content-label i {
+        color: var(--accent-emerald);
     }
 
-    .btn-apply {
+    .content-body {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #475569;
+        white-space: pre-line;
+    }
+
+    /* Deployment Action */
+    .deployment-center {
+        margin-top: 5rem;
+        padding: 3rem;
+        background: #f8fafc;
+        border-radius: 24px;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+    }
+
+    .btn-deploy {
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 1.25rem 2.5rem;
-        background: var(--primary);
+        gap: 15px;
+        background: var(--accent-emerald);
         color: white;
+        padding: 1.2rem 3rem;
+        border-radius: 18px;
+        font-weight: 800;
+        font-size: 1.2rem;
         text-decoration: none;
-        border-radius: 12px;
+        box-shadow: 0 15px 30px -10px rgba(16, 185, 129, 0.4);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-deploy:hover {
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 25px 45px -12px rgba(16, 185, 129, 0.5);
+        background: #059669;
+    }
+
+    .btn-doc-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.75rem 1.25rem;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        color: var(--text-slate);
+        text-decoration: none;
         font-weight: 700;
-        font-size: 1.1rem;
-        margin-top: 3rem;
-        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
-        transition: all 0.3s;
+        font-size: 0.9rem;
+        transition: 0.2s;
+        margin: 5px;
     }
 
-    .btn-apply:hover {
-        background: var(--primary-hover);
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.4);
+    .btn-doc-chip:hover {
+        background: #f1f5f9;
+        border-color: var(--accent-emerald);
+        transform: translateY(-2px);
     }
 
-    .auth-notice {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background: #fffbeb;
-        border: 1px solid #fef08a;
-        color: #854d0e;
-        border-radius: 10px;
-        font-weight: 600;
-        text-align: center;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .auth-notice a {
-        color: var(--primary);
-        text-decoration: underline;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    @media (max-width: 600px) {
+        .job-title-hero { font-size: 2.2rem; }
+        .job-master-card { padding: 2rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="job-container">
-    <div class="job-info-card">
-        <h1><i class="fas fa-briefcase"></i> {{ job.title }}</h1>
-        <p style="color: var(--text-muted); font-size: 1.25rem; margin-top: -1.5rem; margin-bottom: 3rem;">
-            {{ job.company }} &bull; {{ job.location }}
-        </p>
+<div class="job-view-wrapper">
+    <div class="job-view-container">
+        <div class="job-master-card">
+            <div class="job-header">
+                <h1 class="job-title-hero">{{ job.title }}</h1>
+                <div class="job-meta-strip">
+                    <span><i class="fas fa-building"></i> {{ job.company }}</span>
+                    <span>&bull;</span>
+                    <span><i class="fas fa-location-dot"></i> {{ job.location }}</span>
+                    <span>&bull;</span>
+                    <span><i class="fas fa-clock"></i> 
+                        {% if job.experience_required == "YES" %}Exp. Required{% else %}Entry Level{% endif %}
+                    </span>
+                </div>
+            </div>
 
-        <div class="job-details">
-            <div class="detail-item">
-                <i class="fas fa-clock"></i>
-                <strong>Experience:</strong>
-                <span>
-                    {% if job.experience_required == "YES" %}
-                    Experience Required
-                    {% else %}
-                    No Experience Required
+            <div class="content-section">
+                <div class="content-label"><i class="fas fa-file-alt"></i> Job Description</div>
+                <div class="content-body">{{ job.description }}</div>
+            </div>
+
+            <div class="content-section">
+                <div class="content-label"><i class="fas fa-check-circle"></i> Key Requirements</div>
+                <div class="content-body">{{ job.requirements }}</div>
+            </div>
+
+            {% if job.support_document or job.documents.all %}
+            <div class="content-section">
+                <div class="content-label"><i class="fas fa-folder-open"></i> Support Intelligence</div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    {% if job.support_document %}
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'download_support' job.id %}" class="btn-doc-chip">
+                            <i class="fas fa-file-download"></i> {{ job.support_document.name|slice:"10:" }}
+                        </a>
+                        {% endif %}
                     {% endif %}
-                </span>
-            </div>
 
-            <div class="detail-item">
-                <i class="fas fa-align-left"></i>
-                <strong>Description:</strong>
-                <span>{{ job.description }}</span>
-            </div>
-
-            <div class="detail-item">
-                <i class="fas fa-tasks"></i>
-                <strong>Requirements:</strong>
-                <span>{{ job.requirements }}</span>
-            </div>
-        </div>
-
-        {% if job.support_document or job.documents.all %}
-        <div class="documents-section">
-            <h3><i class="fas fa-file-alt"></i> Support Documents</h3>
-
-            {% if job.support_document %}
-            {% if user.is_authenticated %}
-            <a href="{% url 'download_support' job.id %}" class="doc-link">
-                <i class="fas fa-file-download"></i> {{ job.support_document.name|slice:"10:" }}
-            </a>
-            {% else %}
-            <div class="auth-notice">Please <a href="{% url 'Login' %}">login</a> to download this support document.
+                    {% for doc in job.documents.all %}
+                        {% if user.is_authenticated %}
+                        <a href="{{ doc.file.url }}" class="btn-doc-chip">
+                            <i class="fas fa-file-download"></i> {{ doc.file.name|slice:"10:" }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             {% endif %}
-            {% endif %}
 
-            {% for doc in job.documents.all %}
-            {% if user.is_authenticated %}
-            <a href="{{ doc.file.url }}" class="doc-link">
-                <i class="fas fa-file-download"></i> {{ doc.file.name|slice:"10:" }}
-            </a>
-            {% else %}
-            <div class="auth-notice">Please <a href="{% url 'Login' %}">login</a> to download support documents.</div>
-            {% endif %}
-            {% endfor %}
-        </div>
-        {% endif %}
+            <div class="deployment-center">
+                {% if user.is_authenticated %}
+                    {% if job.application_link %}
+                    <h3 style="font-family: 'Outfit'; margin-bottom: 2rem; color: var(--text-slate);">Ready to join the mission?</h3>
+                    <a href="{{ job.application_link }}" class="btn-deploy" target="_blank" rel="noopener noreferrer">
+                        APPLY FOR THIS POSITION <i class="fas fa-rocket"></i>
+                    </a>
+                    <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                        Official portal redirection enabled.
+                    </p>
+                    {% else %}
+                    <div style="color: var(--text-muted);">
+                        <i class="fas fa-hourglass" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="font-weight: 700;">APPLICATIONS OPENING SOON</p>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div style="color: #1e40af;">
+                        <i class="fas fa-lock" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <h4 style="font-weight: 800; margin-bottom: 1rem;">AUTHENTICATION REQUIRED</h4>
+                        <a href="{% url 'Login' %}" style="background: var(--accent-indigo); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 700;">Login to Access Portal</a>
+                    </div>
+                {% endif %}
+            </div>
 
-        {% if user.is_authenticated %}
-        <a href="{% url 'apply_job' job.id %}" class="btn-apply">
-            <i class="fas fa-paper-plane"></i> Submit Application
-        </a>
-        {% else %}
-        <div class="auth-notice" style="margin-top: 3rem;">
-            <i class="fas fa-lock"></i> Please <a href="{% url 'Login' %}">login</a> to apply for this position.
+            <div style="text-align: center; margin-top: 4rem;">
+                <a href="{% url 'job_list' %}" style="color: var(--text-muted); font-weight: 800; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fas fa-arrow-left"></i> BACK TO OPPORTUNITIES
+                </a>
+            </div>
         </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

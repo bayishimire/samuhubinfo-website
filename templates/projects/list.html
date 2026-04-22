@@ -1,0 +1,40 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Explore Projects | Fursa.Link{% endblock %}
+
+{% block content %}
+<div class="section-heading">
+    <h2>Community Projects</h2>
+    <p>Discover innovative ideas and collaborate with creators across Rwanda.</p>
+</div>
+
+<div class="opportunities-grid">
+    {% for project in projects %}
+    <div class="opp-card">
+        <div class="opp-image">
+            {% if project.image %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}">
+            {% else %}
+            <div class="placeholder"><i class="fas fa-project-diagram"></i></div>
+            {% endif %}
+            <span class="opp-badge badge-job">Project</span>
+        </div>
+        <div class="opp-content">
+            <div class="date-tag">
+                <i class="far fa-calendar-alt"></i> Started {{ project.created_at|date:"M d, Y" }}
+            </div>
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.description|truncatewords:20 }}</p>
+            <a href="{% url 'projects:detail' project.id %}" class="btn-read-more">View Details</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <p>No projects have been published yet. Be the first to share one!</p>
+        <a href="{% url 'projects:create' %}" class="btn btn-primary" style="margin-top: 1rem;">Add New Project</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

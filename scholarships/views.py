@@ -10,9 +10,16 @@ from .models import Scholarship, ScholarshipApplication
 # -------------------------------
 # List all active scholarships
 # -------------------------------
-@login_required
 def scholarship_list(request):
-    scholarships = Scholarship.objects.filter(is_active=True).order_by('-posted_date')
+    from django.utils import timezone
+    from django.db.models import Q
+
+    today = timezone.now().date()
+    # Filter for active scholarships where deadline is in future/today, or no deadline
+    scholarships = Scholarship.objects.filter(
+        Q(is_active=True) & (Q(deadline__isnull=True) | Q(deadline__gte=today))
+    ).order_by('-posted_date')
+
     return render(request, 'scholarships/list.html', {
         'scholarships': scholarships
     })
@@ -21,7 +28,6 @@ def scholarship_list(request):
 # -------------------------------
 # Scholarship details
 # -------------------------------
-@login_required
 def scholarship_detail(request, pk):
     scholarship = get_object_or_404(Scholarship, pk=pk, is_active=True)
 
@@ -146,3 +152,86 @@ def apply_scholarship_manual(request, pk):
     return render(request, 'scholarships/apply.html', {
         'scholarship': scholarship
     })
+
+from django.contrib.auth.decorators import user_passes_test
+
+def is_admin(user):
+    return user.user_type == 'Admin' and user.is_approved or user.is_superuser
+
+# -------------------------------
+# CUSTOM ADMIN: Scholarship Dashboard
+# -------------------------------
+@login_required
+@user_passes_test(is_admin)
+def admin_scholarship_dashboard(request):
+    status_filter = request.GET.get('status')
+    
+    if status_filter:
+        scholarships = Scholarship.objects.filter(status=status_filter.upper()).order_by('-posted_date')
+    else:
+        scholarships = Scholarship.objects.all().order_by('-posted_date')
+
+    # Calculate Real Stats
+    total_listings = Scholarship.objects.all().count()
+    active_openings = Scholarship.objects.filter(status='OPEN').count()
+    global_scope = Scholarship.objects.values('country').distinct().count()
+
+    context = {
+        'scholarships': scholarships,
+        'total_listings': total_listings,
+        'active_openings': active_openings,
+        'global_scope': global_scope,
+        'current_filter': status_filter.upper() if status_filter else 'ALL'
+    }
+    return render(request, 'scholarships/admin_dashboard.html', context)
+
+
+# -------------------------------
+# CUSTOM ADMIN: Add Scholarship (Manual Form)
+# -------------------------------
+@login_required
+@user_passes_test(is_admin)
+def admin_add_scholarship(request):
+    if request.method == 'POST':
+        # Retrieve all form data manually
+        title = request.POST.get('title')
+        university = request.POST.get('university')
+        country = request.POST.get('country')
+        degree_level = request.POST.get('degree_level')
+        description = request.POST.get('description')
+        eligibility = request.POST.get('eligibility')
+        application_link = request.POST.get('application_link')
+        deadline = request.POST.get('deadline')
+        image = request.FILES.get('image')
+
+        # Create scholarship manually in database
+        Scholarship.objects.create(
+            title=title,
+            university=university,
+            country=country,
+            degree_level=degree_level,
+            description=description,
+            eligibility=eligibility,
+            application_link=application_link,
+            deadline=deadline,
+            image=image,
+            is_active=True
+        )
+
+        messages.success(request, "Scholarship successfully added!")
+        return redirect('admin_scholarship_dashboard')
+
+    return render(request, 'scholarships/admin_add_scholarship.html')
+
+
+# -------------------------------
+# CUSTOM ADMIN: Delete Scholarship
+# -------------------------------
+@login_required
+@user_passes_test(is_admin)
+def admin_delete_scholarship(request, pk):
+    scholarship = get_object_or_404(Scholarship, pk=pk)
+    scholarship.delete()
+    messages.success(request, "Scholarship deleted successfully!")
+    return redirect('admin_scholarship_dashboard')
+

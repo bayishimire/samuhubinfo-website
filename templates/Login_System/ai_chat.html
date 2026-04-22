@@ -1,7 +1,7 @@
 {% extends 'Login_System/base.html' %}
 {% load static %}
 
-{% block title %}SAMHUB AI Assistant{% endblock %}
+{% block title %}FursaLink AI Assistant{% endblock %}
 
 {% block extra_css %}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -107,24 +107,26 @@
 
     /* Suggestion chips */
     .suggestions {
-        display:flex;
-        gap:8px;
-        flex-wrap:wrap;
-        align-items:center;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
     }
 
     .chip {
         background: #eef2ff;
         color: #3730a3;
-        padding:6px 10px;
-        border-radius:999px;
-        font-weight:600;
-        cursor:pointer;
-        border:1px solid rgba(99,102,241,0.12);
-        font-size:0.9rem;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid rgba(99, 102, 241, 0.12);
+        font-size: 0.9rem;
     }
 
-    .chip:hover{ background:#e0e7ff }
+    .chip:hover {
+        background: #e0e7ff
+    }
 
     #ai-chat-box {
         flex: 1;
@@ -273,7 +275,7 @@
     <!-- Left panel: Description -->
     <div id="ai-info-panel">
         <div class="info-header">
-            <h2>SAMHUB AI</h2>
+            <h2>FursaLink AI</h2>
             <p>Your intelligent companion for growth.</p>
         </div>
 
@@ -309,7 +311,7 @@
         </div>
 
         <div style="margin-top: auto; font-size: 0.7rem; opacity: 0.6; text-align: center;">
-            &copy; 2026 SAMHUB Intelligence
+            &copy; 2026 FursaLink Intelligence
         </div>
     </div>
 
@@ -335,12 +337,17 @@
             {% endif %}
 
             <div style="text-align:center; margin:0.5rem 0 1rem 0;">
-                <div style="font-size:0.95rem; color:#6b7280; margin-bottom:8px;">Not sure how to ask? Try a suggested question:</div>
+                <div style="font-size:0.95rem; color:#6b7280; margin-bottom:8px;">Not sure how to ask? Try a suggested
+                    question:</div>
                 <div class="suggestions">
-                    <div class="chip" onclick="useSuggestion('Find scholarships for masters in the UK')">Scholarships for Masters in UK</div>
-                    <div class="chip" onclick="useSuggestion('How to register for Irembo birth certificate')">Irembo registration steps</div>
-                    <div class="chip" onclick="useSuggestion('How to write a strong CV for IT jobs')">CV tips for IT jobs</div>
-                    <div class="chip" onclick="useSuggestion('List remote software engineering roles')">Find remote jobs</div>
+                    <div class="chip" onclick="useSuggestion('Find scholarships for masters in the UK')">Scholarships
+                        for Masters in UK</div>
+                    <div class="chip" onclick="useSuggestion('How to register for Irembo birth certificate')">Irembo
+                        registration steps</div>
+                    <div class="chip" onclick="useSuggestion('How to write a strong CV for IT jobs')">CV tips for IT
+                        jobs</div>
+                    <div class="chip" onclick="useSuggestion('List remote software engineering roles')">Find remote jobs
+                    </div>
                 </div>
             </div>
 
@@ -348,9 +355,9 @@
             <div class="ai-message {{ msg.role }}">
                 <div class="avatar">
                     {% if msg.role == 'user' %}
-                        <i class="fas fa-user"></i>
+                    <i class="fas fa-user"></i>
                     {% else %}
-                        <i class="fas fa-robot"></i>
+                    <i class="fas fa-robot"></i>
                     {% endif %}
                 </div>
                 <div class="ai-message-content mark-render">{{ msg.content }}</div>
@@ -420,11 +427,11 @@
             });
     }
 
-    function useSuggestion(text){
+    function useSuggestion(text) {
         const input = document.getElementById('ai-message-input');
         input.value = text;
         // small delay so users can see the text
-        setTimeout(()=>{ sendAI(); }, 250);
+        setTimeout(() => { sendAI(); }, 250);
     }
 
     function appendMessage(role, content) {

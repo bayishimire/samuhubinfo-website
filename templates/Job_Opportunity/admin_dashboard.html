@@ -1,205 +1,387 @@
 {% extends "Login_System/base.html" %}
 {% load static %}
 
-
 {% block extra_css %}
 <style>
-    .admin-container {
+    :root {
+        --dash-bg: #ffffff;
+        --card-bg: #ffffff;
+        --accent-emerald: #1e293b;
+        --accent-ruby: #ef4444;
+        --accent-slate: #475569;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border-color: #f1f5f9;
+        --radius-dash: 16px;
+        --shadow-dash: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-wrapper {
+        min-height: 100vh;
+        background-color: #ffffff;
         padding: 4rem 2rem;
+    }
+
+    .dashboard-container {
         max-width: 1200px;
         margin: 0 auto;
     }
 
-    .page-header {
+    /* Hero Header */
+    .dashboard-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 3rem;
-        background: white;
-        padding: 2rem;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border);
+        animation: fadeInDown 0.8s ease-out;
     }
 
-    .page-header h1 {
-        font-family: 'Outfit';
-        font-size: 2.25rem;
-        color: var(--text-main);
-        margin: 0;
+    .header-content h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.04em;
+        margin-bottom: 0.5rem;
     }
 
-    .btn-add {
+    .header-content p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .btn-create-job {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: var(--primary);
+        gap: 0.75rem;
+        padding: 1rem 1.75rem;
+        background: var(--accent-emerald);
         color: white;
-        border-radius: 12px;
         text-decoration: none;
+        border-radius: 14px;
         font-weight: 700;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
     }
 
-    .btn-add:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
+    .btn-create-job:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 35px -8px rgba(16, 185, 129, 0.4);
+        background: #059669;
     }
 
-    .card {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border);
+    /* Stats Overview */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        padding: 1.75rem;
+        border-radius: var(--radius-dash);
+        border: 1px solid white;
+        box-shadow: var(--shadow-dash);
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .stat-details h3 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-details div {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        font-family: 'Outfit';
+    }
+
+    /* Main Table Container */
+    .control-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-dash);
+        box-shadow: var(--shadow-dash);
+        border: 1px solid white;
         overflow: hidden;
+        animation: fadeInUp 0.8s ease-out 0.4s backwards;
     }
 
-    .table-wrapper {
+    .table-responsive {
         overflow-x: auto;
     }
 
-    table {
+    .premium-table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
     }
 
-    th {
-        background: #f8fafc;
-        padding: 1.25rem 1.5rem;
+    .premium-table th {
+        background: #f1f5f9;
+        padding: 1.25rem 1.75rem;
+        font-size: 0.75rem;
         font-weight: 700;
-        color: #475569;
-        font-size: 0.85rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 2px solid #f1f5f9;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
     }
 
-    td {
-        padding: 1.5rem;
-        border-bottom: 1px solid #f1f5f9;
-        color: var(--text-main);
+    .premium-table td {
+        padding: 1.5rem 1.75rem;
+        border-bottom: 1px solid var(--border-color);
         vertical-align: middle;
     }
 
-    tr:last-child td {
-        border-bottom: none;
+    .premium-table tr:hover td {
+        background: rgba(241, 245, 249, 0.4);
     }
 
-    tr:hover td {
-        background: #fcfdfd;
-    }
-
-    .status-badge {
-        padding: 0.35rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
+    .job-info-main h4 {
+        font-size: 1.05rem;
         font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
     }
 
-    .badge-success {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .badge-info {
-        background: #e0f2fe;
-        color: #0369a1;
-    }
-
-    .action-links {
+    .job-info-main span {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
         display: flex;
-        gap: 1rem;
+        align-items: center;
+        gap: 0.4rem;
     }
 
-    .link-view {
-        color: var(--primary);
-        font-weight: 600;
+    /* Action Buttons */
+    .action-group {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn-action {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-decoration: none;
+        transition: all 0.2s;
+        font-size: 0.9rem;
     }
 
-    .link-edit {
-        color: #64748b;
-        font-weight: 600;
-        text-decoration: none;
+    .btn-edit {
+        background: #ecfdf5;
+        color: var(--accent-emerald);
+        border: 1px solid #d1fae5;
     }
 
-    .link-view:hover,
-    .link-edit:hover {
-        text-decoration: underline;
+    .btn-edit:hover {
+        background: var(--accent-emerald);
+        color: white;
     }
 
-    .no-data {
-        padding: 6rem;
+    .btn-delete {
+        background: #fef2f2;
+        color: var(--accent-ruby);
+        border: 1px solid #fee2e2;
+    }
+
+    .btn-delete:hover {
+        background: var(--accent-ruby);
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 6rem 2rem;
         text-align: center;
-        color: var(--text-muted);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1.5rem;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-wrapper {
+            padding: 2rem 1rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="admin-container">
-    <div class="page-header">
-        <h1>Job Management Dashboard</h1>
-        <a href="{% url 'add_job' %}" class="btn-add">
-            <i class="fas fa-plus"></i> Post New Job
-        </a>
-    </div>
+<div class="dashboard-wrapper">
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>Mission Control</h1>
+                <p>Strategic management of FursaLink career opportunities.</p>
+            </div>
+            <a href="{% url 'add_job' %}" class="btn-create-job">
+                <i class="fas fa-plus"></i> Post New Job
+            </a>
+        </header>
 
-    <div class="card">
-        {% if jobs %}
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Company</th>
-                        <th>Experience</th>
-                        <th>Applicants</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td>
-                            <div style="font-weight: 700;">{{ job.title }}</div>
-                            <div style="font-size: 0.85rem; color: #94a3b8;">{{ job.location }}</div>
-                        </td>
-                        <td>{{ job.company }}</td>
-                        <td>
-                            {% if job.experience_required == "YES" %}
-                            <span class="status-badge badge-info">Required</span>
-                            {% else %}
-                            <span class="status-badge">Optional</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="status-badge badge-success">
-                                <i class="fas fa-users" style="margin-right: 4px;"></i> {{ job.applications.count }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-links">
-                                <a href="{% url 'view_applications' job.id %}" class="link-view">View Applicants</a>
-                                <a href="{% url 'edit_job' job.id %}" class="link-edit">Edit Job</a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <a href="{% url 'admin_job_dashboard' %}?filter=all" class="stat-card"
+                style="text-decoration: none; cursor: pointer; border: {% if current_filter == 'ALL' %}2px solid var(--accent-emerald){% else %}1px solid white{% endif %}; transition: all 0.3s;">
+                <span class="stat-label">Total Postings</span>
+                <div class="stat-value">{{ total_count }}</div>
+                {% if current_filter == 'ALL' %}
+                <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 800;">ACTIVE FOCUS</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'admin_job_dashboard' %}?filter=active" class="stat-card"
+                style="text-decoration: none; cursor: pointer; border: {% if current_filter == 'ACTIVE' %}2px solid var(--accent-emerald){% else %}1px solid white{% endif %}; transition: all 0.3s;">
+                <span class="stat-label">Active Opportunities</span>
+                <div class="stat-value">{{ active_count }}</div>
+                {% if current_filter == 'ACTIVE' %}
+                <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 800;">ACTIVE FOCUS</span>
+                {% endif %}
+            </a>
+            <div class="stat-card">
+                <span class="stat-label">Network Scope</span>
+                <div class="stat-value">{{ regional_reach|default:"Verified" }} Regions</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">System Health</span>
+                <div class="stat-value" style="color: var(--accent-emerald);">Optimal</div>
+            </div>
         </div>
-        {% else %}
-        <div class="no-data">
-            <i class="fas fa-briefcase"
-                style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem; display: block;"></i>
-            <h3>No jobs posted yet.</h3>
-            <p>Click the "Post New Job" button to create your first listing.</p>
+
+        <!-- Main Workspace -->
+        <div class="control-card">
+            {% if jobs %}
+            <div class="table-responsive">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Information Architecture</th>
+                            <th>Organizational Entity</th>
+                            <th>Experience Protocol</th>
+                            <th>Management Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td>
+                                <div class="job-info-main">
+                                    <h4>{{ job.title }}</h4>
+                                    <span><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span style="font-weight: 700; color: var(--text-primary);">{{ job.company }}</span>
+                            </td>
+                            <td>
+                                {% if job.experience_required == "YES" %}
+                                <span
+                                    style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #dbeafe;">
+                                    REQUIRED
+                                </span>
+                                {% else %}
+                                <span
+                                    style="background: #f8fafc; color: #64748b; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid #e2e8f0;">
+                                    ENTRY LEVEL
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="{% url 'edit_job' job.id %}" class="btn-action btn-edit"
+                                        title="Edit Strategic Data">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <a href="{% url 'delete_job' job.id %}" class="btn-action btn-delete"
+                                        title="Terminate Posting"
+                                        onclick="return confirm('Initiate termination of this job posting? This action is irreversible.')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-terminal"></i>
+                <h3
+                    style="font-family: 'Outfit'; font-size: 1.5rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+                    System Idle</h3>
+                <p style="color: var(--text-secondary);">No active job instances detected. Initiate a new posting to
+                    begin.</p>
+                <div style="margin-top: 2rem;">
+                    <a href="{% url 'add_job' %}" class="btn-create-job" style="background: var(--text-primary);">
+                        Initialize First Entry
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

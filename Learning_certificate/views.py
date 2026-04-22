@@ -5,12 +5,15 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
-from django.template.loader import render_to_string
-
+from django.urls import reverse
+from django.db.models import Q
 from .models import (
     Course, Enrollment, Exam, Question,
     ExamAttempt, StudentAnswer, ExamResult, Certificate
 )
+from Job_Opportunity.models import JobApplication, Job
+from scholarships.models import ScholarshipApplication, Scholarship
+from projects.models import ProjectConnection
 
 
 # ── Helper: send email safely ──
@@ -41,7 +44,14 @@ def about(request):
 # ═══════════════════════════════════════════════
 def course_list(request):
     """Everyone can see courses. Only logged-in students can enroll."""
-    courses = Course.objects.filter(is_active=True)
+    from django.utils import timezone
+    from django.db.models import Q
+    
+    now = timezone.now()
+    # Filter for active courses where end_date is in future, or no end_date
+    courses = Course.objects.filter(
+        Q(is_active=True) & (Q(end_date__isnull=True) | Q(end_date__gte=now))
+    )
 
     # If user is logged in, attach enrollment status
     enrollment_map = {}
@@ -325,15 +335,15 @@ def _handle_pass(enrollment, result):
 
             # Send certificate email
             student = enrollment.student
-            subject = f"🎓 Congratulations! Your SAMHUB Certificate for {course.title}"
+            subject = f"🎓 Congratulations! Your FursaLink Certificate for {course.title}"
             message = (
                 f"Dear {student.username},\n\n"
                 f"Congratulations! You have successfully passed all exams for '{course.title}'.\n\n"
                 f"Certificate Number: {cert.certificate_number}\n"
                 f"Issued on: {cert.issued_at}\n\n"
-                f"You can download your certificate from your SAMHUB dashboard.\n\n"
+                f"You can download your certificate from your FursaLink dashboard.\n\n"
                 f"Keep learning!\n"
-                f"— SAMHUB Team"
+                f"— FursaLink Team"
             )
 
             if _send_email_safe(subject, message, [student.email]):
@@ -350,7 +360,7 @@ def _handle_fail(enrollment, result):
     exam = result.exam
     course = enrollment.course
 
-    subject = f"📝 SAMHUB — Retake Required for {course.title}"
+    subject = f"📝 FursaLink — Retake Required for {course.title}"
     message = (
         f"Dear {student.username},\n\n"
         f"Unfortunately, you did not pass the exam '{exam.title}' for the course '{course.title}'.\n\n"
@@ -358,7 +368,7 @@ def _handle_fail(enrollment, result):
         f"Pass Mark: {exam.passing_marks}\n\n"
         f"Please review the course material and retake the exam when it reopens.\n\n"
         f"Don't give up!\n"
-        f"— SAMHUB Team"
+        f"— FursaLink Team"
     )
 
     if _send_email_safe(subject, message, [student.email]):
@@ -424,14 +434,18 @@ def certificate_view(request, course_id):
 # ═══════════════════════════════════════════════
 # USER DASHBOARD
 # ═══════════════════════════════════════════════
-from Job_Opportunity.models import JobApplication
-
 
 @login_required
 def user_dashboard(request):
-    """Student dashboard: enrolled courses, progress, certificates, job apps."""
-    enrollments = Enrollment.objects.filter(student=request.user).select_related('course')
-
+    """
+    Enhanced User Dashboard: 
+    Shows enrolled courses, job applications, scholarship applications, 
+    internships, projects, and latest platform news.
+    """
+    user = request.user
+    
+    # --- 1. Enrolled Courses & Progress ---
+    enrollments = Enrollment.objects.filter(student=user).select_related('course')
     courses_info = []
     for e in enrollments:
         exams = e.course.exams.filter(is_published=True)
@@ -447,13 +461,131 @@ def user_dashboard(request):
             'course': e.course,
             'passed_exams': passed_exams,
             'total_exams': total_exams,
-            'progress': f"{passed_exams}/{total_exams} exams passed" if total_exams else "No exams yet",
+            'progress': f"{passed_exams}/{total_exams} passed" if total_exams else "No exams",
             'certificate_status': certificate_status,
         })
 
-    job_applications = JobApplication.objects.filter(applicant=request.user).order_by('-submitted_at')
+    # --- 2. Job Applications ---
+    job_applications = JobApplication.objects.filter(applicant=user).select_related('job').order_by('-submitted_at')
 
-    return render(request, 'Login_System/user_dashboard/user_dashboard.html', {
+    # --- 3. Scholarship Applications ---
+    scholarship_apps = ScholarshipApplication.objects.filter(user=user).select_related('scholarship').order_by('-applied_date')
+
+    # --- 4. Internships (Jobs filtered by "intern") ---
+    from django.db.models import Q
+    # Fetch all active jobs that are internships
+    internships = Job.objects.all().order_by('-posted_at')
+    
+    # Also track user's applications to internships
+    internship_apps = job_applications.filter(
+        Q(job__title__icontains='intern') | Q(job__description__icontains='intern')
+    )
+
+    # --- 5. Projects / Other Opportunities ---
+    project_connections = ProjectConnection.objects.filter(user=user).select_related('project').order_by('-connected_at')
+
+    # --- 6. Latest News (Platform wide updates) ---
+    news_items = []
+    # Fetch latest 2 scholarships and 2 jobs as news
+    latest_scholarships = Scholarship.objects.all().order_by('-posted_date')
+    latest_jobs = Job.objects.all().order_by('-posted_at')
+    
+    for s in latest_scholarships:
+        news_items.append({
+            'type': 'Scholarship',
+            'title': f"New Scholarship: {s.title}",
+            'date': s.posted_date,
+            'url': reverse('scholarship_detail', args=[s.id])
+        })
+    for j in latest_jobs:
+        news_items.append({
+            'type': 'Job',
+            'title': f"New Opening: {j.title} at {j.company}",
+            'date': j.posted_at,
+            'url': reverse('job_detail', args=[j.id])
+        })
+    
+    context = {
         'courses_info': courses_info,
         'job_applications': job_applications,
-    })
+        'scholarship_apps': scholarship_apps,
+        'internships': internships,
+        'internship_apps': internship_apps,
+        'project_connections': project_connections,
+        'news_items': news_items,
+        'all_jobs': latest_jobs,
+        'all_scholarships': latest_scholarships,
+    }
+
+    return render(request, 'Login_System/user_dashboard/user_dashboard.html', context)
+
+
+# ═══════════════════════════════════════════════
+# CUSTOM ADMIN FOR COURSES
+# ═══════════════════════════════════════════════
+from django.contrib.auth.decorators import user_passes_test
+
+def is_admin(user):
+    return user.user_type == 'Admin' and user.is_approved or user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
+def admin_course_dashboard(request):
+    filter_type = request.GET.get('filter', 'all')
+    
+    if filter_type == 'free':
+        courses = Course.objects.filter(price=0).order_by('-created_at')
+    else:
+        courses = Course.objects.all().order_by('-created_at')
+
+    # Calculate Real-Time Analytics
+    total_courses = Course.objects.all().count()
+    free_courses = Course.objects.filter(price=0).count()
+    total_enrollments = Enrollment.objects.all().count()
+
+    context = {
+        'courses': courses,
+        'total_courses': total_courses,
+        'free_courses': free_courses,
+        'total_enrollments': total_enrollments,
+        'current_filter': filter_type.upper()
+    }
+    return render(request, 'Learning_certificate/admin_dashboard.html', context)
+
+@login_required
+@user_passes_test(is_admin)
+def admin_add_course(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        content = request.POST.get('content')
+        price = request.POST.get('price', 0)
+        duration_weeks = request.POST.get('duration_weeks', 4)
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        thumbnail = request.FILES.get('thumbnail')
+
+        Course.objects.create(
+            title=title,
+            description=description,
+            content=content,
+            price=price,
+            duration_weeks=duration_weeks,
+            start_date=start_date if start_date else None,
+            end_date=end_date if end_date else None,
+            thumbnail=thumbnail,
+            is_active=True
+        )
+
+        messages.success(request, "Course successfully added!")
+        return redirect('admin_course_dashboard')
+
+    return render(request, 'Learning_certificate/admin_add_course.html')
+
+@login_required
+@user_passes_test(is_admin)
+def admin_delete_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    course.delete()
+    messages.success(request, "Course deleted successfully!")
+    return redirect('admin_course_dashboard')

@@ -3,196 +3,298 @@
 
 {% block extra_css %}
 <style>
+    :root {
+        --form-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --accent-primary: #10b981; 
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --input-border: #cbd5e1;
+    }
+
+    .admin-form-wrapper {
+        min-height: 100vh;
+        padding: 5rem 1.5rem;
+        background-color: #f1f5f9;
+        background-image: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
+    }
+
     .admin-form-container {
-        padding: 4rem 2rem;
         max-width: 800px;
         margin: 0 auto;
     }
 
     .form-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border);
-        padding: 4rem;
-        animation: fadeIn 0.8s ease-out;
+        background: var(--card-bg);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        border-top: 8px solid var(--accent-primary);
+        padding: 3.5rem;
+        animation: formAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .form-header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 3.5rem;
     }
 
     .form-header h1 {
-        font-family: 'Outfit';
-        font-size: 2.5rem;
-        color: var(--text-main);
-        margin-bottom: 0.5rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        letter-spacing: -0.04em;
+        margin-bottom: 0.75rem;
     }
 
-    .form-group {
-        margin-bottom: 1.5rem;
+    /* Sections */
+    .form-section {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--accent-primary);
+        margin-bottom: 1.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    /* Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.75rem;
+    }
+
+    .form-group-full {
+        grid-column: span 2;
     }
 
     .form-group label {
         display: block;
         font-weight: 700;
-        color: #475569;
-        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        margin-bottom: 0.6rem;
         font-size: 0.95rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1rem;
+        pointer-events: none;
+        transition: color 0.2s;
     }
 
     .form-control {
         width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid #f1f5f9;
-        border-radius: 10px;
+        padding: 0.9rem 1rem 0.9rem 3rem;
+        background: #fbfcfd;
+        border: 1.5px solid var(--input-border);
+        border-radius: 12px;
+        font-family: inherit;
         font-size: 1rem;
-        background: #f8fafc;
-        transition: all 0.2s;
+        color: var(--text-dark);
+        transition: all 0.2s ease;
         outline: none;
-        color: #1e293b;
     }
 
     .form-control:focus {
-        border-color: var(--primary);
         background: white;
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    }
+
+    .form-control:focus + i {
+        color: var(--accent-primary);
     }
 
     textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
+        min-height: 130px;
+        padding-left: 1rem;
+    }
+
+    .helper-text {
+        display: block;
+        margin-top: 0.6rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+        line-height: 1.4;
     }
 
     .btn-submit {
         width: 100%;
-        padding: 1rem;
-        background: var(--primary);
+        padding: 1.25rem;
+        background: var(--accent-primary);
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 16px;
+        font-size: 1.15rem;
         font-weight: 800;
-        font-size: 1.1rem;
         cursor: pointer;
-        transition: all 0.3s;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
         margin-top: 2rem;
     }
 
     .btn-submit:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
+        transform: translateY(-4px);
+        background: #059669;
+        box-shadow: 0 20px 30px -8px rgba(16, 185, 129, 0.4);
     }
 
-    .preview-section {
-        margin-bottom: 1.5rem;
-        text-align: center;
+    @keyframes formAppear {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .preview-image {
-        max-width: 200px;
-        border-radius: 12px;
-        border: 2px solid #f1f5f9;
-        padding: 4px;
-        box-shadow: var(--shadow-sm);
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .form-card { padding: 2.5rem 1.5rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="admin-form-container">
-    <div class="form-card">
-        <div class="form-header">
-            <h1>Edit Job Posting</h1>
-            <p style="color: var(--text-muted);">Update the details for "{{ job.title }}"</p>
-        </div>
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label>Job Title</label>
-                <input type="text" name="title" class="form-control" value="{{ job.title }}" required>
+<div class="admin-form-wrapper">
+    <div class="admin-form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h1>Edit Job Posting</h1>
+                <p>Update the details for "{{ job.title }}"</p>
             </div>
 
-            <div class="form-group">
-                <label>Company Name</label>
-                <input type="text" name="company" class="form-control" value="{{ job.company }}" required>
-            </div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label>Location</label>
-                <input type="text" name="location" class="form-control" value="{{ job.location }}" required>
-            </div>
+                <!-- Section 1: Basic Information -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-info-circle"></i> Basic Information
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Job Title</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="title" name="title" class="form-control" value="{{ job.title }}" required>
+                                <i class="fas fa-heading"></i>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label>Experience Level</label>
-                <select name="experience_required" class="form-control">
-                    <option value="YES" {% if job.experience_required=="YES" %}selected{% endif %}>Experience Required
-                    </option>
-                    <option value="NO" {% if job.experience_required=="NO" %}selected{% endif %}>Entry Level / No
-                        Experience</option>
-                </select>
-            </div>
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="company" name="company" class="form-control" value="{{ job.company }}" required>
+                                <i class="fas fa-building"></i>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" class="form-control" required>{{ job.description }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Requirements</label>
-                <textarea name="requirements" class="form-control" required>{{ job.requirements }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Deadline</label>
-                <input type="date" name="deadline" class="form-control" value="{{ job.deadline|date:'Y-m-d' }}">
-            </div>
-
-            <div class="form-group">
-                <label>Job Branding (Image)</label>
-                {% if job.image %}
-                <div class="preview-section">
-                    <img src="{{ job.image.url }}" class="preview-image" alt="Current Image">
-                    <small style="display: block; color: var(--text-muted); margin-top: 0.5rem;">Current Listing
-                        Image</small>
+                        <div class="form-group-full">
+                            <label for="location">Location</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="location" name="location" class="form-control" value="{{ job.location }}">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-                <div style="padding: 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px;">
-                    <input type="file" name="image" accept="image/*">
+
+                <!-- Section 2: Logistics & Media -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-calendar-check"></i> Logistics & Media
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="experience_required">Experience Level</label>
+                            <div class="input-wrapper">
+                                <select id="experience_required" name="experience_required" class="form-control">
+                                    <option value="YES" {% if job.experience_required == "YES" %}selected{% endif %}>Experience Required</option>
+                                    <option value="NO" {% if job.experience_required == "NO" %}selected{% endif %}>Entry Level / No Experience</option>
+                                </select>
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deadline">Application Deadline</label>
+                            <div class="input-wrapper">
+                                <input type="date" id="deadline" name="deadline" class="form-control" value="{{ job.deadline|date:'Y-m-d' }}">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Brand Image</label>
+                            <input type="file" id="image" name="image" class="form-control" accept="image/*" style="padding-left: 1rem;">
+                            {% if job.image %}
+                            <span class="helper-text">
+                                <i class="fas fa-check-circle" style="color: var(--accent-primary);"></i> Current image saved.
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Upload a new image to
-                    replace the current one.</small>
+
+                <!-- Section 3: Application Settings -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-paper-plane"></i> Application Settings
+                    </div>
+                    <div class="form-group-full">
+                        <label for="application_link">Direct Application Link</label>
+                        <div class="input-wrapper">
+                            <input type="url" id="application_link" name="application_link" class="form-control" value="{{ job.application_link }}">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Content -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-file-alt"></i> Job Content
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Job Description</label>
+                        <textarea id="description" name="description" class="form-control">{{ job.description }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements">Requirements</label>
+                        <textarea id="requirements" name="requirements" class="form-control">{{ job.requirements }}</textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Save Strategic Changes
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 2.5rem;">
+                <a href="{% url 'admin_job_dashboard' %}" style="color: var(--text-light); text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-arrow-left"></i> Discard Changes
+                </a>
             </div>
-
-            <button type="submit" class="btn-submit">
-                <i class="fas fa-save"></i> Save Changes
-            </button>
-        </form>
-
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="{% url 'admin_job_dashboard' %}"
-                style="color: var(--text-muted); text-decoration: none; font-weight: 600;">
-                <i class="fas fa-arrow-left"></i> Discard Changes
-            </a>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %}

@@ -12,6 +12,7 @@ class Job(models.Model):
     description = models.TextField()
     requirements = models.TextField()
     posted_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
     deadline = models.DateTimeField(null=True, blank=True)
     # in Job model
     require_cover_letter = models.BooleanField(default=False)
@@ -31,6 +32,12 @@ class Job(models.Model):
         ('NO', 'No Experience Required'),
     ]
     experience_required = models.CharField(max_length=3, choices=EXPERIENCE_CHOICES, default='NO')
+
+    # Optional direct application link (set by admin)
+    application_link = models.URLField(
+        blank=True, null=True,
+        help_text="Direct URL where applicants can apply themselves (e.g. company website)"
+    )
 
     def __str__(self):
         return f"{self.title} at {self.company}"

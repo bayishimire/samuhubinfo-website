@@ -1,0 +1,371 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --dash-bg: #ffffff;
+        --card-bg: #ffffff;
+        --accent-emerald: #1e293b;
+        --accent-ruby: #ef4444;
+        --accent-amber: #f59e0b;
+        --accent-blue: #475569;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border-color: #f1f5f9;
+        --radius-dash: 16px;
+        --shadow-dash: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-wrapper {
+        min-height: 100vh;
+        background-color: #ffffff;
+        padding: 4rem 2rem;
+    }
+
+    .dashboard-full-container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Hero Header */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3.5rem;
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    .header-content h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        letter-spacing: -0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-content p {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-dash {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.75rem;
+        border-radius: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-add-scholarship {
+        background: var(--accent-emerald);
+        color: white;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add-scholarship:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 35px -8px rgba(16, 185, 129, 0.4);
+        background: #059669;
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-back:hover {
+        background: #f1f5f9;
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    /* Stats Overview */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3.5rem;
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        padding: 1.75rem;
+        border-radius: var(--radius-dash);
+        border: 1px solid white;
+        box-shadow: var(--shadow-dash);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        font-weight: 700;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        font-family: 'Outfit';
+    }
+
+    /* Table Workspace */
+    .control-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-dash);
+        box-shadow: var(--shadow-dash);
+        border: 1px solid white;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .premium-table th {
+        background: #f1f5f9;
+        padding: 1.5rem 2rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-secondary);
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .premium-table td {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    .premium-table tr:hover td {
+        background: rgba(241, 245, 249, 0.4);
+    }
+
+    .scholarship-title-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .title-main {
+        font-weight: 800;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        letter-spacing: -0.02em;
+    }
+
+    .title-sub {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .uni-badge {
+        font-weight: 700;
+        color: var(--accent-blue);
+    }
+
+    .deadline-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* Status Badges */
+    .badge-status {
+        padding: 0.4rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-open { background: #ecfdf5; color: #059669; }
+    .status-extended { background: #fffbeb; color: #d97706; }
+    .status-upcoming { background: #eff6ff; color: #1d4ed8; }
+    .status-closed { background: #fef2f2; color: #dc2626; }
+    .status-ended { background: #f1f5f9; color: #64748b; }
+
+    .btn-delete-dash {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.25rem;
+        background: #fef2f2;
+        color: var(--accent-ruby);
+        border: 1px solid #fee2e2;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-delete-dash:hover {
+        background: var(--accent-ruby);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1024px) {
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
+        .stats-grid { grid-template-columns: 1fr; }
+        .dashboard-wrapper { padding: 2rem 1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <div class="dashboard-full-container">
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>Scholarship Control</h1>
+                <p>Global opportunity management and strategic allocation.</p>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'dashboard_admin' %}" class="btn-dash btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a href="{% url 'admin_add_scholarship' %}" class="btn-dash btn-add-scholarship">
+                    <i class="fas fa-plus"></i> Add Scholarship
+                </a>
+            </div>
+        </header>
+
+        <!-- Dynamic Statistics -->
+        <div class="stats-grid">
+            <a href="{% url 'admin_scholarship_dashboard' %}" class="stat-card" style="text-decoration: none; cursor: pointer; border: {% if current_filter == 'ALL' %}2px solid var(--accent-emerald){% else %}1px solid white{% endif %}; transition: all 0.3s;">
+                <span class="stat-label">Total Listings</span>
+                <div class="stat-value">{{ total_listings }}</div>
+                {% if current_filter == 'ALL' %}
+                    <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 800;">ACTIVE FOCUS</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'admin_scholarship_dashboard' %}?status=OPEN" class="stat-card" style="text-decoration: none; cursor: pointer; border: {% if current_filter == 'OPEN' %}2px solid var(--accent-emerald){% else %}1px solid white{% endif %}; transition: all 0.3s;">
+                <span class="stat-label">Active Openings</span>
+                <div class="stat-value">{{ active_openings }}</div>
+                {% if current_filter == 'OPEN' %}
+                    <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 800;">ACTIVE FOCUS</span>
+                {% endif %}
+            </a>
+            <div class="stat-card">
+                <span class="stat-label">Global Partners</span>
+                <div class="stat-value">{{ global_scope }} Countries</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">System Health</span>
+                <div class="stat-value" style="color: var(--accent-emerald);">Optimal</div>
+            </div>
+        </div>
+
+        <!-- Main Workspace Table -->
+        <div class="control-card">
+            <div class="table-responsive">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Information Protocol (Title & University)</th>
+                            <th>Deadline Timeline</th>
+                            <th>Status Matrix</th>
+                            <th style="text-align: right;">Strategic Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scholarship in scholarships %}
+                        <tr class="scholarship-row">
+                            <td>
+                                <div class="scholarship-title-cell">
+                                    <div class="title-main">{{ scholarship.title }}</div>
+                                    <div class="title-sub">
+                                        <i class="fas fa-university"></i>
+                                        <span class="uni-badge">{{ scholarship.university }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="deadline-badge">
+                                    <i class="far fa-clock"></i>
+                                    {{ scholarship.deadline|default:"No Limit" }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-status status-{{ scholarship.status|lower }}">
+                                    {{ scholarship.status }}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="{% url 'admin_delete_scholarship' scholarship.id %}" 
+                                   class="btn-delete-dash" 
+                                   onclick="return confirm('Initiate permanent termination of this scholarship layer?')">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 6rem;">
+                                <i class="fas fa-graduation-cap" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                                <h3 style="font-family: 'Outfit'; color: var(--text-primary);">System Empty</h3>
+                                <p style="color: var(--text-secondary);">No active scholarships layers found in the current architecture.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

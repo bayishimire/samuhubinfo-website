@@ -1,0 +1,84 @@
+{% extends "Login_System/base.html" %}
+{% block title %}Login Failed | Fursa.Link{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 5rem auto; padding: 0 1.5rem; text-align: center;">
+    <div style="
+        background: white;
+        border-radius: 20px;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 20px 60px -10px rgba(0,0,0,0.12);
+        border: 1px solid #f1f5f9;
+        animation: fadeIn 0.6s ease;
+    ">
+        <div style="
+            width: 72px; height: 72px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: #dc2626;
+        ">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+
+        <h2
+            style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem;">
+            Google Sign-In Failed
+        </h2>
+
+        <p style="color: #64748b; line-height: 1.7; margin-bottom: 0.5rem;">
+            We couldn't connect your Google account.
+        </p>
+
+        <div
+            style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: monospace; color: #dc2626; font-size: 0.85rem; text-align: left; border: 1px solid #fee2e2;">
+            <strong>System Error Detail:</strong><br>
+            Auth Error Type: {{ auth_error|default:"None" }}<br>
+            {% if request.GET.error %}
+            Google Error: {{ request.GET.error }}<br>
+            {% endif %}
+            {% if request.GET.error_description %}
+            Details: {{ request.GET.error_description }}<br>
+            {% endif %}
+        </div>
+
+        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 2rem;">
+            You can still sign in using your <strong>username and password</strong> below.
+        </p>
+
+        <a href="{% url 'Login' %}" style="
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: #10b981;
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+            margin-bottom: 1rem;
+        ">
+            <i class="fas fa-sign-in-alt"></i> Go to Login
+        </a>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+            <p style="font-size: 0.8rem; color: #94a3b8;">
+                <strong>Admin fix:</strong> Add
+                <code style="background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.75rem;">
+                    http://127.0.0.1:8000/accounts/google/login/callback/
+                </code>
+                to your Google Cloud Console → OAuth → Authorized Redirect URIs
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Temporarily disabled auto-redirect so you can read the error!
+    // setTimeout(function() {
+    //     window.location.href = "{% url 'Login' %}";
+    // }, 4000);
+</script>
+{% endblock %}

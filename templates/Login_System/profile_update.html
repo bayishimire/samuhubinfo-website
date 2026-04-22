@@ -1,0 +1,190 @@
+{% extends "Login_System/base.html" %}
+{% load static %}
+
+{% block title %}Verify Profile | Fursa.Link{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-update-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: #f8fafc;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f1f5f9;
+        animation: formIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes formIn {
+        from { opacity: 0; transform: scale(0.95) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .form-header .icon-circle {
+        width: 64px;
+        height: 64px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto 1.5rem;
+    }
+
+    .form-header h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.85rem;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        transition: color 0.3s;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 0.85rem 1rem 0.85rem 2.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        color: #1e293b;
+        background: #fdfdfd;
+        transition: all 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+        border-radius: 12px;
+        margin-top: 1rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-update-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="icon-circle"><i class="fas fa-user-check"></i></div>
+            <h1>One Last Step</h1>
+            <p>Please complete your profile details to access your dashboard.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" name="phone" id="phone" value="{{ user.phone|default:'' }}" placeholder="+250..." required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sex">Gender</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-venus-mars"></i>
+                    <select name="sex" id="sex" required style="padding-left: 2.8rem;">
+                        <option value="">Select Gender</option>
+                        <option value="Male" {% if user.sex == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user.sex == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user.sex == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Residential Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="address" id="address" value="{{ user.address|default:'' }}" placeholder="e.g. Kigali, Rwanda" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="qualification">Highest Qualification</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-graduation-cap"></i>
+                    <input type="text" name="qualification" id="qualification" value="{{ user.qualification|default:'' }}" placeholder="e.g. Bachelor's Degree">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span>Save and Go to Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "projects/create.html" %}
+
+{% block title %}Edit Project | {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="profile-update-wrapper" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 6rem 2rem;">
+    <div class="form-container" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); border-radius: 2rem; max-width: 800px;">
+        <div class="form-header" style="text-align: center; margin-bottom: 3rem;">
+            <div class="icon-circle" style="background: var(--primary); color: white; width: 100px; height: 100px; font-size: 3rem; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);">
+                <i class="fas fa-edit"></i>
+            </div>
+            <h1 style="font-family: 'Outfit'; font-weight: 900; font-size: 2.8rem; color: var(--text-main); letter-spacing: -0.05em; margin-bottom: 0.75rem;">Edit Project</h1>
+            <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 500px; margin: 0 auto;">Update your project details or change its visibility to the community.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="premium-form">
+            {% csrf_token %}
+            
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="title" style="font-weight: 800; color: var(--text-main); font-size: 1rem; margin-bottom: 0.75rem; display: block;">Project Title</label>
+                <div class="input-wrapper" style="position: relative;">
+                    <i class="fas fa-heading" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem;"></i>
+                    <input type="text" name="title" id="title" value="{{ project.title }}" required 
+                           style="width: 100%; padding: 1.25rem 1.25rem 1.25rem 3.5rem; border-radius: 1rem; border: 2px solid #f1f5f9; background: white; font-size: 1rem; transition: all 0.3s ease;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="description" style="font-weight: 800; color: var(--text-main); font-size: 1rem; margin-bottom: 0.75rem; display: block;">Detailed Description</label>
+                <div style="position: relative;">
+                    <i class="fas fa-align-left" style="position: absolute; left: 1.25rem; top: 1.5rem; color: var(--primary); font-size: 1.2rem;"></i>
+                    <textarea name="description" id="description" rows="6" 
+                              style="width: 100%; padding: 1.25rem 1.25rem 1.25rem 3.5rem; border-radius: 1rem; border: 2px solid #f1f5f9; background: white; font-size: 1rem; transition: all 0.3s ease;" 
+                              required>{{ project.description }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+                <div class="form-group">
+                    <label for="status" style="font-weight: 800; color: var(--text-main); font-size: 1rem; margin-bottom: 0.75rem; display: block;">Project Status</label>
+                    <div class="input-wrapper" style="position: relative;">
+                        <i class="fas fa-eye" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem;"></i>
+                        <select name="status" id="status" 
+                                style="width: 100%; padding: 1.25rem 1.25rem 1.25rem 3.5rem; border-radius: 1rem; border: 2px solid #f1f5f9; background: white; font-size: 1rem; cursor: pointer;">
+                            <option value="Draft" {% if project.status == 'Draft' %}selected{% endif %}>Draft (Invisible)</option>
+                            <option value="Published" {% if project.status == 'Published' %}selected{% endif %}>Published (Public)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image" style="font-weight: 800; color: var(--text-main); font-size: 1rem; margin-bottom: 0.75rem; display: block;">Change Banner (Optional)</label>
+                    <div class="input-wrapper" style="position: relative;">
+                        <i class="fas fa-image" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem;"></i>
+                        <input type="file" name="image" id="image" accept="image/*" 
+                               style="width: 100%; padding: 1.25rem 1.25rem 1.25rem 3.5rem; border-radius: 1rem; border: 2px solid #f1f5f9; background: white; font-size: 0.9rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="submit-btn" style="flex: 2; padding: 1.5rem; background: var(--primary); color: white; border: none; border-radius: 1.25rem; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 1rem; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 15px 35px rgba(16, 185, 129, 0.25);">
+                    <span>Save Changes</span>
+                    <i class="fas fa-save"></i>
+                </button>
+                <a href="{% url 'projects:detail' project.id %}" style="flex: 1; padding: 1.5rem; background: white; color: var(--text-muted); border: 2px solid #f1f5f9; border-radius: 1.25rem; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

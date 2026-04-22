@@ -3,195 +3,354 @@
 
 {% block extra_css %}
 <style>
-    .admin-form-container {
+    :root {
+        --dash-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --accent-emerald: #10b981;
+        --accent-indigo: #4f46e5;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --border-color: #e2e8f0;
+        --input-bg: #fdfdfd;
+        --radius-xl: 32px;
+    }
+
+    .form-fill-screen {
+        min-height: 100vh;
+        background: #f1f5f9;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.05) 0px, transparent 50%);
         padding: 4rem 2rem;
-        max-width: 800px;
-        margin: 0 auto;
+        display: flex;
+        justify-content: center;
     }
 
-    .form-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--border);
+    .wide-form-container {
+        width: 100%;
+        max-width: 1000px;
+        animation: formSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .job-form-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-xl);
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1);
+        border-top: 10px solid var(--accent-emerald);
         padding: 4rem;
-        animation: fadeIn 0.8s ease-out;
+        position: relative;
     }
 
-    .form-header {
+    /* Form Header */
+    .job-form-header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 4rem;
     }
 
-    .form-header h1 {
-        font-family: 'Outfit';
-        font-size: 2.5rem;
-        color: var(--text-main);
-        margin-bottom: 0.5rem;
+    .job-form-header h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3.25rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        letter-spacing: -0.05em;
+        margin-bottom: 1rem;
     }
 
-    .form-group {
-        margin-bottom: 1.5rem;
+    .job-form-header p {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        font-weight: 500;
     }
 
-    .form-group label {
-        display: block;
-        font-weight: 700;
-        color: #475569;
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
+    /* Section Styling */
+    .form-section {
+        margin-bottom: 3.5rem;
     }
 
-    .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid #f1f5f9;
-        border-radius: 10px;
-        font-size: 1rem;
-        background: #f8fafc;
-        transition: all 0.2s;
-        outline: none;
-        color: #1e293b;
+    .section-head {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f1f5f9;
     }
 
-    .form-control:focus {
-        border-color: var(--primary);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-    }
-
-    textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
-    }
-
-    .btn-submit {
-        width: 100%;
-        padding: 1rem;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-weight: 800;
-        font-size: 1.1rem;
-        cursor: pointer;
-        transition: all 0.3s;
+    .section-head i {
+        font-size: 1.5rem;
+        color: var(--accent-emerald);
+        background: #ecfdf5;
+        width: 48px;
+        height: 48px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 14px;
+    }
+
+    .section-head h2 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Grid Layout */
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .field-full {
+        grid-column: span 2;
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column;
         gap: 0.75rem;
-        margin-top: 2rem;
     }
 
-    .btn-submit:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
+    .control-group label {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .error-msg {
-        background: #fef2f2;
-        color: #991b1b;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-        text-align: center;
-        font-weight: 600;
-        border: 1px solid #fee2e2;
+    .input-field-wrapper {
+        position: relative;
     }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
+    .input-field-wrapper i {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+    }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .form-input {
+        width: 100%;
+        padding: 1.1rem 1.25rem 1.1rem 3.5rem;
+        background: var(--input-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 16px;
+        font-family: inherit;
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        transition: all 0.3s;
+        outline: none;
+    }
+
+    .form-input:focus {
+        background: white;
+        border-color: var(--accent-emerald);
+        box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-input:focus + i {
+        color: var(--accent-emerald);
+    }
+
+    textarea.form-input {
+        min-height: 160px;
+        padding-left: 1.25rem;
+    }
+
+    .field-hint {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-top: 0.5rem;
+    }
+
+    .field-hint strong {
+        color: var(--accent-emerald);
+        font-weight: 700;
+    }
+
+    /* Submit Button */
+    .submit-container {
+        margin-top: 4rem;
+    }
+
+    .btn-launch {
+        width: 100%;
+        padding: 1.5rem;
+        background: var(--accent-emerald);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-size: 1.35rem;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-launch:hover {
+        transform: translateY(-6px);
+        background: #059669;
+        box-shadow: 0 30px 60px -15px rgba(16, 185, 129, 0.5);
+    }
+
+    @keyframes formSlideUp {
+        from { opacity: 0; transform: translateY(60px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .input-grid { grid-template-columns: 1fr; }
+        .job-form-card { padding: 2.5rem 1.5rem; }
+        .job-form-header h1 { font-size: 2.5rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="admin-form-container">
-    <div class="form-card">
-        <div class="form-header">
-            <h1>Post New Job</h1>
-            <p style="color: var(--text-muted);">Fill in the details for the new job listing.</p>
-        </div>
-
-        {% if error %}
-        <div class="error-msg">
-            <i class="fas fa-exclamation-circle"></i> {{ error }}
-        </div>
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label for="title">Job Title</label>
-                <input type="text" id="title" name="title" class="form-control"
-                    placeholder="e.g. Senior Software Engineer" required>
+<div class="form-fill-screen">
+    <div class="wide-form-container">
+        <div class="job-form-card">
+            <div class="job-form-header">
+                <h1>Post New Job</h1>
+                <p>Launch your next opportunity and reach the perfect candidates.</p>
             </div>
 
-            <div class="form-group">
-                <label for="company">Company Name</label>
-                <input type="text" id="company" name="company" class="form-control" placeholder="e.g. SAMHUB Tech"
-                    required>
-            </div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Kigali, Rwanda">
-            </div>
+                <!-- Section: Basic Information -->
+                <div class="form-section">
+                    <div class="section-head">
+                        <i class="fas fa-info-circle"></i>
+                        <h2>Basic Information</h2>
+                    </div>
+                    <div class="input-grid">
+                        <div class="control-group">
+                            <label for="title">Job Title</label>
+                            <div class="input-field-wrapper">
+                                <input type="text" id="title" name="title" class="form-input" placeholder="e.g. Senior Software Engineer" required>
+                                <i class="fas fa-heading"></i>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label for="experience_required">Experience Level</label>
-                <select id="experience_required" name="experience_required" class="form-control">
-                    <option value="YES">Experience Required</option>
-                    <option value="NO" selected>Entry Level / No Experience</option>
-                </select>
-            </div>
+                        <div class="control-group">
+                            <label for="company">Company Name</label>
+                            <div class="input-field-wrapper">
+                                <input type="text" id="company" name="company" class="form-input" placeholder="e.g. FursaLink Tech" required>
+                                <i class="fas fa-building"></i>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label for="description">Job Description</label>
-                <textarea id="description" name="description" class="form-control"
-                    placeholder="Describe the roles and responsibilities..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="requirements">Requirements</label>
-                <textarea id="requirements" name="requirements" class="form-control"
-                    placeholder="List required skills and qualifications..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="deadline">Application Deadline</label>
-                <input type="date" id="deadline" name="deadline" class="form-control">
-            </div>
-
-            <div class="form-group">
-                <label for="support_document">Support Document (Optional)</label>
-                <div style="padding: 1rem; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px;">
-                    <input type="file" id="support_document" name="support_document" accept=".pdf,.doc,.docx" multiple>
+                        <div class="control-group field-full">
+                            <label for="location">Location</label>
+                            <div class="input-field-wrapper">
+                                <input type="text" id="location" name="location" class="form-input" placeholder="e.g. Kigali, Rwanda">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <small style="color: var(--text-muted); display: block; margin-top: 0.5rem;">Upload PDF or Word
-                    documents.</small>
-            </div>
 
-            <button type="submit" class="btn-submit">
-                <i class="fas fa-plus-circle"></i> Create Job Listing
-            </button>
-        </form>
+                <!-- Section: Logistics & Media -->
+                <div class="form-section">
+                    <div class="section-head">
+                        <i class="fas fa-truck-loading"></i>
+                        <h2>Logistics & Media</h2>
+                    </div>
+                    <div class="input-grid">
+                        <div class="control-group">
+                            <label for="experience_required">Experience Level</label>
+                            <div class="input-field-wrapper">
+                                <select id="experience_required" name="experience_required" class="form-input">
+                                    <option value="NO">Entry Level / No Experience</option>
+                                    <option value="YES">Experience Required</option>
+                                </select>
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
 
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="{% url 'admin_job_dashboard' %}"
-                style="color: var(--text-muted); text-decoration: none; font-weight: 600;">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
+                        <div class="control-group">
+                            <label for="deadline">Application Deadline</label>
+                            <div class="input-field-wrapper">
+                                <input type="date" id="deadline" name="deadline" class="form-input">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="image">Job Cover Image (Optional)</label>
+                            <input type="file" id="image" name="image" class="form-input" accept="image/*" style="padding-left: 1rem;">
+                            <p class="field-hint">This image will appear as the big banner on the job card.</p>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="support_document">Support Document (Optional)</label>
+                            <input type="file" id="support_document" name="support_document" class="form-input" style="padding-left: 1rem;">
+                            <p class="field-hint">Upload any additional info (PDF, DOCX).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Application Settings -->
+                <div class="form-section">
+                    <div class="section-head">
+                        <i class="fas fa-sliders-h"></i>
+                        <h2>Application Settings</h2>
+                    </div>
+                    <div class="control-group field-full">
+                        <label for="application_link">Direct Application Link (Optional)</label>
+                        <div class="input-field-wrapper">
+                            <input type="url" id="application_link" name="application_link" class="form-input" placeholder="https://company.com/apply">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                        <p class="field-hint">If set, an <strong>"Apply Yourself"</strong> button will appear on the job listing linking directly here.</p>
+                    </div>
+                </div>
+
+                <!-- Section: Job Content -->
+                <div class="form-section">
+                    <div class="section-head">
+                        <i class="fas fa-file-signature"></i>
+                        <h2>Job Content</h2>
+                    </div>
+                    <div class="control-group field-full" style="margin-bottom: 2rem;">
+                        <label for="description">Job Description</label>
+                        <textarea id="description" name="description" class="form-input" placeholder="Describe the roles and responsibilities..."></textarea>
+                    </div>
+
+                    <div class="control-group field-full">
+                        <label for="requirements">Requirements</label>
+                        <textarea id="requirements" name="requirements" class="form-input" placeholder="List required skills and qualifications..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="submit-container">
+                    <button type="submit" class="btn-launch">
+                        <i class="fas fa-rocket"></i> Publish Job Listing
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 2.5rem;">
+                        <a href="{% url 'admin_job_dashboard' %}" style="color: var(--text-secondary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 0.6rem; transition: all 0.3s;">
+                            <i class="fas fa-arrow-left"></i> Cancel and Return to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 {% endblock %}
+

@@ -150,49 +150,29 @@
             </h3>
             <p>{{ scholarship.eligibility }}</p>
 
-            <!-- APPLY BUTTON 1: Support Form -->
-            <div class="btn-group" style="margin-top: 2rem;">
-                <a href="{% url 'apply_scholarship_manual' scholarship.pk %}" class="btn-custom"
-                    style="width: 100%; display: flex; justify-content: center; padding: 1.25rem; background: var(--primary);">
-                    <i class="fas fa-file-contract"></i> Submit Application via SAMHUB Support
+            <!-- APPLY BUTTONS -->
+            <div style="margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                
+                <!-- Primary: Apply via FursaLink -->
+                <a href="{% url 'apply_scholarship_manual' scholarship.pk %}"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.4rem; background: var(--primary); color: white; border-radius: 8px; font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 2px 6px rgba(16,185,129,0.2);"
+                    onmouseover="this.style.background='var(--primary-hover)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(16,185,129,0.35)';"
+                    onmouseout="this.style.background='var(--primary)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(16,185,129,0.2)';">
+                    <i class="fas fa-paper-plane"></i> Apply Now via FursaLink
                 </a>
-            </div>
 
-            <p style="text-align: center; margin: 1.5rem 0; color: #666; font-size: 0.9rem; font-weight: bold;">
-                OR
-            </p>
+                <span style="color: #94a3b8; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;">OR</span>
 
-            <!-- APPLY BUTTON 2: Restricted Direct Apply -->
-            <div class="btn-group">
-                {% if scholarship.is_open %}
-                <a href="{{ scholarship.application_link }}" target="_blank" class="btn-custom"
-                    style="width: 100%; display: flex; justify-content: center; background: transparent; border: 2px solid var(--primary); color: var(--primary);">
+                <!-- Secondary: Direct Apply -->
+                <a href="{{ scholarship.application_link }}" target="_blank"
+                    style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 1rem; background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 6px; font-size: 0.78rem; font-weight: 600; text-decoration: none; transition: all 0.25s cubic-bezier(0.4,0,0.2,1);"
+                    onmouseover="this.style.background='var(--primary-light)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 10px rgba(16,185,129,0.15)';"
+                    onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     <i class="fas fa-external-link-alt"></i> Apply Directly on University Site
                 </a>
-                {% else %}
-                <button class="btn-custom" style="width: 100%; border: none; opacity: 0.7; cursor: pointer;"
-                    onclick="handleRestrictedApply()">
-                    <i class="fas fa-lock"></i> Apply Now (Restricted)
-                </button>
-                <div id="support-notice"
-                    style="display: none; margin-top: 1rem; padding: 1rem; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; font-size: 0.85rem; color: #854d0e;">
-                    <i class="fas fa-info-circle"></i> <strong>Notice:</strong> Direct application is currently
-                    restricted. Please send your documents to <strong>support@samhub.com</strong>. Our team will assist
-                    your application within 1 minute of receiving the documents.
-                </div>
-                {% endif %}
             </div>
 
-            <script>
-                function handleRestrictedApply() {
-                    const notice = document.getElementById('support-notice');
-                    notice.style.display = 'block';
-                    alert('Direct application restricted. Please wait 1 minute for a support representative or send documents to support@samhub.com');
 
-                    // The user requested a 1 minute message/support expectation
-                    console.log('User has been informed that support responds in 1 minute.');
-                }
-            </script>
 
         </div>
     </div>

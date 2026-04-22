@@ -17,7 +17,7 @@ class Scholarship(models.Model):
     DEGREE_CHOICES = [
         ('ORGANIZATION_CERTIFICATE', 'Organization Certificate (OGC)'),
         ('ADVANCED_DIPLOMA', 'Advanced Diploma (A2)'),
-        ('BACHELOR_DEGREE', 'Bachelor of Degree (BSc)'),
+        ('BACHELOR_DEGREE', 'Bachelor Degree (A0 / BSc)'),
         ('MASTERS_DEGREE', 'Masters Degree (MSc)'),
         ('PHD_DEGREE', 'PhD Degree (PhD)'),
         ('NO_DEGREE', 'No Degree'),

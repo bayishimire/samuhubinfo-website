@@ -1,0 +1,95 @@
+{% extends "Login_System/base.html" %}
+
+{% block title %}{{ project.title }} | Fursa.Link{% endblock %}
+
+{% block content %}
+<div class="profile-update-wrapper" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 6rem 2rem;">
+    <div class="dashboard-full-container" style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- Premium Header Banner -->
+        <div class="welcome-banner" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 2rem; padding: 4rem; margin-bottom: 3rem; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+            <div style="position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+            <div style="position: relative; z-index: 2;">
+                <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; display: inline-block;">Project Architecture</span>
+                <h1 style="font-family: 'Outfit'; font-weight: 900; font-size: 3.5rem; color: white; letter-spacing: -0.05em; margin-bottom: 1rem;">{{ project.title }}</h1>
+                <div style="display: flex; align-items: center; gap: 1.5rem; color: rgba(255,255,255,0.7); font-size: 1.1rem; font-weight: 500;">
+                    <span><i class="fas fa-user-circle"></i> {{ project.owner.username }}</span>
+                    <span>&bull;</span>
+                    <span><i class="fas fa-calendar-alt"></i> {{ project.created_at|date:"M d, Y" }}</span>
+                    <span>&bull;</span>
+                    <span style="background: white; color: #0f172a; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.8rem;">{{ project.status }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+            <!-- Left: Description (Glassmorphism Card) -->
+            <div class="action-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); padding: 3rem; border-radius: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+                <h2 style="font-family: 'Outfit'; font-weight: 800; font-size: 1.75rem; color: #0f172a; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-align-left" style="color: var(--primary);"></i> Project Overview
+                </h2>
+                <div style="font-size: 1.15rem; line-height: 1.8; color: #475569; font-family: 'Poppins', sans-serif;">
+                    {{ project.description|linebreaks }}
+                </div>
+                
+                {% if project.owner == user %}
+                <div style="margin-top: 3rem; border-top: 1px solid #f1f5f9; padding-top: 2rem;">
+                    <a href="{% url 'projects:edit' project.id %}" class="btn-dash" style="background: #f1f5f9; color: #475569; padding: 1rem 1.5rem; border-radius: 1rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 0.75rem; transition: all 0.3s ease;">
+                        <i class="fas fa-edit"></i> Edit Project Intelligence
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right: Connection Hub -->
+            <div class="connection-hub">
+                <div class="action-card" style="background: white; border: 1px solid #f1f5f9; padding: 2.5rem; border-radius: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.05); position: sticky; top: 2rem;">
+                    {% if project.owner != user %}
+                        <h3 style="font-family: 'Outfit'; font-weight: 800; font-size: 1.5rem; color: #0f172a; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <i class="fas fa-plug" style="color: var(--primary);"></i> Active Connection
+                        </h3>
+                        <p style="color: #64748b; margin-bottom: 2rem; line-height: 1.6;">Engage with this initiative by establishing a direct connection with the project architect.</p>
+                        
+                        {% if is_connected %}
+                            <div style="padding: 1.25rem; background: #ecfdf5; color: #059669; border-radius: 1rem; font-weight: 800; text-align: center; border: 1px solid #d1fae5; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                                <i class="fas fa-check-circle"></i> Connection Verified
+                            </div>
+                        {% else %}
+                            <form action="{% url 'projects:connect' project.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="submit-btn" style="width: 100%; padding: 1.25rem; background: var(--primary); color: white; border: none; border-radius: 1rem; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                                    <i class="fas fa-link"></i> Request Connection
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <h3 style="font-family: 'Outfit'; font-weight: 800; font-size: 1.5rem; color: #0f172a; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                            <i class="fas fa-users" style="color: var(--primary);"></i> Network Assets
+                        </h3>
+                        {% if connections %}
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                {% for conn in connections %}
+                                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f8fafc; border-radius: 1rem; border: 1px solid #f1f5f9; transition: transform 0.2s ease;">
+                                    <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 800; color: #1e293b; font-size: 0.95rem;">{{ conn.user.username }}</div>
+                                        <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Connected {{ conn.connected_at|timesince }} ago</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div style="text-align: center; padding: 2rem 1rem;">
+                                <i class="fas fa-satellite" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
+                                <p style="color: #64748b; font-style: italic; font-size: 0.9rem;">Awaiting inaugural connections.</p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

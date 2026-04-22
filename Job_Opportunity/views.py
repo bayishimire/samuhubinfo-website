@@ -17,7 +17,15 @@ def is_admin(user):
 
 # 1. List all available jobs
 def job_list(request):
-    jobs = Job.objects.all().order_by('-posted_at')
+    from django.utils import timezone
+    from django.db.models import Q
+    
+    # Show jobs where deadline is in the future, or there is no deadline
+    now = timezone.now()
+    jobs = Job.objects.filter(
+        Q(deadline__isnull=True) | Q(deadline__gte=now)
+    ).order_by('-posted_at')
+    
     return render(request, 'Job_Opportunity/job_list.html', {'jobs': jobs})
 
 
@@ -114,7 +122,8 @@ def add_job(request):
             image=request.FILES.get('image'),
             deadline=deadline if deadline else None,
             posted_by=request.user,
-            experience_required=experience_required
+            experience_required=experience_required,
+            application_link=request.POST.get('application_link') or None,
         )
 
         files = request.FILES.getlist('support_document')
@@ -138,22 +147,58 @@ def edit_job(request, job_id):
         job.requirements = request.POST.get('requirements')
         job.deadline = request.POST.get('deadline') if request.POST.get('deadline') else job.deadline
         job.experience_required = request.POST.get('experience_required', job.experience_required)
-        
+        job.application_link = request.POST.get('application_link') or job.application_link
+
         if request.FILES.get('image'):
             job.image = request.FILES.get('image')
-        
+
         job.save()
         messages.success(request, f"Job '{job.title}' updated successfully.")
         return redirect('admin_job_dashboard')
 
     return render(request, 'Job_Opportunity/edit_job.html', {'job': job})
 
+@login_required
+@user_passes_test(is_admin)
+def delete_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    title = job.title
+    job.delete()
+    messages.warning(request, f"Job '{title}' has been deleted.")
+    return redirect('admin_job_dashboard')
+
 # 6. Admin: Dashboard to manage all jobs
 @login_required
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-    jobs = Job.objects.all().order_by('-posted_at')
-    return render(request, 'Job_Opportunity/admin_dashboard.html', {'jobs': jobs})
+    from django.db.models import Q
+    from django.utils import timezone
+    
+    filter_type = request.GET.get('filter', 'all')
+    now = timezone.now()
+
+    if filter_type == 'active':
+        jobs = Job.objects.filter(
+            Q(deadline__isnull=True) | Q(deadline__gte=now)
+        ).order_by('-posted_at')
+    else:
+        jobs = Job.objects.all().order_by('-posted_at')
+
+    # Calculate Real-Time Analytics
+    total_count = Job.objects.all().count()
+    active_count = Job.objects.filter(
+        Q(deadline__isnull=True) | Q(deadline__gte=now)
+    ).count()
+    regional_reach = Job.objects.values('location').distinct().count()
+
+    context = {
+        'jobs': jobs,
+        'total_count': total_count,
+        'active_count': active_count,
+        'regional_reach': regional_reach,
+        'current_filter': filter_type.upper()
+    }
+    return render(request, 'Job_Opportunity/admin_dashboard.html', context)
 
 
 # 7. Admin: View all applications for a specific job
