@@ -112,10 +112,21 @@ WSGI_APPLICATION = 'FursaLink_Info.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        default='mysql://root:sandrine@localhost/fursalink_db',
         conn_max_age=600
     )
 }
+# Fallback if dj-database-url fails or you want standard mysql format:
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'fursalink_db',
+#         'USER': 'root',
+#         'PASSWORD': 'sandrine',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
